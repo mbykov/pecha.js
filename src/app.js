@@ -41,5 +41,19 @@ imports.forEach(link=> {
   container.appendChild(section.cloneNode(true))
 })
 
-let home = q('#home')
-home.classList.add('is-shown')
+// let home = q('#home')
+// home.classList.add('is-shown')
+let state = settings.get('state')
+navigate(state)
+
+document.body.addEventListener('click', (ev) => {
+  if (ev.target.classList.contains('external')) {
+    let href = ev.target.textContent
+    shell.openExternal(href)
+  } else if (ev.target.id == 'cleanupdb') {
+  } else {
+    let section = ev.target.dataset.section
+    if (!section) return
+    navigate({section: section})
+  }
+})
