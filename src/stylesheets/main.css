@@ -102,7 +102,7 @@ span.space {
     padding-right: 0;
 }
 
-span.greek {
+span.tibetan {
     padding-right: 0;
 }
 
@@ -110,7 +110,7 @@ span.term {
     padding-right: 0;
 }
 
-span.greek:hover {
+span.tibetan:hover {
     background-color: #eee8aa;
 }
 

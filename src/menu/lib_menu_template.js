@@ -5,7 +5,7 @@ export const libMenuTemplate = {
   submenu: [
     {  label: "Home",
        accelerator: "CmdOrCtrl+L",
-       click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'home') } },
+       click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'home') } },
     { label: "Quit",
       accelerator: "CmdOrCtrl+Q",
       click: () => {

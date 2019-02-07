@@ -4,7 +4,7 @@ import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 // import { scrollPanes, keyPanes } from './book'
 // import { getInfo, getLib, getTitle, getBook, getQuery } from './pouch'
-
+import { showText } from "./parsedata";
 
 const log = console.log
 const clipboard = require('electron-clipboard-extended')
@@ -21,10 +21,10 @@ let hstate = 0
 let split
 
 function twoPanes(state) {
-  let osource = q('#source')
-  let oresult = q('#result')
-  empty(osource)
-  empty(oresult)
+  // let osource = q('#source')
+  // let oresult = q('#result')
+  // empty(osource)
+  // empty(oresult)
 
   let sizes = settings.get('split-sizes') || [50, 50]
   if (split && state.mono) split.collapse(1)
@@ -53,7 +53,6 @@ function twoPanes(state) {
     // scrollPanes(ev, state)
   }, false)
 }
-
 
 // arrows
 Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
@@ -89,43 +88,55 @@ function showSection(section) {
 }
 
 function goLeft() {
+  // log('left', hstate, history.length)
   if (hstate <= 0) return
   else hstate--
   let state = history[hstate]
-  // navigate(state)
-  showSection(state.section)
+  state.old = true
+  navigate(state)
 }
 
 function goRight() {
-  if (hstate >= history.length - 1) return
+  // log('right', hstate, history.length)
+  if (hstate >= history.length-1) return
   else hstate++
   let state = history[hstate]
-  // navigate(state)
-  showSection(state.section)
+  // log('RIGTH', state)
+  state.old = true
+  navigate(state)
 }
+
+// let last = _.last(history)
+// if (!last) history.push(state)
+// else {
+//   if (last.section != section) history.push(state)
+//   // history.push(state)
+//   hstate = history.length-1
+// }
 
 export function navigate(state) {
   try {
     state = JSON.parse(JSON.stringify(state))
   } catch (err) {
     log('NAV-state ERR', err)
+    state = {}
   }
   let section = state.section || 'home'
-  showSection(section)
+  if (!section) state.section = 'home'
+  showSection(state.section)
 
-  // let last = _.last(history)
-  // if (!last) history.push(state)
-  // else {
-  //   if (last.section != section) history.push(state)
-  //   // history.push(state)
-  //   hstate = history.length-1
-  // }
+  if (!state.old) {
+    state.old = false
+    delete state.old
+    history.push(state)
+    hstate = history.length-1
+  }
+  // log('HIST', history)
+  let progress = q('#progress')
 
-  history.push(state)
-  hstate = history.length-1
+  if (section == 'main') twoPanes(state), showText(state)
+  else progress.classList.remove('is-shown')
 
-  if (section == 'main') twoPanes(state) //, getTitle(state)
-
-  // state = {section: 'home'}
+  state = {section: 'home'}
   settings.set('state', state)
 }

@@ -38,9 +38,14 @@ imports.forEach(link=> {
   container.appendChild(section.cloneNode(true))
 })
 
+ipcRenderer.on('section', function (event, section) {
+  navigate({section: section})
+})
+
 // let home = q('#home')
 // home.classList.add('is-shown')
 let state = settings.get('state')
+log('STATE1', state)
 navigate(state)
 
 document.body.addEventListener('click', (ev) => {
@@ -64,38 +69,7 @@ clipboard
     // hstates.push(pars)
     // hstate = hstates.length-1
     let state = {section: 'main', pars: pars}
-    showText(pars)
+    navigate(state)
+    // showText(pars)
   })
   .startWatching()
-
-
-function showText (pars) {
-  log('P', pars)
-  return
-
-  showSection('main')
-  let oprg = q('#progress')
-  oprg.style.display = "inline-block"
-
-  twoPages(splitSizes)
-
-  let otext = q('#text')
-  empty(otext)
-
-  let wfs = []
-  pars.forEach(spans => {
-    let opar = p()
-    opar.classList.add('greek')
-    spans.forEach(spn => {
-      let ospan = span(spn.text)
-      if (spn.gr) ospan.classList.add('greek'), wfs.push(spn.text)
-      if (spn.text == ' ') ospan.classList.add('space')
-      opar.appendChild(ospan)
-    })
-    otext.appendChild(opar)
-  })
-
-  let grs = qs('span.greek')
-  if (grs.length == 1) showResults(grs[0].textContent)
-  oprg.style.display = "none"
-}
