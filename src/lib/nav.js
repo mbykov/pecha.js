@@ -16,31 +16,15 @@ const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
 
 let init = {section: 'home'}
-let history = [init]
+let history = []
 let hstate = 0
 let split
 
-function goLeft() {
-  if (hstate - 1 < 0) return
-  if (hstate - 1 >= 0) hstate--
-  let state = history[hstate]
-  state.old = true
-  navigate(state)
-}
-
-function goRight() {
-  if (hstate + 1 >= history.length) return
-  if (hstate + 1 < history.length) hstate++
-  let state = history[hstate]
-  state.old = true
-  navigate(state)
-}
-
 function twoPanes(state) {
-  let osource = q('#booksource')
-  let otrns = q('#booktrns')
+  let osource = q('#source')
+  let oresult = q('#result')
   empty(osource)
-  empty(otrns)
+  empty(oresult)
 
   let sizes = settings.get('split-sizes') || [50, 50]
   if (split && state.mono) split.collapse(1)
@@ -49,7 +33,7 @@ function twoPanes(state) {
   if (split) return
   settings.set('split-sizes', sizes)
 
-  split = Split(['#booksource', '#booktrns'], {
+  split = Split(['#source', '#result'], {
     sizes: sizes,
     gutterSize: 5,
     cursor: 'col-resize',
@@ -61,33 +45,15 @@ function twoPanes(state) {
   })
   if (state.mono) split.collapse(1)
 
-  let obook = q('#book')
   document.addEventListener("keydown", function(ev) {
-    keyPanes(ev, state)
+    // keyPanes(ev, state)
   }, false)
 
-  obook.addEventListener("wheel", function(ev) {
-    scrollPanes(ev, state)
+  document.addEventListener("wheel", function(ev) {
+    // scrollPanes(ev, state)
   }, false)
 }
 
-function twoPanesTitle(state) {
-  let osource = q('#titlesource')
-  let otrns = q('#titletrns')
-  empty(osource)
-  empty(otrns)
-
-  let gutsel = ['#title > .gutter'].join('')
-  let ogutter = q(gutsel)
-  if (ogutter) return
-
-  Split(['#titlesource', '#titletrns'], {
-    sizes: [50, 50],
-    gutterSize: 5,
-    cursor: 'col-resize',
-    minSize: [0, 0]
-  })
-}
 
 // arrows
 Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
@@ -122,26 +88,44 @@ function showSection(section) {
   q(sectionId).classList.add('is-shown')
 }
 
+function goLeft() {
+  if (hstate <= 0) return
+  else hstate--
+  let state = history[hstate]
+  // navigate(state)
+  showSection(state.section)
+}
+
+function goRight() {
+  if (hstate >= history.length - 1) return
+  else hstate++
+  let state = history[hstate]
+  // navigate(state)
+  showSection(state.section)
+}
+
 export function navigate(state) {
   try {
-    JSON.parse(JSON.stringify(state))
+    state = JSON.parse(JSON.stringify(state))
   } catch (err) {
     log('NAV-state ERR', err)
-    state = {}
   }
   let section = state.section || 'home'
   showSection(section)
 
-  if (!state.old) {
-    history.push(state)
-    hstate = history.length-1
-  } else {
-    delete state.old
-  }
+  // let last = _.last(history)
+  // if (!last) history.push(state)
+  // else {
+  //   if (last.section != section) history.push(state)
+  //   // history.push(state)
+  //   hstate = history.length-1
+  // }
 
-  // if (section == 'title') twoPanesTitle(state), getTitle(state)
-  // else if (section == 'book') twoPanes(state), getBook(state)
-  // else if (section == 'search') getQuery(state)
+  history.push(state)
+  hstate = history.length-1
 
+  if (section == 'main') twoPanes(state) //, getTitle(state)
+
+  // state = {section: 'home'}
   settings.set('state', state)
 }

@@ -1,9 +1,5 @@
 // import "./stylesheets/main.css";
 
-// Small helpers you might want to keep
-// import "./helpers/context_menu.js";
-// import "./helpers/external_links.js";
-
 import _ from "lodash";
 // import Split from 'split.js'
 import { remote } from "electron";
@@ -12,6 +8,7 @@ import { ipcRenderer } from "electron";
 
 import { q, qs, empty, create, remove, span, p, div } from './lib/utils'
 import { navigate } from './lib/nav';
+import sband from "./lib/sband";
 
 const settings = require('electron').remote.require('electron-settings')
 
@@ -47,13 +44,58 @@ let state = settings.get('state')
 navigate(state)
 
 document.body.addEventListener('click', (ev) => {
-  if (ev.target.classList.contains('external')) {
+  let data = ev.target.dataset
+  if (!data) return
+  if (data.external) {
     let href = ev.target.textContent
     shell.openExternal(href)
-  } else if (ev.target.id == 'cleanupdb') {
+  } else if (data.section) {
+    navigate({section: data.section})
   } else {
-    let section = ev.target.dataset.section
-    if (!section) return
-    navigate({section: section})
   }
 })
+
+clipboard
+  .on('text-changed', () => {
+    let txt = clipboard.readText()
+    let pars = sband('tib', txt)
+    if (!pars || !pars.length) return
+    // orthoPars(pars)
+    // hstates.push(pars)
+    // hstate = hstates.length-1
+    let state = {section: 'main', pars: pars}
+    showText(pars)
+  })
+  .startWatching()
+
+
+function showText (pars) {
+  log('P', pars)
+  return
+
+  showSection('main')
+  let oprg = q('#progress')
+  oprg.style.display = "inline-block"
+
+  twoPages(splitSizes)
+
+  let otext = q('#text')
+  empty(otext)
+
+  let wfs = []
+  pars.forEach(spans => {
+    let opar = p()
+    opar.classList.add('greek')
+    spans.forEach(spn => {
+      let ospan = span(spn.text)
+      if (spn.gr) ospan.classList.add('greek'), wfs.push(spn.text)
+      if (spn.text == ' ') ospan.classList.add('space')
+      opar.appendChild(ospan)
+    })
+    otext.appendChild(opar)
+  })
+
+  let grs = qs('span.greek')
+  if (grs.length == 1) showResults(grs[0].textContent)
+  oprg.style.display = "none"
+}
