@@ -6,9 +6,10 @@ import { remote } from "electron";
 import { shell } from 'electron'
 import { ipcRenderer } from "electron";
 
-import { q, qs, empty, create, remove, span, p, div } from './lib/utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords } from './lib/utils'
 import { navigate } from './lib/nav';
 import sband from "./lib/sband";
+import { fireCholok } from "./lib/parsedata";
 
 const settings = require('electron').remote.require('electron-settings')
 
@@ -59,6 +60,14 @@ document.body.addEventListener('click', (ev) => {
   } else {
   }
 })
+
+document.addEventListener("mouseover", function(ev) {
+  if (ev.shiftKey == true && ev.target.classList.contains('tibetan')) {
+    let coords = getCoords(ev.target)
+    fireCholok(ev.target.textContent, coords)
+  }
+}, false)
+
 
 clipboard
   .on('text-changed', () => {

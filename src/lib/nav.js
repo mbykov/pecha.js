@@ -21,10 +21,6 @@ let hstate = 0
 let split
 
 function twoPanes(state) {
-  // let osource = q('#source')
-  // let oresult = q('#result')
-  // empty(osource)
-  // empty(oresult)
 
   let sizes = settings.get('split-sizes') || [50, 50]
   if (split && state.mono) split.collapse(1)

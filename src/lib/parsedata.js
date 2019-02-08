@@ -1,6 +1,7 @@
 //
-import _ from "lodash"
-import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
+import _ from 'lodash'
+import { q, qs, empty, create, remove, span, p, div, placePopup } from './utils'
+import cholok from 'cholok'
 
 const log = console.log
 
@@ -20,7 +21,7 @@ export function showText(state) {
     let opar = p()
     opar.classList.add('tibpar')
     spans.forEach(spn => {
-      log('SPN', spn)
+      // log('SPN', spn)
       let ospan = span(spn.text)
       if (spn.tib) ospan.classList.add('tibetan') // , wfs.push(spn.text)
       if (spn.punct) ospan.classList.add('punct') //, wfs.push(spn.text)
@@ -32,31 +33,19 @@ export function showText(state) {
 
   let grs = qs('span.tibetan')
   if (grs.length == 1) showResults(grs[0].textContent)
-
 }
 
 function showResults(wf) {
   log('ONLYWF', wf)
 }
 
-function showText_ (pars) {
-  let otext = q('#text')
-  empty(otext)
-
-  let wfs = []
-  pars.forEach(spans => {
-    let opar = p()
-    opar.classList.add('greek')
-    spans.forEach(spn => {
-      let ospan = span(spn.text)
-      if (spn.gr) ospan.classList.add('greek'), wfs.push(spn.text)
-      if (spn.text == ' ') ospan.classList.add('space')
-      opar.appendChild(ospan)
-    })
-    otext.appendChild(opar)
-  })
-
-  let grs = qs('span.greek')
-  if (grs.length == 1) showResults(grs[0].textContent)
-  oprg.style.display = "none"
+export function fireCholok(str, coords) {
+  let trnanscript = cholok(str)
+  let ncoords = {top: coords.top - 65, left: coords.left}
+  let popup = q('#transcript')
+  popup.textContent = trnanscript
+  popup.classList.remove('is-hidden')
+  log('POP:', popup)
+  placePopup(ncoords, popup)
+  log('CHH:', trnanscript, coords)
 }
