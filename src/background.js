@@ -8,6 +8,7 @@ import url from "url";
 import { app, BrowserWindow, Menu, ipcMain, globalShortcut } from "electron";
 import { libMenuTemplate } from "./menu/lib_menu_template";
 import { aboutMenuTemplate } from "./menu/about_menu_template";
+import { dictMenuTemplate } from "./menu/dict_menu_template";
 import { helpMenuTemplate } from "./menu/help_menu_template";
 
 import { devMenuTemplate } from "./menu/dev_menu_template";
@@ -23,7 +24,7 @@ import env from "env";
 const setApplicationMenu = () => {
   // const menus = [libMenuTemplate, fileMenuTemplate, aboutMenuTemplate, authMenuTemplate, helpMenuTemplate];
   // const menus = [libMenuTemplate, aboutMenuTemplate, helpMenuTemplate];
-  const menus = [libMenuTemplate, aboutMenuTemplate, helpMenuTemplate];
+  const menus = [libMenuTemplate, dictMenuTemplate, aboutMenuTemplate, helpMenuTemplate];
   if (env.name !== "production") {
     // menus.push(devMenuTemplate);
   }

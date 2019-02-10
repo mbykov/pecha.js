@@ -63,24 +63,22 @@ h4 {
     float: left;
 }
 
-#booksource {
+#source {
     font-family: "Helvetica Neue", Helvetica, Arial;
-    font-size: 14px;
+    /* font-size: 14px; */
     padding-left: 15px;
     padding-top: 25px;
     padding-bottom: 25px;
-    margin-top: 50px;
     overflow-y: hidden;
     /* overflow-x: hidden; */
 }
 
-#booktrns {
+#result {
     font-family: "Helvetica Neue", Helvetica, Arial;
-    font-size: 14px;
+    /* font-size: 14px; */
     padding-left: 15px;
     padding-top: 25px;
     padding-bottom: 25px;
-    margin-top: 50px;
     overflow-y: hidden;
     overflow-x: hidden;
 }
@@ -102,7 +100,7 @@ span.space {
     padding-right: 0;
 }
 
-span.tibetan {
+span.tibphrase {
     padding-right: 0;
 }
 
@@ -110,7 +108,7 @@ span.term {
     padding-right: 0;
 }
 
-span.tibetan:hover {
+span.tibphrase:hover {
     background-color: #eee8aa;
 }
 
@@ -338,4 +336,5 @@ div.qtext > p.hidden {
   /* font-family: 'DejaVu Sans'; */
   font-size: 16px;
   padding: 3px;
+  background-color: #fff2e6;
 }

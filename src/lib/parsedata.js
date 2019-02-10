@@ -2,6 +2,7 @@
 import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, placePopup } from './utils'
 import cholok from 'cholok'
+import { getPossible } from "./pouch";
 
 const log = console.log
 
@@ -23,7 +24,7 @@ export function showText(state) {
     spans.forEach(spn => {
       // log('SPN', spn)
       let ospan = span(spn.text)
-      if (spn.tib) ospan.classList.add('tibetan') // , wfs.push(spn.text)
+      if (spn.tib) ospan.classList.add('tibphrase') // , wfs.push(spn.text)
       if (spn.punct) ospan.classList.add('punct') //, wfs.push(spn.text)
       if (spn.text == ' ') ospan.classList.add('space')
       opar.appendChild(ospan)
@@ -41,11 +42,14 @@ function showResults(wf) {
 
 export function fireCholok(str, coords) {
   let trnanscript = cholok(str)
-  let ncoords = {top: coords.top - 65, left: coords.left}
+  let ncoords = {top: coords.top - 40, left: coords.left + 15}
   let popup = q('#transcript')
   popup.textContent = trnanscript
   popup.classList.remove('is-hidden')
-  log('POP:', popup)
   placePopup(ncoords, popup)
-  log('CHH:', trnanscript, coords)
+}
+
+export function fireResult(str) {
+  let padas = getPossible(str)
+  log('PADAS', padas)
 }

@@ -9,13 +9,16 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords } from './lib/utils'
 import { navigate } from './lib/nav';
 import sband from "./lib/sband";
-import { fireCholok } from "./lib/parsedata";
+import { fireCholok, fireResult } from "./lib/parsedata";
+import { parseStarDict, parseCSV } from "./lib/dict";
+import { cleanupDB } from "./lib/pouch";
 
 const settings = require('electron').remote.require('electron-settings')
+// const Mousetrap = require('mousetrap')
 
 const JSON = require('json5')
 const axios = require('axios')
-let fse = require('fs-extra')
+// let fse = require('fs-extra')
 const slash = require('slash')
 const log = console.log
 
@@ -43,13 +46,19 @@ ipcRenderer.on('section', function (event, section) {
   navigate({section: section})
 })
 
+ipcRenderer.on('action', function (event, action) {
+  if (action == 'stardict') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, parseStarDict)
+  else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, parseCSV)
+  else if (action == 'cleanupdb') cleanupDB()
+})
+
 // let home = q('#home')
 // home.classList.add('is-shown')
 let state = settings.get('state')
 log('STATE1', state)
 navigate(state)
 
-document.body.addEventListener('click', (ev) => {
+document.addEventListener('click', (ev) => {
   let data = ev.target.dataset
   if (!data) return
   if (data.external) {
@@ -62,10 +71,27 @@ document.body.addEventListener('click', (ev) => {
 })
 
 document.addEventListener("mouseover", function(ev) {
-  if (ev.shiftKey == true && ev.target.classList.contains('tibetan')) {
-    let coords = getCoords(ev.target)
-    fireCholok(ev.target.textContent, coords)
+  if (ev.target.classList.contains('tibphrase')) {
+    if (ev.shiftKey == true) {
+      let coords = getCoords(ev.target)
+      fireCholok(ev.target.textContent, coords)
+    } else {
+      log('FRASE', ev.target.textContent)
+      fireResult(ev.target.textContent)
+    }
   }
+}, false)
+
+document.addEventListener("mouseout", function(ev) {
+  if (ev.target.classList.contains('tibphrase')) {
+    let popup = q('#transcript')
+    popup.classList.add('is-hidden')
+  }
+}, false)
+
+document.addEventListener("keyup", function(ev) {
+  let popup = q('#transcript')
+  popup.classList.add('is-hidden')
 }, false)
 
 
