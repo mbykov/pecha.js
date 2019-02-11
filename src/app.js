@@ -59,6 +59,7 @@ ipcRenderer.on('action', function (event, action) {
 // home.classList.add('is-shown')
 let state = settings.get('state')
 log('STATE1', state)
+if (!state) state = {section: 'home'}
 navigate(state)
 
 document.addEventListener('click', (ev) => {
@@ -113,6 +114,4 @@ clipboard
   })
   .startWatching()
 
-let cfg = checkCfg()
-
-log('CFG', cfg)
+checkCfg()

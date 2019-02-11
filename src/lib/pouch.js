@@ -21,14 +21,40 @@ export function cleanupDB(state) {
 
 export function getPossible(keys) {
   log('START GET POSSIBLE')
-  if (!dbs.length) setDBs (cfg)
+  if (!dbs.length) setDBs()
+  // let dpath = path.resolve(upath, 'pouch', 'vasilyev')
+  // log('DPATH', dpath)
+  // let pouch = new PouchDB(dpath)
+  log('DBS', dbs.length)
+  queryDBs (keys)
+    .then(docs=> {
+      log('DOCS', docs)
+    })
+}
 
-  // return padas
+export function queryDBs (keys) {
+  return Promise.all(dbs.map(function (db) {
+    return db.allDocs({
+      keys: keys,
+      include_docs: true
+    })
+      .then(function (res) {
+        if (!res || !res.rows) throw new Error('no dbn result')
+        let rdocs = _.compact(res.rows.map(row => { return row.doc }))
+        let docs = _.flatten(_.compact(rdocs.map(rdoc => { return rdoc.docs })))
+        if (!docs.length) return []
+        docs.forEach(doc => { doc.dname = db.dname, doc.weight = db.weight })
+        return docs
+      }).catch(function (err) {
+        console.log('ERR GET DBs', err)
+      })
+  }))
 }
 
 export function checkCfg() {
   let cfg = settings.get('cfg')
   if (!cfg) cfg = createZeroCfg(upath)
+  log('CFG1', cfg)
   return cfg
 }
 
@@ -52,9 +78,12 @@ function createZeroCfg(upath, version) {
 
 export function setDBs() {
   let cfg = settings.get('cfg')
+  log('CFG', cfg)
   let dbnames = _.compact(cfg.map(cf => { return (cf.active) ? cf.name : null }))
+  log('DBNS', dbnames)
   dbnames.forEach((dn, idx) => {
     let dpath = path.resolve(upath, 'pouch', dn)
+    log('DPATH', dpath)
     let pouch = new PouchDB(dpath)
     pouch.dname = dn
     pouch.weight = idx
