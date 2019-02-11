@@ -2,6 +2,7 @@
 import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, placePopup } from './utils'
 import cholok from 'cholok'
+import { possibleKeys } from "./segmenter";
 import { getPossible } from "./pouch";
 
 const log = console.log
@@ -22,7 +23,6 @@ export function showText(state) {
     let opar = p()
     opar.classList.add('tibpar')
     spans.forEach(spn => {
-      // log('SPN', spn)
       let ospan = span(spn.text)
       if (spn.tib) ospan.classList.add('tibphrase') // , wfs.push(spn.text)
       if (spn.punct) ospan.classList.add('punct') //, wfs.push(spn.text)
@@ -50,6 +50,7 @@ export function fireCholok(str, coords) {
 }
 
 export function fireResult(str) {
-  let padas = getPossible(str)
-  log('PADAS', padas)
+  let keys = possibleKeys(str)
+  log('keys:', keys.length)
+  let possDicts = getPossible(keys)
 }

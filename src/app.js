@@ -11,7 +11,7 @@ import { navigate } from './lib/nav';
 import sband from "./lib/sband";
 import { fireCholok, fireResult } from "./lib/parsedata";
 import { parseStarDict, parseCSV } from "./lib/dict";
-import { cleanupDB } from "./lib/pouch";
+import { checkCfg, setDBs, cleanupDB } from "./lib/pouch";
 
 const settings = require('electron').remote.require('electron-settings')
 // const Mousetrap = require('mousetrap')
@@ -30,7 +30,10 @@ const {dialog, getCurrentWindow} = require('electron').remote
 const isDev = require('electron-is-dev')
 // const isDev = false
 // const isDev = true
-const app = remote.app;
+// const app = remote.app;
+// const apath = app.getAppPath()
+// const upath = app.getPath("userData")
+
 
 let over = q("#new-version")
 
@@ -71,12 +74,13 @@ document.addEventListener('click', (ev) => {
 })
 
 document.addEventListener("mouseover", function(ev) {
+  if (!ev.target.textContent) return
   if (ev.target.classList.contains('tibphrase')) {
     if (ev.shiftKey == true) {
       let coords = getCoords(ev.target)
       fireCholok(ev.target.textContent, coords)
     } else {
-      log('FRASE', ev.target.textContent)
+      // log('FRASE', ev.target.textContent)
       fireResult(ev.target.textContent)
     }
   }
@@ -108,3 +112,7 @@ clipboard
     // showText(pars)
   })
   .startWatching()
+
+let cfg = checkCfg()
+
+log('CFG', cfg)

@@ -2,8 +2,6 @@
 import _ from "lodash"
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
-// import { scrollPanes, keyPanes } from './book'
-// import { getInfo, getLib, getTitle, getBook, getQuery } from './pouch'
 import { showText } from "./parsedata";
 
 const log = console.log
@@ -59,11 +57,6 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
 Mousetrap.bind(['alt+1', 'alt+2'], function(ev) {
   // if (ev.which == 49) log('----1')
   // else if (ev.which == 50) log('----2')
-})
-
-Mousetrap.bind(['ctrl+f'], function(ev) {
-  let query = clipboard.readText().split(' ')[0]
-  navigate({section: 'search', query: query})
 })
 
 Mousetrap.bind(['esc'], function(ev) {
