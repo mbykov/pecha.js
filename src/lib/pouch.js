@@ -79,5 +79,15 @@ export function setDBs() {
     pouch.weight = idx
     dbs.push(pouch)
   })
-
+  let localDB = dbs[0]
+  let remoteDB = new PouchDB('http://localhost:5984/vasilyev')
+  localDB.replicate.to(remoteDB).on('complete', function () {
+    log('yay, were done!')
+  }).on('error', function (err) {
+    log('boo, something went wrong!', err)
+  })
 }
+
+// adduser --system --home /opt/couchdb --no-create-home --shell /bin/bash -g couchdb couchdb
+// useradd --system -b /opt/couchdb --shell /bin/bash -g couchdb couchdb
+// sudo -i -u couchdb bin/couchdb
