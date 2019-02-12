@@ -9,7 +9,8 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords } from './lib/utils'
 import { navigate } from './lib/nav';
 import sband from "./lib/sband";
-import { fireCholok, fireResult } from "./lib/parsedata";
+import { showCholok } from "./lib/parsedata";
+import { mainResults } from "./lib/main";
 import { parseStarDict, parseCSV } from "./lib/dict";
 import { checkCfg, setDBs, cleanupDB } from "./lib/pouch";
 
@@ -58,7 +59,7 @@ ipcRenderer.on('action', function (event, action) {
 // let home = q('#home')
 // home.classList.add('is-shown')
 let state = settings.get('state')
-log('STATE1', state)
+// log('STATE1', state)
 if (!state) state = {section: 'home'}
 navigate(state)
 
@@ -79,10 +80,10 @@ document.addEventListener("mouseover", function(ev) {
   if (ev.target.classList.contains('tibphrase')) {
     if (ev.shiftKey == true) {
       let coords = getCoords(ev.target)
-      fireCholok(ev.target.textContent, coords)
+      showCholok(ev.target.textContent, coords)
     } else {
       // log('FRASE', ev.target.textContent)
-      fireResult(ev.target.textContent)
+      mainResults(ev.target.textContent)
     }
   }
 }, false)

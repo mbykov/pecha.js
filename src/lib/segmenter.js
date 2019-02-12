@@ -4,10 +4,8 @@ import { tibsyms, tibsyls } from "./tibetan_data";
 
 const log = console.log
 
-export function possibleKeys(str) {
-  let syls = _.compact(str.split(tibsyms.tsek))
-  let segs = parseKeys(syls)
-
+export function totalKeys(pdchs) {
+  let segs = _.flatten(pdchs)
   let added = []
   segs.forEach(seg=>{
     tibsyls.forEach(syl=>{
@@ -17,10 +15,27 @@ export function possibleKeys(str) {
     })
   })
   let keys = segs.concat(added)
-  return keys
+  return _.uniq(keys)
 }
 
-function parseKeys(segs) {
+export function parsePDCHs(segs) {
+  let h, t
+  let pdchs = []
+  for (let idx = 1; idx < segs.length + 1; idx++) {
+    h = segs.slice(0, idx).join(tibsyms.tsek)
+    t = segs.slice(idx)
+    let h_, t_
+    for (let idy = 1; idy < t.length + 1; idy++) {
+      h_ = t.slice(0, idy).join(tibsyms.tsek)
+      t_ = t.slice(idy)
+      let chain = [h, h_, t_.join(tibsyms.tsek)]
+      pdchs.push(_.compact(chain))
+    }
+  }
+  return pdchs
+}
+
+function parseKeys_(segs) {
   let h, t
   let padas = []
   for (let idx = 1; idx < segs.length + 1; idx++) {

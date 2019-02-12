@@ -20,16 +20,8 @@ export function cleanupDB(state) {
 }
 
 export function getPossible(keys) {
-  log('START GET POSSIBLE')
   if (!dbs.length) setDBs()
-  // let dpath = path.resolve(upath, 'pouch', 'vasilyev')
-  // log('DPATH', dpath)
-  // let pouch = new PouchDB(dpath)
-  log('DBS', dbs.length)
-  queryDBs (keys)
-    .then(docs=> {
-      log('DOCS', docs)
-    })
+  return queryDBs(keys)
 }
 
 export function queryDBs (keys) {
@@ -54,7 +46,6 @@ export function queryDBs (keys) {
 export function checkCfg() {
   let cfg = settings.get('cfg')
   if (!cfg) cfg = createZeroCfg(upath)
-  log('CFG1', cfg)
   return cfg
 }
 
@@ -78,12 +69,11 @@ function createZeroCfg(upath, version) {
 
 export function setDBs() {
   let cfg = settings.get('cfg')
-  log('CFG', cfg)
+  log('===setDBs CFG===', cfg)
   let dbnames = _.compact(cfg.map(cf => { return (cf.active) ? cf.name : null }))
   log('DBNS', dbnames)
   dbnames.forEach((dn, idx) => {
     let dpath = path.resolve(upath, 'pouch', dn)
-    log('DPATH', dpath)
     let pouch = new PouchDB(dpath)
     pouch.dname = dn
     pouch.weight = idx
