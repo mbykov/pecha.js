@@ -21,6 +21,7 @@ export function totalKeys(pdchs) {
 export function parsePDCHs(segs) {
   let h, t
   let pdchs = []
+  pdchs.push([segs.join(tibsyms.tsek)])
   for (let idx = 1; idx < segs.length + 1; idx++) {
     h = segs.slice(0, idx).join(tibsyms.tsek)
     t = segs.slice(idx)

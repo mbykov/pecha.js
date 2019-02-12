@@ -11,7 +11,7 @@ export function mainResults(str) {
   let syls = _.compact(str.split(tibsyms.tsek))
   let pdchs = parsePDCHs(syls)
   let keys = totalKeys(pdchs)
-  // log('MAIN pdchs:', pdchs, keys)
+  log('MAIN pdchs:', pdchs, keys.length)
   getPossible(keys)
     .then(docs=> {
       docs = _.flatten(docs)
