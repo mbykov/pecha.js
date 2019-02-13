@@ -69,6 +69,11 @@ Mousetrap.bind(['ctrl+k'], function(ev) {
   replicateDB()
 })
 
+Mousetrap.bind(['ctrl+p'], function(ev) {
+  log('ZERO CFG')
+  settings.set('cfg', '')
+})
+
 function hideAll () {
   const sections = document.querySelectorAll('.section.is-shown')
   Array.prototype.forEach.call(sections, (section) => {

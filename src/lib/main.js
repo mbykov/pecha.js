@@ -22,6 +22,8 @@ export function mainResults(str) {
       log('chains: ', chains.length, 'fulls: ', fulls.length)
       if (fulls.length) chains = fulls
       log('CHs', chains)
+      // let trns = chains.map(segs=> { return segs.map(seg=> { return [seg.seg, seg.docs.map(doc=> { return doc.trns })].join('-') })})
+      // log('TRNS', trns.toString())
     })
 }
 

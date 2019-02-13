@@ -50,6 +50,7 @@ export function checkCfg() {
 }
 
 function createZeroCfg(upath, version) {
+  log('__ZERO CFG__')
   let destpath = path.resolve(upath, 'pouch')
   let fns = fse.readdirSync(destpath)
 
@@ -62,11 +63,13 @@ function createZeroCfg(upath, version) {
   })
   settings.set('cfg', cfg)
 
+  log('__ZERO CFG__', cfg)
   // let versionpath = path.resolve(upath, 'version.json')
   // fse.writeJsonSync(versionpath, {version: version})
   return cfg
 }
 
+// а если новая база?
 export function setDBs() {
   let cfg = settings.get('cfg')
   log('===setDBs CFG===', cfg)
@@ -95,9 +98,9 @@ export function setDBs() {
 
 export function replicateDB() {
   if (!dbs.length) setDBs()
-  let localDB = dbs[0]
+  let localDB = _.find(dbs, db=> { return db.dname == 'lobsang'})
   log('DB-name', localDB.dname)
-  let remoteDB = new PouchDB('http://localhost:5984/vasilyev')
+  let remoteDB = new PouchDB('http://localhost:5984/lobsang')
   localDB.replicate.to(remoteDB).on('complete', function () {
     log('yay, were done!')
   }).on('error', function (err) {
