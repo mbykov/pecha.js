@@ -67,7 +67,7 @@ export function segmenter(str) {
         pdchs.push(_.clone(pdch))
         pdch.pop()
       }
-      if (pdch.length < 10) rec(flake.tail, pdch) // three parts for now !
+      if (pdch.length < 5) rec(flake.tail, pdch) // three parts for now !
       rec(flake.tail, pdch)
       pdch.pop()
     })
