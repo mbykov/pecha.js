@@ -18,6 +18,10 @@ export function mainResults(str) {
       log('DOCS', docs)
       let chains = makeChains(pdchs, docs)
       log('CHs', chains)
+      let fulls = fullChains(chains)
+      log('chains: ', chains.length, 'fulls: ', fulls.length)
+      if (fulls.length) chains = fulls
+      log('CHs', chains)
     })
 }
 
@@ -27,9 +31,9 @@ function makeChains(pdchs, docs) {
     let chain = []
     let any = false
     segs.forEach(seg=>{
-      let pdocs = _.filter(docs, doc => { return startWith(seg, doc.dict) })
-      if (pdocs.length) any = true
-      let doc = {seg: seg, docs: pdocs}
+      let segdocs = _.filter(docs, doc => { return startWith(seg, doc.dict) })
+      if (segdocs.length) any = true
+      let doc = {seg: seg, docs: segdocs}
       chain.push(doc)
     })
     if (any) chains.push(chain)
@@ -38,7 +42,21 @@ function makeChains(pdchs, docs) {
 }
 
 function startWith(str, head) {
+  if (str == head) return true
   let reh = new RegExp('^' + head)
   let tail = str.replace(reh, '')
   return (str != tail && tibsyls.includes(tail)) ?  true : false
+}
+
+function fullChains(chains) {
+  let fulls = []
+  chains.forEach(segs => {
+    let full = true
+    // let dsegs = segs.slice(0, -1)
+    segs.forEach(seg => {
+      if (!seg.docs.length) full = false
+    })
+    if (full) fulls.push(segs)
+  })
+  return fulls
 }

@@ -3,6 +3,7 @@ import _ from "lodash"
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
+import { replicateDB } from "./pouch";
 
 const log = console.log
 const clipboard = require('electron-clipboard-extended')
@@ -61,6 +62,11 @@ Mousetrap.bind(['alt+1', 'alt+2'], function(ev) {
 
 Mousetrap.bind(['esc'], function(ev) {
   // похоже, общий метод не получится
+})
+
+Mousetrap.bind(['ctrl+k'], function(ev) {
+  log('CLICK CLONE')
+  replicateDB()
 })
 
 function hideAll () {
