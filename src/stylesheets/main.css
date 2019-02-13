@@ -109,7 +109,11 @@ span.term {
 }
 
 span.tibphrase:hover {
-    background-color: #eee8aa;
+    /* background-color: #eee8aa; */
+}
+
+span.tibwf:hover {
+  background-color: #eee8aa;
 }
 
 .grey {

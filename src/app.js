@@ -83,7 +83,7 @@ document.addEventListener("mouseover", function(ev) {
       showCholok(ev.target.textContent, coords)
     } else {
       // log('FRASE', ev.target.textContent)
-      mainResults(ev.target.textContent)
+      mainResults(ev.target)
     }
   }
 }, false)

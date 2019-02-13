@@ -33,12 +33,13 @@ export function showText(state) {
   })
 
   let grs = qs('span.tibetan')
-  if (grs.length == 1) showResults(grs[0].textContent)
+  // if (grs.length == 1) showResults(grs[0].textContent)
 }
 
-function showResults(wf) {
-  log('ONLYWF', wf)
-}
+// function showResults(wf) {
+//   log('ONLYWF', wf)
+// }
+
 
 export function showCholok(str, coords) {
   let trnanscript = cholok(str)
@@ -47,4 +48,20 @@ export function showCholok(str, coords) {
   popup.textContent = trnanscript
   popup.classList.remove('is-hidden')
   placePopup(ncoords, popup)
+}
+
+export function replaceTarget(el, best) {
+  el.textContent = ''
+  best.forEach(seg=> {
+    let ospan = span(seg.seg, 'tibwf')
+    el.appendChild(ospan)
+  })
+}
+
+export function showResults(chain, dicts) {
+  let osource = q('#source')
+  let oresult = q('#result')
+  let text = 'KUKU'
+  oresult.textContent = text
+  let oseg
 }

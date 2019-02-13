@@ -74,7 +74,7 @@ export function setDBs() {
   let cfg = settings.get('cfg')
   log('===setDBs CFG===', cfg)
   let dbnames = _.compact(cfg.map(cf => { return (cf.active) ? cf.name : null }))
-  log('DBNS', dbnames)
+  // log('DBNS', dbnames)
   dbnames.forEach((dn, idx) => {
     let dpath = path.resolve(upath, 'pouch', dn)
     let pouch = new PouchDB(dpath)
@@ -95,12 +95,12 @@ export function setDBs() {
 // adduser --system --home /opt/couchdb --no-create-home --shell /bin/bash -g couchdb couchdb
 // useradd --system -b /opt/couchdb --shell /bin/bash -g couchdb couchdb
 // sudo -i -u couchdb bin/couchdb
-
+// lobsang vasilyev
 export function replicateDB() {
   if (!dbs.length) setDBs()
-  let localDB = _.find(dbs, db=> { return db.dname == 'lobsang'})
+  let localDB = _.find(dbs, db=> { return db.dname == 'vasilyev'})
   log('DB-name', localDB.dname)
-  let remoteDB = new PouchDB('http://localhost:5984/lobsang')
+  let remoteDB = new PouchDB('http://localhost:5984/vasilyev')
   localDB.replicate.to(remoteDB).on('complete', function () {
     log('yay, were done!')
   }).on('error', function (err) {
