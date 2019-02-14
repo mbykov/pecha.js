@@ -6,6 +6,7 @@ import { tibsyms, tibsyls } from "./tibetan_data";
 // import { possibleKeys } from "./segmenter";
 // import { getPossible } from "./pouch";
 
+let tsek = tibsyms.tsek
 const log = console.log
 
 export function showText(state) {
@@ -58,18 +59,38 @@ export function showCholok(el) {
 //     // showAmbis(el, bests)
 //   }
 // }
-export function parsePhrase(el, bests) {
+
+export function parsePhrase(el, chains) {
   let parent = el.parentNode
-  if (bests.length == 1) replaceEL(el, bests[0])
+  if (chains.length == 1) replaceEL(el, chains[0])
   else {
-    log('AMBI')
+    // log('AMBI:')
+    let clean = commonParts(chains)
+    replaceEL(el, clean)
   }
-
-
   let progress = q('#progress')
   progress.classList.remove('is-shown')
 }
 
+function commonParts(chains) {
+  let first = chains[0]
+  let clean = []
+  let ambis
+  for (let i = 0; i < first.length; i++) {
+    let segs = chains.map(segs=> { return segs[i].seg })
+    if (_.uniq(segs).length == 1) {
+      clean.push(first[i])
+    } else {
+      if (!ambis) {
+        ambis = {seg: '', docs: []}
+        clean.push(ambis)
+      }
+      ambis.seg += first[i].seg
+    }
+  }
+  return clean
+  // log('CLEAN', clean)
+}
 function replaceEL(el, best) {
   el.textContent = ''
   best.forEach((seg, idx)=> {
@@ -81,7 +102,7 @@ function replaceEL(el, best) {
       ospan = span(seg.seg, 'tibphrase')
     }
     el.appendChild(ospan)
-    if (idx < best.length-1) el.appendChild(span(tibsyms.tsek, 'tibtsek'))
+    if (idx < best.length-1) el.appendChild(span(tsek, 'tsek'))
   })
 }
 

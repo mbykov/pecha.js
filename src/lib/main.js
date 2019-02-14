@@ -27,16 +27,16 @@ export function mainResults(el) {
       docs = _.flatten(docs)
       // log('DOCS', docs)
       let chains = makeChains(pdchs, docs)
-      log('CHs', chains.length)
+      // log('CHs', chains.length)
       let fulls = fullChains(chains)
       log('chains: ', chains.length, 'fulls: ', fulls.length)
       if (fulls.length) chains = fulls
-      log('CHs', chains.length)
+      // log('CHs', chains.length)
       let bests = selectLongest(chains)
       log('bests =>', bests.length, bests)
       if (!bests.length) noResult(el)
       else {
-        let best = bests[0]
+        // let best = bests[0]
         parsePhrase(el, bests)
       }
       // showResults(best, docs)
