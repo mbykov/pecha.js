@@ -11,7 +11,7 @@ const log = console.log
 
 export function mainResults(el) {
   let progress = q('#progress')
-  // progress.classList.add('is-shown')
+  progress.classList.add('is-shown')
   let retsek = new RegExp(tsek+'$')
   let str = el.textContent.trim().replace(retsek, '')
   let segs = str.split(tsek)
@@ -34,11 +34,9 @@ export function mainResults(el) {
       log('DOCS', docs)
       // return
       let res = makeChains(pdchs, docs)
-      log('FULL', res.full)
-      log('CHAINS.length', res.chains.length)
-      log('CHAINS', res.chains)
+      log('FULL, CHAINS', res.full, res.chains.length, res.chains)
       if (!res.chains.length) noResult(el)
-      // parsePhrase(el, chains)
+      parsePhrase(el, res.chains)
       return
 
       // let fulls = fullChains(chains)
@@ -46,14 +44,14 @@ export function mainResults(el) {
       // if (fulls.length) chains = fulls
       // log('CHs', chains.length)
 
-      let bests = selectLongest(chains)
-      log('bests =>', bests.length, bests)
-      if (!bests.length) noResult(el)
-      else {
-        // let best = bests[0]
-        parsePhrase(el, bests)
-      }
-      // showResults(best, docs)
+      // let bests = selectLongest(chains)
+      // log('bests =>', bests.length, bests)
+      // if (!bests.length) noResult(el)
+      // else {
+      //   // let best = bests[0]
+      //   parsePhrase(el, bests)
+      // }
+      // // showResults(best, docs)
     })
 }
 
@@ -112,7 +110,7 @@ function selectBests(chains) {
   // log('LNGST', longests)
 
   let min = _.min(longests.map(chain => {  return chain.length } ) )
-  log('MIN', min)
+  // log('MIN', min)
   let shortests  = _.filter(longests, chain => { return chain.length == min })
   return shortests
 }

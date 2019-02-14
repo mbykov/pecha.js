@@ -64,45 +64,23 @@ export function parsePhrase(el, chains) {
   let parent = el.parentNode
   if (chains.length == 1) replaceEL(el, chains[0])
   else {
-    let common = commonParts(chains)
-    log('AMBI-common:', common)
-    if (common) replaceEL(el, common)
-    else showAmbis(el, chains)
+    // let common = commonParts(chains)
+    log('AMBI:')
+    // if (common) replaceEL(el, common)
+    // else showAmbis(el, chains)
   }
   let progress = q('#progress')
   progress.classList.remove('is-shown')
 }
 
-function commonParts(chains) {
-  let first = chains[0]
-  let clean = []
-  let ambis
-  let common = false
-  for (let idx = 0; idx < first.length; idx++) {
-    let segs = chains.map(segs=> { return segs[idx].seg })
-    if (_.uniq(segs).length == 1) {
-      clean.push(first[idx])
-      common = true
-    } else {
-      if (!ambis) {
-        ambis = {seg: '', docs: []}
-        clean.push(ambis)
-      }
-      ambis.seg += first[idx].seg
-      if (idx < first.length-1) ambis.seg += tsek
-    }
-  }
-  return (common) ? clean : common
-  // log('CLEAN', clean)
-}
-
 function replaceEL(el, best) {
+  // log('REPLACE EL')
   el.textContent = ''
   best.forEach((seg, idx)=> {
     let ospan
     if (seg.docs.length) {
       ospan = span(seg.seg, 'tibwf')
-      // ospan.dataset.docs = JSON.stringify(seg.docs)
+      ospan.dataset.docs = JSON.stringify(seg.docs)
     } else {
       ospan = span(seg.seg, 'tibphrase')
     }
@@ -133,15 +111,57 @@ function showAmbis(el, bests) {
   })
 }
 
+// function commonParts(chains) {
+//   let first = chains[0]
+//   let clean = []
+//   let ambis
+//   let common = false
+//   for (let idx = 0; idx < first.length; idx++) {
+//     let segs = chains.map(segs=> { return segs[idx].seg })
+//     if (_.uniq(segs).length == 1) {
+//       clean.push(first[idx])
+//       common = true
+//     } else {
+//       if (!ambis) {
+//         ambis = {seg: '', docs: []}
+//         clean.push(ambis)
+//       }
+//       ambis.seg += first[idx].seg
+//       if (idx < first.length-1) ambis.seg += tsek
+//     }
+//   }
+//   return (common) ? clean : common
+//   // log('CLEAN', clean)
+// }
+
 
 export function showResults(el) {
   let osource = q('#source')
   let oresult = q('#result')
   empty(oresult)
   let wf = el.textContent
-  // let docs = JSON.parse(el.dataset.docs)
+  let docs = JSON.parse(el.dataset.docs)
   // log('RESULT docs', wf, docs)
-  oresult.textContent = wf
+  let odict = create('div', 'dict')
+  oresult.appendChild(odict)
+  let owf = create('p', 'dict-wf')
+  owf.textContent = wf
+  odict.appendChild(owf)
+  docs.forEach(doc=> {
+    let odname = create('p', 'dict-dname')
+    odname.textContent = doc.dname
+    odict.appendChild(odname)
+    let oarticle = create('p', 'dict-article')
+    oarticle.textContent = doc.dict
+    odict.appendChild(oarticle)
+    let oul = create('ul', 'dict-ul')
+    odict.appendChild(oul)
+    doc.trns.forEach(trn=> {
+      let oline = create('li', 'dict-line')
+      oline.textContent = trn
+        oul.appendChild(oline)
+    })
+  })
   // let oseg
 }
 

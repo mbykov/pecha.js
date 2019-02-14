@@ -373,3 +373,23 @@ div.qtext > p.hidden {
   padding-left: 5px;
   padding-right: 5px;
 }
+
+.dict-wf {
+  color: maroon;
+}
+
+.dict-ul {
+  font-size: small;
+  padding-left: 15px;
+}
+
+.dict-dname {
+  float: right;
+  padding: 12px;
+  /* padding-top: 0; */
+  color: green;
+}
+
+.dict-article {
+  padding-top: 12px;
+}
