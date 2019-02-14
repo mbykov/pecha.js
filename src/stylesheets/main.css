@@ -327,7 +327,7 @@ div.qtext > p.hidden {
 
 #transcript {
   border: 1px solid rgba(0, 0, 0, 0.2);
-  background-color: white;
+  /* background-color: white; */
   color: black;
   display: 'block';
   padding: 3px;
@@ -341,4 +341,22 @@ div.qtext > p.hidden {
   font-size: 16px;
   padding: 3px;
   background-color: #fff2e6;
+}
+
+#ambis {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: white;
+  color: black;
+  display: 'block';
+  padding: 3px;
+  position: absolute;
+  z-index: 1000;
+  box-shadow: 0.15em 0.15em 1em rgba(0, 0, 0, 0.75);
+  height: auto;
+  top: 250px;
+  left: 300px;
+  /* font-family: 'DejaVu Sans'; */
+  font-size: 16px;
+  padding: 3px;
+  /* background-color: #fff2e6; */
 }

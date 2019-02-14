@@ -133,7 +133,6 @@ export function navigate(state) {
   }
   // log('HIST', history)
   let progress = q('#progress')
-
   if (section == 'main') twoPanes(state), showText(state)
   else progress.classList.remove('is-shown')
 

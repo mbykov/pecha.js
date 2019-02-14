@@ -79,8 +79,7 @@ document.addEventListener("mouseover", function(ev) {
   if (!ev.target.textContent) return
   if (ev.target.classList.contains('tibphrase')) {
     if (ev.shiftKey == true) {
-      let coords = getCoords(ev.target)
-      showCholok(ev.target.textContent, coords)
+      showCholok(ev.target)
     } else {
       // log('FRASE', ev.target.textContent)
       mainResults(ev.target)
@@ -90,14 +89,18 @@ document.addEventListener("mouseover", function(ev) {
 
 document.addEventListener("mouseout", function(ev) {
   if (ev.target.classList.contains('tibphrase')) {
-    let popup = q('#transcript')
-    popup.classList.add('is-hidden')
+    let otrans = q('#transcript')
+    otrans.classList.add('is-hidden')
+    let oambis = q('#ambis')
+    oambis.classList.add('is-hidden')
   }
 }, false)
 
 document.addEventListener("keyup", function(ev) {
-  let popup = q('#transcript')
-  popup.classList.add('is-hidden')
+  let otrans = q('#transcript')
+  otrans.classList.add('is-hidden')
+  let oambis = q('#ambis')
+  oambis.classList.add('is-hidden')
 }, false)
 
 

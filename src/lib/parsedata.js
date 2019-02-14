@@ -1,7 +1,8 @@
 //
 import _ from 'lodash'
-import { q, qs, empty, create, remove, span, p, div, placePopup } from './utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
 import cholok from 'cholok'
+import { tibsyms, tibsyls } from "./tibetan_data";
 // import { possibleKeys } from "./segmenter";
 // import { getPossible } from "./pouch";
 
@@ -41,8 +42,9 @@ export function showText(state) {
 // }
 
 
-export function showCholok(str, coords) {
-  let trnanscript = cholok(str)
+export function showCholok(el) {
+  let coords = getCoords(el)
+  let trnanscript = cholok(el.textContent)
   let ncoords = {top: coords.top - 40, left: coords.left + 15}
   let popup = q('#transcript')
   popup.textContent = trnanscript
@@ -50,13 +52,33 @@ export function showCholok(str, coords) {
   placePopup(ncoords, popup)
 }
 
-export function replaceTarget(el, best) {
+export function parsePhrase(el, bests) {
+  if (bests.length == 1) replaceEL(el, bests[0])
+  else showAmbis(el, bests)
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
+}
+
+function replaceEL(el, best) {
   el.textContent = ''
-  best.forEach(seg=> {
+  best.forEach((seg, idx)=> {
     let ospan = span(seg.seg, 'tibwf')
     el.appendChild(ospan)
+    if (idx < best.length-1) {
+      let otsek = span(tibsyms.tsek, 'tibtsek')
+      el.appendChild(otsek)
+    }
   })
 }
+
+function showAmbis(el, bests) {
+  let coords = getCoords(el)
+  log('SHOW AMBIS', coords)
+  let oambis = q('#ambis')
+  oambis.textContent = 'kukuku'
+  oambis.classList.remove('is-hidden')
+}
+
 
 export function showResults(chain, dicts) {
   let osource = q('#source')

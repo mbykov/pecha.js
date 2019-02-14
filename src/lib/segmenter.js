@@ -5,41 +5,106 @@ import { tibsyms, tibsyls } from "./tibetan_data";
 const log = console.log
 const tsek = tibsyms.tsek
 
-export function parsePDCHs(segs) {
-  let h, t
-  let pdchs = []
-  pdchs.push([segs.join(tibsyms.tsek)])
-  for (let idx = 1; idx < segs.length + 1; idx++) {
-    h = segs.slice(0, idx).join(tibsyms.tsek)
-    t = segs.slice(idx)
-    let h_, t_
-    for (let idy = 1; idy < t.length + 1; idy++) {
-      h_ = t.slice(0, idy).join(tibsyms.tsek)
-      t_ = t.slice(idy)
-      let chain = [h, h_, t_.join(tibsyms.tsek)]
-      pdchs.push(_.compact(chain))
-    }
+export function totalKeys(pdchs) {
+  log('totalKeys')
+  // let segs = _.uniq(_.flatten(pdchs))
+  // let added = []
+  // segs.forEach(seg=>{
+  //   tibsyls.forEach(syl=>{
+  //     let resyl = new RegExp(syl+'$')
+  //     let poss = seg.replace(resyl, '')
+  //     if (seg != poss) added.push(poss)
+  //   })
+  // })
+  // let keys = segs.concat(added)
+  // return _.uniq(keys)
+  return _.uniq(_.flatten(pdchs))
+}
+
+export function segmenter(str) {
+  let segs = str.split(tsek)
+  // log('SEGS', segs)
+  let old = str
+  let size = segs.length
+  let pdchs = [[segs]]
+  function rec(segs, pdch) {
+    // log('PDCH', pdch)
+    let flakes = scrape(segs)
+    flakes.forEach(flake => {
+      pdch.push(flake.head)
+      pdch.push(flake.tail)
+      // pdch = pdch.concat(flake.head)
+      // pdch = pdch.concat(flake.tail)
+      if (_.flatten(pdch).join(tsek) == old) {
+        pdchs.push(_.clone(pdch))
+        pdch.pop()
+      }
+      if (pdch.length < 2) rec(flake.tail, pdch) // three parts for now !
+      // rec(flake.tail, pdch)
+      pdch.pop()
+    })
   }
+  rec(segs, [])
+  let cleans = []
+  pdchs.forEach(pdch=> {
+    let clean = []
+    pdch.forEach(seg=>{
+      clean.push(seg.join(tsek))
+    })
+    cleans.push(clean)
+  })
+  return cleans
+}
+
+export function scrape(segs) {
+  // log('SEGS', segs)
+  let head, tail
+  let flakes = []
+  for (let idx = 1; idx < segs.length + 1; idx++) {
+    head = segs.slice(0, idx)
+    tail = segs.slice(idx)
+    let flake = {head: head, tail: tail}
+    if (tail.length) flakes.push(flake)
+  }
+  return flakes.reverse()
+}
+
+export function segmenter_(str) {
+  let old = str
+  let pdchs = [[str]]
+  function rec(str, pdch) {
+    // log('PDCH', pdch)
+    let flakes = scrape(str)
+    flakes.forEach(flake => {
+      pdch.push(flake.head)
+      pdch.push(flake.tail)
+      if (pdch.join(tsek) == old) {
+        pdchs.push(_.clone(pdch))
+        pdch.pop()
+      }
+      if (pdch.length < 5) rec(flake.tail, pdch) // three parts for now !
+      // rec(flake.tail, pdch)
+      pdch.pop()
+    })
+  }
+  rec(str, [])
   return pdchs
 }
 
-function scrape_ (str) {
-  let total = str.length+1
+export function scrape_(str) {
+  let segs = str.split(tsek)
+  let head, tail
   let flakes = []
-  let head = str
-  let pos = str.length
-  let tail
-  while (pos > 0) {
-    pos--
-    head = str.substr(0, pos)
-    if (!head) continue
-    tail = str.slice(pos)
-    let res = {head: head, tail: tail}
-    flakes.push(res)
+  for (let idx = 1; idx < segs.length + 1; idx++) {
+    head = segs.slice(0, idx).join(tsek)
+    tail = segs.slice(idx).join(tsek)
+    let flake = {head: head, tail: tail}
+    if (tail) flakes.push(flake)
   }
-  return flakes
+  return flakes.reverse()
 }
-export function totalKeys(pdchs) {
+
+export function totalKeys_(pdchs) {
   let segs = _.uniq(_.flatten(pdchs))
   let added = []
   segs.forEach(seg=>{
@@ -51,40 +116,4 @@ export function totalKeys(pdchs) {
   })
   let keys = segs.concat(added)
   return _.uniq(keys)
-}
-
-export function segmenter(str) {
-  let old = str
-  let pdchs = []
-  function rec(str, pdch) {
-    // log('PDCH', pdch)
-    let flakes = scrape(str)
-    flakes.forEach(flake => {
-      if (!flake.tail) return
-      pdch.push(flake.head)
-      pdch.push(flake.tail)
-      if (pdch.join(tsek) == old) {
-        pdchs.push(_.clone(pdch))
-        pdch.pop()
-      }
-      if (pdch.length < 5) rec(flake.tail, pdch) // three parts for now !
-      rec(flake.tail, pdch)
-      pdch.pop()
-    })
-  }
-  rec(str, [])
-  return pdchs
-}
-
-export function scrape(str) {
-  let segs = str.split(tsek)
-  let head, tail
-  let flakes = []
-  for (let idx = 1; idx < segs.length + 1; idx++) {
-    head = segs.slice(0, idx).join(tsek)
-    tail = segs.slice(idx).join(tsek)
-    let flake = {head: head, tail: tail}
-    flakes.push(flake)
-  }
-  return flakes.reverse()
 }
