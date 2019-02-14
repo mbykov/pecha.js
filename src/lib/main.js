@@ -6,21 +6,23 @@ import { getPossible } from "./pouch";
 import { tibsyms, tibsyls } from "./tibetan_data";
 import { parsePhrase, noResult } from "./parsedata";
 
-
+let tsek = tibsyms.tsek
 const log = console.log
 
 export function mainResults(el) {
   let progress = q('#progress')
-  progress.classList.add('is-shown')
-  let str = el.textContent.trim()
-  let segs = str.split(tibsyms.tsek)
+  // progress.classList.add('is-shown')
+  let retsek = new RegExp(tsek+'$')
+  let str = el.textContent.trim().replace(retsek, '')
+  let segs = str.split(tsek)
 
   let parent = el.parentNode
   // log('PARENT', parent.classList)
   let depth = false
   if (parent.classList.contains('tibphrase')) depth = true
   let pdchs = segmenter(str, depth)
-  // log('MAIN pdchs:', segs.length, '=>', pdchs.length, pdchs)
+  log('MAIN pdchs:', segs.length, '=>', pdchs.length)
+  log('MAIN pdchs:', segs.length, '=>', pdchs[10])
 
   let keys = totalKeys(pdchs)
   // log('MAIN keys:', keys.length)
@@ -29,13 +31,21 @@ export function mainResults(el) {
   getPossible(keys)
     .then(docs=> {
       docs = _.flatten(docs)
-      // log('DOCS', docs)
-      let chains = makeChains(pdchs, docs)
+      log('DOCS', docs)
+      // return
+      let res = makeChains(pdchs, docs)
+      log('FULL', res.full)
+      log('CHAINS.length', res.chains.length)
+      log('CHAINS', res.chains)
+      if (!res.chains.length) noResult(el)
+      // parsePhrase(el, chains)
+      return
+
+      // let fulls = fullChains(chains)
+      // log('chains: ', chains.length, 'fulls: ', fulls.length)
+      // if (fulls.length) chains = fulls
       // log('CHs', chains.length)
-      let fulls = fullChains(chains)
-      log('chains: ', chains.length, 'fulls: ', fulls.length)
-      if (fulls.length) chains = fulls
-      // log('CHs', chains.length)
+
       let bests = selectLongest(chains)
       log('bests =>', bests.length, bests)
       if (!bests.length) noResult(el)
@@ -50,22 +60,51 @@ export function mainResults(el) {
 // а здесь ведь тоже можно, если сегменты длинные, выбирать сначала только длинные dicts?
 function makeChains(pdchs, docs) {
   let chains = []
+  let fulls = []
   pdchs.forEach(segs=>{
     let chain = []
     let any = false
+    let full = true
     segs.forEach(seg=>{
       let segdocs = _.filter(docs, doc => { return startWith(seg, doc.dict) })
       if (segdocs.length) any = true
+      if (!segdocs.length) full = false
       let doc = {seg: seg, docs: segdocs}
       chain.push(doc)
     })
     if (any) chains.push(chain)
+    if (full) fulls.push(chain)
   })
-  return chains
+  let bests, full
+  if (fulls.length) bests = selectBests(fulls), full = true
+  else bests = selectBests(chains)
+  return {chains: bests, full: full}
 }
 
-//
-function selectLongest(chains) {
+function commonParts(chains) {
+  let first = chains[0]
+  let clean = []
+  let ambis
+  let common = false
+  for (let idx = 0; idx < first.length; idx++) {
+    let segs = chains.map(segs=> { return segs[idx].seg })
+    if (_.uniq(segs).length == 1) {
+      clean.push(first[idx])
+      common = true
+    } else {
+      if (!ambis) {
+        ambis = {seg: '', docs: []}
+        clean.push(ambis)
+      }
+      ambis.seg += first[idx].seg
+      if (idx < first.length-1) ambis.seg += tsek
+    }
+  }
+  return (common) ? clean : common
+  // log('CLEAN', clean)
+}
+
+function selectBests(chains) {
   let max = _.max(chains.map(chain => {  return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length } ) )
   // log('MAX', max)
   let longests = _.filter(chains, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length >= max - 1 })
@@ -73,8 +112,8 @@ function selectLongest(chains) {
   // log('LNGST', longests)
 
   let min = _.min(longests.map(chain => {  return chain.length } ) )
-  // log('MIN', min)
-  let shortests = _.filter(longests, chain => { return chain.length == min })
+  log('MIN', min)
+  let shortests  = _.filter(longests, chain => { return chain.length == min })
   return shortests
 }
 

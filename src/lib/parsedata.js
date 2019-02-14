@@ -95,6 +95,7 @@ function commonParts(chains) {
   return (common) ? clean : common
   // log('CLEAN', clean)
 }
+
 function replaceEL(el, best) {
   el.textContent = ''
   best.forEach((seg, idx)=> {
