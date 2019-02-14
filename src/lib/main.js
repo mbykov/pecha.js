@@ -15,11 +15,15 @@ export function mainResults(el) {
   let str = el.textContent.trim()
   let segs = str.split(tibsyms.tsek)
 
-  let pdchs = segmenter(str)
+  let parent = el.parentNode
+  // log('PARENT', parent.classList)
+  let depth = false
+  if (parent.classList.contains('tibphrase')) depth = true
+  let pdchs = segmenter(str, depth)
   // log('MAIN pdchs:', segs.length, '=>', pdchs.length, pdchs)
 
   let keys = totalKeys(pdchs)
-  log('MAIN keys:', keys.length)
+  // log('MAIN keys:', keys.length)
   // return
 
   getPossible(keys)

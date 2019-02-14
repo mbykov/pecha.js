@@ -6,7 +6,6 @@ const log = console.log
 const tsek = tibsyms.tsek
 
 export function totalKeys(pdchs) {
-  log('totalKeys')
   // let segs = _.uniq(_.flatten(pdchs))
   // let added = []
   // segs.forEach(seg=>{
@@ -21,7 +20,7 @@ export function totalKeys(pdchs) {
   return _.uniq(_.flatten(pdchs))
 }
 
-export function segmenter(str) {
+export function segmenter(str, depth) {
   let segs = str.split(tsek)
   // log('SEGS', segs)
   let old = str
@@ -39,7 +38,8 @@ export function segmenter(str) {
         pdchs.push(_.clone(pdch))
         pdch.pop()
       }
-      if (pdch.length < 2) rec(flake.tail, pdch) // three parts for now !
+      // if (depth)
+      if (depth && pdch.length < 2) rec(flake.tail, pdch) // three parts for now !
       // rec(flake.tail, pdch)
       pdch.pop()
     })

@@ -64,9 +64,10 @@ export function parsePhrase(el, chains) {
   let parent = el.parentNode
   if (chains.length == 1) replaceEL(el, chains[0])
   else {
-    // log('AMBI:')
-    let clean = commonParts(chains)
-    replaceEL(el, clean)
+    let common = commonParts(chains)
+    log('AMBI-common:', common)
+    if (common) replaceEL(el, common)
+    else showAmbis(el, chains)
   }
   let progress = q('#progress')
   progress.classList.remove('is-shown')
@@ -76,19 +77,22 @@ function commonParts(chains) {
   let first = chains[0]
   let clean = []
   let ambis
-  for (let i = 0; i < first.length; i++) {
-    let segs = chains.map(segs=> { return segs[i].seg })
+  let common = false
+  for (let idx = 0; idx < first.length; idx++) {
+    let segs = chains.map(segs=> { return segs[idx].seg })
     if (_.uniq(segs).length == 1) {
-      clean.push(first[i])
+      clean.push(first[idx])
+      common = true
     } else {
       if (!ambis) {
         ambis = {seg: '', docs: []}
         clean.push(ambis)
       }
-      ambis.seg += first[i].seg
+      ambis.seg += first[idx].seg
+      if (idx < first.length-1) ambis.seg += tsek
     }
   }
-  return clean
+  return (common) ? clean : common
   // log('CLEAN', clean)
 }
 function replaceEL(el, best) {
@@ -97,7 +101,7 @@ function replaceEL(el, best) {
     let ospan
     if (seg.docs.length) {
       ospan = span(seg.seg, 'tibwf')
-      ospan.dataset.docs = JSON.stringify(seg.docs)
+      // ospan.dataset.docs = JSON.stringify(seg.docs)
     } else {
       ospan = span(seg.seg, 'tibphrase')
     }
@@ -108,7 +112,7 @@ function replaceEL(el, best) {
 
 function showAmbis(el, bests) {
   let coords = getCoords(el)
-  // log('SHOW AMBI', coords)
+  log('SHOW AMBI', bests)
   let oambi = q('#ambi')
   empty(oambi)
   oambi.classList.remove('is-hidden')
@@ -134,7 +138,7 @@ export function showResults(el) {
   let oresult = q('#result')
   empty(oresult)
   let wf = el.textContent
-  let docs = JSON.parse(el.dataset.docs)
+  // let docs = JSON.parse(el.dataset.docs)
   // log('RESULT docs', wf, docs)
   oresult.textContent = wf
   // let oseg
