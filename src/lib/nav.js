@@ -79,6 +79,10 @@ function hideAll () {
   Array.prototype.forEach.call(sections, (section) => {
     section.classList.remove('is-shown')
   })
+  let otrans = q('#transcript')
+  otrans.classList.add('is-hidden')
+  let oambi = q('#ambi')
+  oambi.classList.add('is-hidden')
 }
 
 function showSection(section) {

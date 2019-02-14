@@ -37,19 +37,15 @@ export function showText(state) {
   // if (grs.length == 1) showResults(grs[0].textContent)
 }
 
-// function showResults(wf) {
-//   log('ONLYWF', wf)
-// }
-
-
 export function showCholok(el) {
   let coords = getCoords(el)
+  // log('SHOW TRANS', coords)
   let trnanscript = cholok(el.textContent)
   let ncoords = {top: coords.top - 40, left: coords.left + 15}
-  let popup = q('#transcript')
-  popup.textContent = trnanscript
-  popup.classList.remove('is-hidden')
-  placePopup(ncoords, popup)
+  let otrans = q('#transcript')
+  otrans.textContent = trnanscript
+  otrans.classList.remove('is-hidden')
+  placePopup(ncoords, otrans)
 }
 
 export function parsePhrase(el, bests) {
@@ -73,17 +69,24 @@ function replaceEL(el, best) {
 
 function showAmbis(el, bests) {
   let coords = getCoords(el)
-  log('SHOW AMBIS', coords)
-  let oambis = q('#ambis')
-  oambis.textContent = 'kukuku'
-  oambis.classList.remove('is-hidden')
+  // log('SHOW AMBI', coords)
+  let oambi = q('#ambi')
+  oambi.textContent = 'kukuku'
+  oambi.classList.remove('is-hidden')
+  let ncoords = {top: coords.bottom + 12, left: coords.left}
+  placePopup(ncoords, oambi)
 }
 
 
-export function showResults(chain, dicts) {
+export function showResults(el) {
   let osource = q('#source')
   let oresult = q('#result')
-  let text = 'KUKU'
-  oresult.textContent = text
-  let oseg
+  let wf = el.textContent
+  log('RESULT: WF', wf)
+  oresult.textContent = wf
+  // let oseg
 }
+
+// function showResults(wf) {
+//   log('ONLYWF', wf)
+// }

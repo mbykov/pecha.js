@@ -96,32 +96,10 @@ export function plog () {
   console.log(util.inspect(vs, {showHidden: false, depth: 3}))
 }
 
-export function enclitic(str) {
-  let syms = str.split('')
-  let stress = false
-  let clean = []
-  let stresses = [ac.oxia, ac.varia, ac.peris]
-  syms.forEach(sym => {
-    if (!stresses.includes(sym)) clean.push(sym)
-    else if (!stress) clean.push(sym), stress = true
-  })
-  return clean.join('')
-}
-
-export function getStore(name) {
-  let json, obj
-
-  return obj
-}
-
-export function setStore(name, obj) {
-  let oapp = q('#app')
-  q('#app').setAttribute()
-}
-
 export function getCoords (el) {
   let rect = el.getBoundingClientRect()
-  return {top: rect.top, left: rect.left}
+  return rect
+  // return {top: rect.top, left: rect.left}
 }
 
 export function placePopup (coords, el) {

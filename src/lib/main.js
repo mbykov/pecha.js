@@ -14,9 +14,6 @@ export function mainResults(el) {
   progress.classList.add('is-shown')
   let str = el.textContent.trim()
   let segs = str.split(tibsyms.tsek)
-  // let pdchs = parsePDCHs(syls)
-  // let flakes = scrape(segs)
-  // log('MAIN flakes:', flakes)
 
   let pdchs = segmenter(str)
   // log('MAIN pdchs:', segs.length, '=>', pdchs.length, pdchs)
@@ -27,15 +24,14 @@ export function mainResults(el) {
 
   getPossible(keys)
     .then(docs=> {
-      log('UNFDOCS', docs)
       docs = _.flatten(docs)
-      log('DOCS', docs)
+      // log('DOCS', docs)
       let chains = makeChains(pdchs, docs)
       log('CHs', chains.length)
       let fulls = fullChains(chains)
       log('chains: ', chains.length, 'fulls: ', fulls.length)
       if (fulls.length) chains = fulls
-      log('CHs', chains)
+      log('CHs', chains.length)
       let bests = selectLongest(chains)
       log('bests =>', bests.length, bests)
       // let best = bests[0]
@@ -64,7 +60,7 @@ function makeChains(pdchs, docs) {
 // неверно, min не нужен (работает только если full?), или нужны квадраты?
 function selectLongest(chains) {
   let max = _.max(chains.map(chain => {  return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length } ) )
-  log('MAX', max)
+  // log('MAX', max)
   let longests = _.filter(chains, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length >= max - 1 })
   // longests = _.sortBy(longests, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length }).reverse()
   // log('LNGST', longests)

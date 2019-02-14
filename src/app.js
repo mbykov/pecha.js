@@ -9,7 +9,7 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords } from './lib/utils'
 import { navigate } from './lib/nav';
 import sband from "./lib/sband";
-import { showCholok } from "./lib/parsedata";
+import { showCholok, showResults } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
 import { parseStarDict, parseCSV } from "./lib/dict";
 import { checkCfg, setDBs, cleanupDB } from "./lib/pouch";
@@ -84,6 +84,8 @@ document.addEventListener("mouseover", function(ev) {
       // log('FRASE', ev.target.textContent)
       mainResults(ev.target)
     }
+  } else if (ev.target.classList.contains('tibwf')) {
+    showResults(ev.target)
   }
 }, false)
 
@@ -91,16 +93,15 @@ document.addEventListener("mouseout", function(ev) {
   if (ev.target.classList.contains('tibphrase')) {
     let otrans = q('#transcript')
     otrans.classList.add('is-hidden')
-    let oambis = q('#ambis')
-    oambis.classList.add('is-hidden')
+  } else if (ev.target.classList.contains('ambi')) {
+    let oambi = q('#ambi')
+    oambi.classList.add('is-hidden')
   }
 }, false)
 
 document.addEventListener("keyup", function(ev) {
   let otrans = q('#transcript')
   otrans.classList.add('is-hidden')
-  let oambis = q('#ambis')
-  oambis.classList.add('is-hidden')
 }, false)
 
 
