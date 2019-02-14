@@ -48,19 +48,24 @@ export function showCholok(el) {
   placePopup(ncoords, otrans)
 }
 
+// log('PARENT', parent.classList)
+// if (bests.length == 1) replaceEL(el, bests[0])
+// else {
+//   if (parent.classList.contains('tibpar')) {
+//     showAmbis(el, bests)
+//   } else if (parent.classList.contains('ambiline')) {
+//     log('HERE')
+//     // showAmbis(el, bests)
+//   }
+// }
 export function parsePhrase(el, bests) {
   let parent = el.parentNode
-  // log('PARENT', parent.classList)
   if (bests.length == 1) replaceEL(el, bests[0])
   else {
-    if (parent.classList.contains('tibpar')) {
-      showAmbis(el, bests)
-    } else if (parent.classList.contains('ambiline')) {
-      log('HERE')
-      // showAmbis(el, bests)
-    }
-
+    log('AMBI')
   }
+
+
   let progress = q('#progress')
   progress.classList.remove('is-shown')
 }
@@ -68,12 +73,15 @@ export function parsePhrase(el, bests) {
 function replaceEL(el, best) {
   el.textContent = ''
   best.forEach((seg, idx)=> {
-    let ospan = span(seg.seg, 'tibwf')
-    el.appendChild(ospan)
-    if (idx < best.length-1) {
-      let otsek = span(tibsyms.tsek, 'tibtsek')
-      el.appendChild(otsek)
+    let ospan
+    if (seg.docs.length) {
+      ospan = span(seg.seg, 'tibwf')
+      ospan.dataset.docs = JSON.stringify(seg.docs)
+    } else {
+      ospan = span(seg.seg, 'tibphrase')
     }
+    el.appendChild(ospan)
+    if (idx < best.length-1) el.appendChild(span(tibsyms.tsek, 'tibtsek'))
   })
 }
 
@@ -103,8 +111,18 @@ function showAmbis(el, bests) {
 export function showResults(el) {
   let osource = q('#source')
   let oresult = q('#result')
+  empty(oresult)
   let wf = el.textContent
-  // log('RESULT: WF', wf)
+  let docs = JSON.parse(el.dataset.docs)
+  // log('RESULT docs', wf, docs)
   oresult.textContent = wf
   // let oseg
+}
+
+export function noResult(el) {
+  log('NO RESULT', el.textContent)
+  let oresult = q('#result')
+  empty(oresult)
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
 }

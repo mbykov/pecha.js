@@ -4,7 +4,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords } from './utils'
 import { parsePDCHs, scrape, segmenter, totalKeys } from "./segmenter";
 import { getPossible } from "./pouch";
 import { tibsyms, tibsyls } from "./tibetan_data";
-import { showResults, parsePhrase } from "./parsedata";
+import { parsePhrase, noResult } from "./parsedata";
 
 
 const log = console.log
@@ -34,8 +34,11 @@ export function mainResults(el) {
       log('CHs', chains.length)
       let bests = selectLongest(chains)
       log('bests =>', bests.length, bests)
-      // let best = bests[0]
-      parsePhrase(el, bests)
+      if (!bests.length) noResult(el)
+      else {
+        let best = bests[0]
+        parsePhrase(el, bests)
+      }
       // showResults(best, docs)
     })
 }
@@ -57,7 +60,7 @@ function makeChains(pdchs, docs) {
   return chains
 }
 
-// неверно, min не нужен (работает только если full?), или нужны квадраты?
+//
 function selectLongest(chains) {
   let max = _.max(chains.map(chain => {  return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length } ) )
   // log('MAX', max)
@@ -65,10 +68,10 @@ function selectLongest(chains) {
   // longests = _.sortBy(longests, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length }).reverse()
   // log('LNGST', longests)
 
-  // let min = _.min(longests.map(chain => {  return chain.length } ) )
+  let min = _.min(longests.map(chain => {  return chain.length } ) )
   // log('MIN', min)
-  // let shortests = _.filter(longests, chain => { return chain.length == min })
-  return longests
+  let shortests = _.filter(longests, chain => { return chain.length == min })
+  return shortests
 }
 
 function startWith(str, head) {
