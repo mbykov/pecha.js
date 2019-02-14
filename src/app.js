@@ -89,11 +89,13 @@ document.addEventListener("mouseover", function(ev) {
   }
 }, false)
 
-document.addEventListener("mouseout", function(ev) {
+document.addEventListener("mouseleave", function(ev) {
+  if (!ev.target.classList) return
   if (ev.target.classList.contains('tibphrase')) {
     let otrans = q('#transcript')
     otrans.classList.add('is-hidden')
   } else if (ev.target.classList.contains('ambi')) {
+    log('MOUSE LEAVE')
     let oambi = q('#ambi')
     oambi.classList.add('is-hidden')
   }
@@ -102,6 +104,8 @@ document.addEventListener("mouseout", function(ev) {
 document.addEventListener("keyup", function(ev) {
   let otrans = q('#transcript')
   otrans.classList.add('is-hidden')
+  let oambi = q('#ambi')
+  oambi.classList.add('is-hidden')
 }, false)
 
 

@@ -49,8 +49,18 @@ export function showCholok(el) {
 }
 
 export function parsePhrase(el, bests) {
+  let parent = el.parentNode
+  // log('PARENT', parent.classList)
   if (bests.length == 1) replaceEL(el, bests[0])
-  else showAmbis(el, bests)
+  else {
+    if (parent.classList.contains('tibpar')) {
+      showAmbis(el, bests)
+    } else if (parent.classList.contains('ambiline')) {
+      log('HERE')
+      // showAmbis(el, bests)
+    }
+
+  }
   let progress = q('#progress')
   progress.classList.remove('is-shown')
 }
@@ -71,10 +81,22 @@ function showAmbis(el, bests) {
   let coords = getCoords(el)
   // log('SHOW AMBI', coords)
   let oambi = q('#ambi')
-  oambi.textContent = 'kukuku'
+  empty(oambi)
   oambi.classList.remove('is-hidden')
   let ncoords = {top: coords.bottom + 12, left: coords.left}
   placePopup(ncoords, oambi)
+  let oul = create('ul', 'ambilist')
+  oambi.appendChild(oul)
+  bests.forEach(chain=> {
+    let oline = create('li', 'ambiline')
+    oul.appendChild(oline)
+    chain.forEach(seg=> {
+      // log('===>SEG', seg)
+      let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
+      oline.appendChild(owf)
+      showResults(el)
+    })
+  })
 }
 
 
@@ -82,11 +104,7 @@ export function showResults(el) {
   let osource = q('#source')
   let oresult = q('#result')
   let wf = el.textContent
-  log('RESULT: WF', wf)
+  // log('RESULT: WF', wf)
   oresult.textContent = wf
   // let oseg
 }
-
-// function showResults(wf) {
-//   log('ONLYWF', wf)
-// }
