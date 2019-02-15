@@ -4,7 +4,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords } from './utils'
 import { scrape, segmenter, totalKeys } from "./segmenter";
 import { getPossible } from "./pouch";
 import { tibsyms, tibsyls } from "./tibetan_data";
-import { parsePhrase, noResult, showCompound } from "./parsedata";
+import { parsePhrase, noResult, showCompound, showAmbis } from "./parsedata";
 
 let tsek = tibsyms.tsek
 const log = console.log
@@ -45,9 +45,13 @@ export function mainResults(el, structure) {
       if (chains.length > 1) {
         chain = commonParts(chains)
         log('COMMON', chain)
-      }
-      if (structure) showCompound(el, chains)
-      else parsePhrase(el, chains)
+      } else if (chains.length == 1) chain = chains[0]
+
+      log('CHAIN:', chain)
+      log('STRUCT:', structure, el.dataset.docs)
+      if (structure && !el.dataset.docs.length) showAmbis(el, chain)
+      else if (structure) showCompound(el, chains)
+      else parsePhrase(el, chain)
       progress.classList.remove('is-shown')
     })
 }
@@ -55,29 +59,39 @@ export function mainResults(el, structure) {
 function commonParts(chains) {
   let first = chains[0]
   let clean = []
-  let ambi, ambis
-  let common = false
+  let ambitmp
   for (let idx = 0; idx < first.length; idx++) {
     let segs = chains.map(segs=> { return segs[idx].seg })
     if (_.uniq(segs).length == 1) {
       clean.push(first[idx])
-      common = true
+      ambitmp = null
     } else {
-      if (!ambis) ambis = {ambi: true, seg: '', docs: []}, clean.push(ambis)
-      // if (!ambis) {
-      //   ambis = {ambi: true, seg: '', docs: []}
-      //   clean.push(ambis)
-      // }
-      ambis.seg += first[idx].seg
-      if (idx < first.length-1) ambis.seg += tsek
+      if (!ambitmp) ambitmp = {ambi: true, seg: '', docs: []}, clean.push(ambitmp)
+      let segdocs = chains.map(segs=> { return {seg: segs[idx].seg, docs: segs[idx].docs}  })
+      ambitmp.docs.push(segdocs)
     }
   }
-  if (!common) ambi = first.map(seg=> { return seg.seg } ).join(tsek)
-  return (common) ? clean : {ambi: true, seg: ambi, docs: []}
+  let ambis = _.filter(clean, seg=> { return seg.ambi })
+  ambis.forEach(ambi=>{
+    let first = ambi.docs[0]
+    let chains = []
+    for (let idx = 0; idx < first.length; idx++) {
+      let chain = ambi.docs.map(adocs=> { return adocs[idx] })
+      chains.push(chain)
+    }
+    // ambi.docs.forEach(segs=>{
+    // })
+    ambi.chains = chains
+    let chain = chains[0]
+    ambi.seg = chain.map(seg=>{ return seg.seg}).join(tsek)
+  })
+  log('___AMBIS___', ambis)
+  // if (!common) ambi = first.map(seg=> { return seg.seg } ).join(tsek)
+  // return (common) ? clean : [{ambi: true, seg: ambi, docs: []}]
+  return clean
   // log('CLEAN', clean)
 }
 
-// а здесь ведь тоже можно, если сегменты длинные, выбирать сначала только длинные dicts?
 function makeChains(pdchs, docs) {
   let chains = []
   let fulls = []

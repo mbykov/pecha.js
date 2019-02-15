@@ -49,43 +49,22 @@ export function showCholok(el) {
   placePopup(ncoords, otrans)
 }
 
-// log('PARENT', parent.classList)
-// if (bests.length == 1) replaceEL(el, bests[0])
-// else {
-//   if (parent.classList.contains('tibpar')) {
-//     showAmbis(el, bests)
-//   } else if (parent.classList.contains('ambiline')) {
-//     log('HERE')
-//     // showAmbis(el, bests)
-//   }
-// }
-
-export function parsePhrase(el, chains) {
-  let parent = el.parentNode
-  if (chains.length == 1) replaceEL(el, chains[0])
-  else {
-    // let common = commonParts(chains)
-    log('AMBI:')
-    // if (common) replaceEL(el, common)
-    // else showAmbis(el, chains)
-  }
-  // let progress = q('#progress')
-  // progress.classList.remove('is-shown')
-}
-
-function replaceEL(el, best) {
-  // log('REPLACE EL')
+export function parsePhrase(el, chain) {
+  // let parent = el.parentNode
   el.textContent = ''
-  best.forEach((seg, idx)=> {
+  chain.forEach((seg, idx)=> {
     let ospan
     if (seg.docs.length) {
       ospan = span(seg.seg, 'tibwf')
+      ospan.dataset.docs = JSON.stringify(seg.docs)
+    } else if (seg.ambi) {
+      ospan = span(seg.seg, 'tibambi')
       ospan.dataset.docs = JSON.stringify(seg.docs)
     } else {
       ospan = span(seg.seg, 'tibphrase')
     }
     el.appendChild(ospan)
-    if (idx < best.length-1) el.appendChild(span(tsek, 'tsek'))
+    if (idx < chain.length-1) el.appendChild(span(tsek, 'tsek'))
   })
 }
 
@@ -101,8 +80,9 @@ function placeAmbi(el) {
   return oul
 }
 
-function showAmbis(el, bests) {
-  log('SHOW AMBI', bests)
+function showAmbis(el, chain) {
+  log('SHOW AMBI', chain)
+  return
   let oul = placeAmbi(el)
   oul.classList.add('danger')
   // let oul = create('ul', 'ambilist')
@@ -132,7 +112,7 @@ export function showCompound(el, chains) {
       let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
       oline.appendChild(owf)
       owf.dataset.docs = JSON.stringify(seg.docs)
-      log('OLINE', seg, oline.textContent)
+      // log('OLINE', seg, oline.textContent)
     })
   }
 }
