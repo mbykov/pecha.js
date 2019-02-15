@@ -69,8 +69,8 @@ export function parsePhrase(el, chains) {
     // if (common) replaceEL(el, common)
     // else showAmbis(el, chains)
   }
-  let progress = q('#progress')
-  progress.classList.remove('is-shown')
+  // let progress = q('#progress')
+  // progress.classList.remove('is-shown')
 }
 
 function replaceEL(el, best) {
@@ -89,16 +89,29 @@ function replaceEL(el, best) {
   })
 }
 
-function showAmbis(el, bests) {
-  let coords = getCoords(el)
-  log('SHOW AMBI', bests)
+function placeAmbi(el) {
   let oambi = q('#ambi')
+  let coords = getCoords(el)
   empty(oambi)
   oambi.classList.remove('is-hidden')
   let ncoords = {top: coords.bottom + 12, left: coords.left}
   placePopup(ncoords, oambi)
   let oul = create('ul', 'ambilist')
   oambi.appendChild(oul)
+  return oul
+}
+
+function showAmbis(el, bests) {
+  log('SHOW AMBI', bests)
+  // let oambi = q('#ambi')
+  // let coords = getCoords(el)
+  // empty(oambi)
+  // oambi.classList.remove('is-hidden')
+  // let ncoords = {top: coords.bottom + 12, left: coords.left}
+  // placePopup(ncoords, oambi)
+  let oul = placeAmbi(el)
+  // let oul = create('ul', 'ambilist')
+  // oambi.appendChild(oul)
   bests.forEach(chain=> {
     let oline = create('li', 'ambiline')
     oul.appendChild(oline)
@@ -111,29 +124,19 @@ function showAmbis(el, bests) {
   })
 }
 
-// function commonParts(chains) {
-//   let first = chains[0]
-//   let clean = []
-//   let ambis
-//   let common = false
-//   for (let idx = 0; idx < first.length; idx++) {
-//     let segs = chains.map(segs=> { return segs[idx].seg })
-//     if (_.uniq(segs).length == 1) {
-//       clean.push(first[idx])
-//       common = true
-//     } else {
-//       if (!ambis) {
-//         ambis = {seg: '', docs: []}
-//         clean.push(ambis)
-//       }
-//       ambis.seg += first[idx].seg
-//       if (idx < first.length-1) ambis.seg += tsek
-//     }
-//   }
-//   return (common) ? clean : common
-//   // log('CLEAN', clean)
-// }
-
+export function showCompound(el, chains) {
+  log('COMPOUND', el.textContent, chains)
+  // в компаундах всегда один результат?
+  if (chains.length > 1) throw new Error('LONG COMPOUND!')
+  let chain = chains[0]
+  let oul = placeAmbi(el)
+  chain.forEach(seg=> {
+    let oline = create('li', 'ambiline')
+    oul.appendChild(oline)
+    oline.textContent = seg.seg
+    log('OLINE', seg, oline.textContent)
+  })
+}
 
 export function showResults(el) {
   let osource = q('#source')
@@ -159,21 +162,14 @@ export function showResults(el) {
     doc.trns.forEach(trn=> {
       let oline = create('li', 'dict-line')
       oline.textContent = trn
-        oul.appendChild(oline)
+      oul.appendChild(oline)
     })
   })
-  // let oseg
-}
-
-export function showCompound(el, chains) {
-  log('COMPOUND-EL', el.textContent)
-  log('COMPOUND', chains)
-
 }
 
 
 export function noResult(el) {
-  log('NO RESULT', el.textContent)
+  log('NO RESULT')
   let oresult = q('#result')
   empty(oresult)
   let progress = q('#progress')

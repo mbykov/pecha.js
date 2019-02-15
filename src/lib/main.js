@@ -25,6 +25,7 @@ export function mainResults(el, structure) {
   log('MAIN pdchs:', segs.length, '=>', pdchs[10])
 
   let keys = totalKeys(pdchs)
+  if (structure) keys = _.filter(keys, key=> { return key != str})
   // log('MAIN keys:', keys.length)
   // return
 
@@ -35,9 +36,14 @@ export function mainResults(el, structure) {
       // return
       let res = makeChains(pdchs, docs)
       log('FULL, CHAINS', res.full, res.chains.length, res.chains)
-      if (!res.chains.length) noResult(el)
+      if (!res.chains.length) {
+        noResult(el)
+        return
+      }
       if (structure) showCompound(el, res.chains)
-      parsePhrase(el, res.chains)
+      else parsePhrase(el, res.chains)
+      let progress = q('#progress')
+      progress.classList.remove('is-shown')
       return
 
       // let fulls = fullChains(chains)

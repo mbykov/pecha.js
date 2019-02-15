@@ -79,6 +79,7 @@ document.addEventListener('click', (ev) => {
 
 document.addEventListener("mouseover", function(ev) {
   if (!ev.target.textContent) return
+  // hidePopups()
   if (ev.target.classList.contains('tibphrase')) {
     if (ev.shiftKey == true) {
       showCholok(ev.target)
@@ -87,34 +88,38 @@ document.addEventListener("mouseover", function(ev) {
       mainResults(ev.target)
     }
   } else if (ev.target.classList.contains('tibwf')) {
+    hidePopups()
     showResults(ev.target)
   }
 }, false)
 
 document.addEventListener("mouseleave", function(ev) {
   if (!ev.target.classList) return
+  // hidePopups()
   if (ev.target.classList.contains('tibphrase')) {
     let otrans = q('#transcript')
     otrans.classList.add('is-hidden')
   } else if (ev.target.classList.contains('ambi')) {
     log('MOUSE LEAVE')
-    let oambi = q('#ambi')
-    oambi.classList.add('is-hidden')
   }
+  // let oambi = q('#ambi')
+  // oambi.classList.add('is-hidden')
 }, false)
 
 document.addEventListener("keyup", function(ev) {
-  let otrans = q('#transcript')
-  otrans.classList.add('is-hidden')
-  let oambi = q('#ambi')
-  oambi.classList.add('is-hidden')
+  hidePopups()
+  // let otrans = q('#transcript')
+  // otrans.classList.add('is-hidden')
+  // let oambi = q('#ambi')
+  // oambi.classList.add('is-hidden')
 }, false)
 
 document.addEventListener("keydown", function(ev) {
-  let otrans = q('#transcript')
-  otrans.classList.add('is-hidden')
-  let oambi = q('#ambi')
-  oambi.classList.add('is-hidden')
+  hidePopups()
+  // let otrans = q('#transcript')
+  // otrans.classList.add('is-hidden')
+  // let oambi = q('#ambi')
+  // oambi.classList.add('is-hidden')
   if (ev.shiftKey != true) return
   let ohover = getInnermostHovered()
   showCholok(ohover)
@@ -136,3 +141,10 @@ clipboard
   .startWatching()
 
 checkCfg()
+
+function hidePopups() {
+  let otrans = q('#transcript')
+  otrans.classList.add('is-hidden')
+  let oambi = q('#ambi')
+  oambi.classList.add('is-hidden')
+}
