@@ -94,7 +94,7 @@ function placeAmbi(el) {
   let coords = getCoords(el)
   empty(oambi)
   oambi.classList.remove('is-hidden')
-  let ncoords = {top: coords.bottom + 12, left: coords.left}
+  let ncoords = {top: coords.bottom + 2, left: coords.left}
   placePopup(ncoords, oambi)
   let oul = create('ul', 'ambilist')
   oambi.appendChild(oul)
@@ -103,13 +103,8 @@ function placeAmbi(el) {
 
 function showAmbis(el, bests) {
   log('SHOW AMBI', bests)
-  // let oambi = q('#ambi')
-  // let coords = getCoords(el)
-  // empty(oambi)
-  // oambi.classList.remove('is-hidden')
-  // let ncoords = {top: coords.bottom + 12, left: coords.left}
-  // placePopup(ncoords, oambi)
   let oul = placeAmbi(el)
+  oul.classList.add('danger')
   // let oul = create('ul', 'ambilist')
   // oambi.appendChild(oul)
   bests.forEach(chain=> {
@@ -118,6 +113,7 @@ function showAmbis(el, bests) {
     chain.forEach(seg=> {
       // log('===>SEG', seg)
       let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
+      if (seg.docs.length) owf.dataset.docs = JSON.stringify(seg.docs)
       oline.appendChild(owf)
       showResults(el)
     })
@@ -126,16 +122,19 @@ function showAmbis(el, bests) {
 
 export function showCompound(el, chains) {
   log('COMPOUND', el.textContent, chains)
-  // в компаундах всегда один результат?
-  if (chains.length > 1) throw new Error('LONG COMPOUND!')
-  let chain = chains[0]
   let oul = placeAmbi(el)
-  chain.forEach(seg=> {
-    let oline = create('li', 'ambiline')
-    oul.appendChild(oline)
-    oline.textContent = seg.seg
-    log('OLINE', seg, oline.textContent)
-  })
+  if (chains.length > 1) showAmbis(el, chains)
+  else {
+    let chain = chains[0]
+    chain.forEach(seg=> {
+      let oline = create('li', 'ambiline')
+      oul.appendChild(oline)
+      let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
+      oline.appendChild(owf)
+      owf.dataset.docs = JSON.stringify(seg.docs)
+      log('OLINE', seg, oline.textContent)
+    })
+  }
 }
 
 export function showResults(el) {

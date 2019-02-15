@@ -79,7 +79,6 @@ document.addEventListener('click', (ev) => {
 
 document.addEventListener("mouseover", function(ev) {
   if (!ev.target.textContent) return
-  // hidePopups()
   if (ev.target.classList.contains('tibphrase')) {
     if (ev.shiftKey == true) {
       showCholok(ev.target)
@@ -88,7 +87,9 @@ document.addEventListener("mouseover", function(ev) {
       mainResults(ev.target)
     }
   } else if (ev.target.classList.contains('tibwf')) {
-    hidePopups()
+    let parent = ev.target.parentNode
+    // log('PARENT', parent.classList)
+    if (parent.classList.contains('tibphrase')) hidePopups()
     showResults(ev.target)
   }
 }, false)

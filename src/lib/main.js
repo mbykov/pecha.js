@@ -35,31 +35,46 @@ export function mainResults(el, structure) {
       log('DOCS', docs)
       // return
       let res = makeChains(pdchs, docs)
-      log('FULL, CHAINS', res.full, res.chains.length, res.chains)
-      if (!res.chains.length) {
+      let chains = res.chains
+      log('FULL, CHAINS', res.full, chains.length, chains)
+      if (!chains.length) {
         noResult(el)
         return
       }
-      if (structure) showCompound(el, res.chains)
-      else parsePhrase(el, res.chains)
-      let progress = q('#progress')
+      let chain
+      if (chains.length > 1) {
+        chain = commonParts(chains)
+        log('COMMON', chain)
+      }
+      if (structure) showCompound(el, chains)
+      else parsePhrase(el, chains)
       progress.classList.remove('is-shown')
-      return
-
-      // let fulls = fullChains(chains)
-      // log('chains: ', chains.length, 'fulls: ', fulls.length)
-      // if (fulls.length) chains = fulls
-      // log('CHs', chains.length)
-
-      // let bests = selectLongest(chains)
-      // log('bests =>', bests.length, bests)
-      // if (!bests.length) noResult(el)
-      // else {
-      //   // let best = bests[0]
-      //   parsePhrase(el, bests)
-      // }
-      // // showResults(best, docs)
     })
+}
+
+function commonParts(chains) {
+  let first = chains[0]
+  let clean = []
+  let ambi, ambis
+  let common = false
+  for (let idx = 0; idx < first.length; idx++) {
+    let segs = chains.map(segs=> { return segs[idx].seg })
+    if (_.uniq(segs).length == 1) {
+      clean.push(first[idx])
+      common = true
+    } else {
+      if (!ambis) ambis = {ambi: true, seg: '', docs: []}, clean.push(ambis)
+      // if (!ambis) {
+      //   ambis = {ambi: true, seg: '', docs: []}
+      //   clean.push(ambis)
+      // }
+      ambis.seg += first[idx].seg
+      if (idx < first.length-1) ambis.seg += tsek
+    }
+  }
+  if (!common) ambi = first.map(seg=> { return seg.seg } ).join(tsek)
+  return (common) ? clean : {ambi: true, seg: ambi, docs: []}
+  // log('CLEAN', clean)
 }
 
 // а здесь ведь тоже можно, если сегменты длинные, выбирать сначала только длинные dicts?
@@ -84,29 +99,6 @@ function makeChains(pdchs, docs) {
   if (fulls.length) bests = selectBests(fulls), full = true
   else bests = selectBests(chains)
   return {chains: bests, full: full}
-}
-
-function commonParts(chains) {
-  let first = chains[0]
-  let clean = []
-  let ambis
-  let common = false
-  for (let idx = 0; idx < first.length; idx++) {
-    let segs = chains.map(segs=> { return segs[idx].seg })
-    if (_.uniq(segs).length == 1) {
-      clean.push(first[idx])
-      common = true
-    } else {
-      if (!ambis) {
-        ambis = {seg: '', docs: []}
-        clean.push(ambis)
-      }
-      ambis.seg += first[idx].seg
-      if (idx < first.length-1) ambis.seg += tsek
-    }
-  }
-  return (common) ? clean : common
-  // log('CLEAN', clean)
 }
 
 function selectBests(chains) {
@@ -141,3 +133,14 @@ function fullChains(chains) {
   })
   return fulls
 }
+
+// let progress = {}
+// progress.show = function() {
+//   let progress = q('#progress')
+//   progress.classList.add('is-shown')
+// }
+
+// progress.hide = function() {
+//   let progress = q('#progress')
+//   progress.classList.remove('is-shown')
+// }
