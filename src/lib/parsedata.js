@@ -165,6 +165,13 @@ export function showResults(el) {
   // let oseg
 }
 
+export function showCompound(el, chains) {
+  log('COMPOUND-EL', el.textContent)
+  log('COMPOUND', chains)
+
+}
+
+
 export function noResult(el) {
   log('NO RESULT', el.textContent)
   let oresult = q('#result')

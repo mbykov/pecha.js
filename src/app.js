@@ -6,10 +6,10 @@ import { remote } from "electron";
 import { shell } from 'electron'
 import { ipcRenderer } from "electron";
 
-import { q, qs, empty, create, remove, span, p, div, getCoords } from './lib/utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords, getInnermostHovered } from './lib/utils'
 import { navigate } from './lib/nav';
 import sband from "./lib/sband";
-import { showCholok, showResults } from "./lib/parsedata";
+import { showCholok, showResults, showCompound } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
 import { parseStarDict, parseCSV } from "./lib/dict";
 import { checkCfg, setDBs, cleanupDB } from "./lib/pouch";
@@ -71,6 +71,8 @@ document.addEventListener('click', (ev) => {
     shell.openExternal(href)
   } else if (data.section) {
     navigate({section: data.section})
+  } else if (data.docs) {
+    mainResults(ev.target , true)
   } else {
   }
 })
@@ -108,6 +110,16 @@ document.addEventListener("keyup", function(ev) {
   oambi.classList.add('is-hidden')
 }, false)
 
+document.addEventListener("keydown", function(ev) {
+  let otrans = q('#transcript')
+  otrans.classList.add('is-hidden')
+  let oambi = q('#ambi')
+  oambi.classList.add('is-hidden')
+  if (ev.shiftKey != true) return
+  let ohover = getInnermostHovered()
+  showCholok(ohover)
+  // log('HOVER', ohover.textContent)
+}, false)
 
 clipboard
   .on('text-changed', () => {

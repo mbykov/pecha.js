@@ -1,15 +1,15 @@
 //
 import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, getCoords } from './utils'
-import { parsePDCHs, scrape, segmenter, totalKeys } from "./segmenter";
+import { scrape, segmenter, totalKeys } from "./segmenter";
 import { getPossible } from "./pouch";
 import { tibsyms, tibsyls } from "./tibetan_data";
-import { parsePhrase, noResult } from "./parsedata";
+import { parsePhrase, noResult, showCompound } from "./parsedata";
 
 let tsek = tibsyms.tsek
 const log = console.log
 
-export function mainResults(el) {
+export function mainResults(el, structure) {
   let progress = q('#progress')
   progress.classList.add('is-shown')
   let retsek = new RegExp(tsek+'$')
@@ -36,6 +36,7 @@ export function mainResults(el) {
       let res = makeChains(pdchs, docs)
       log('FULL, CHAINS', res.full, res.chains.length, res.chains)
       if (!res.chains.length) noResult(el)
+      if (structure) showCompound(el, res.chains)
       parsePhrase(el, res.chains)
       return
 

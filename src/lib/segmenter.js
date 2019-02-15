@@ -20,8 +20,9 @@ export function totalKeys(pdchs) {
   return _.uniq(_.flatten(pdchs))
 }
 
-export function segmenter(str, depth) {
+export function segmenter(str) {
   let segs = str.split(tsek)
+  let depth = (segs.length < 15) ? 10 : 2
   // log('SEGS', segs)
   let old = str
   let size = segs.length
@@ -38,7 +39,7 @@ export function segmenter(str, depth) {
         pdchs.push(_.clone(pdch))
         pdch.pop()
       }
-      if (pdch.length < 2) rec(flake.tail, pdch) // three parts for now !
+      if (pdch.length < depth) rec(flake.tail, pdch) // three parts for now !
       // rec(flake.tail, pdch)
       pdch.pop()
     })

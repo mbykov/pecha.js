@@ -108,3 +108,6 @@ export function placePopup (coords, el) {
   el.style.top = top
   el.style.left = left
 }
+
+// https://stackoverflow.com/questions/24538450/get-element-currently-under-mouse-without-using-mouse-events
+export function getInnermostHovered() { return [].slice.call(document.querySelectorAll(':hover')).pop(); }
