@@ -6,7 +6,7 @@ import { remote } from "electron";
 import { shell } from 'electron'
 import { ipcRenderer } from "electron";
 
-import { q, qs, empty, create, remove, span, p, div, getCoords, getInnermostHovered } from './lib/utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords, getInnermostHovered, findAncestor } from './lib/utils'
 import { navigate } from './lib/nav';
 import sband from "./lib/sband";
 import { showCholok, showResults, showAmbis } from "./lib/parsedata";
@@ -87,8 +87,12 @@ document.addEventListener("mouseover", function(ev) {
     }
   } else if (ev.target.classList.contains('tibwf')) {
     let parent = ev.target.parentNode
+    let pparent = parent.parentNode
     // log('PARENT', parent.classList)
-    if (parent.classList.contains('tibphrase')) hidePopups()
+    // let tibpar = findAncestor(ev.target, 'tibpar')
+    if (pparent && pparent.classList.contains('tibpar')) hidePopups()
+    // log('TIBPAR', tibpar)
+    // if (tibpar) hidePopups()
     showResults(ev.target)
   } else if (ev.target.classList.contains('tibambi')) {
     // log('START AMBI')

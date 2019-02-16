@@ -21,8 +21,7 @@ export function mainResults(el, structure) {
   let depth = false
   if (parent.classList.contains('tibphrase')) depth = true
   let pdchs = segmenter(str, depth)
-  log('MAIN pdchs:', segs.length, '=>', pdchs.length)
-  log('MAIN pdchs:', segs.length, '=>', pdchs[10])
+  // log('MAIN pdchs:', segs.length, '=>', pdchs.length)
 
   let keys = totalKeys(pdchs)
   if (structure) keys = _.filter(keys, key=> { return key != str})
@@ -32,11 +31,11 @@ export function mainResults(el, structure) {
   getPossible(keys)
     .then(docs=> {
       docs = _.flatten(docs)
-      log('DOCS', docs)
+      // log('DOCS', docs)
       // return
       let res = makeChains(pdchs, docs)
       let chains = res.chains
-      log('FULL, CHAINS', res.full, chains.length, chains)
+      // log('FULL, CHAINS', res.full, chains.length, chains)
       if (!chains.length) {
         noResult(el)
         return
@@ -44,11 +43,10 @@ export function mainResults(el, structure) {
       let chain
       if (chains.length > 1) {
         chain = commonParts(chains)
-        log('COMMON', chain)
+        // log('COMMON', chain)
       } else if (chains.length == 1) chain = chains[0]
 
-      log('CHAIN:', chain)
-      log('STRUCT:', structure, el.dataset.docs)
+      // log('CHAIN:', chain)
       if (structure) showCompound(el, chains)
       else parsePhrase(el, chain)
       progress.classList.remove('is-shown')

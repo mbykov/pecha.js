@@ -80,13 +80,14 @@ function placeAmbi(el) {
   return oul
 }
 
-export function showAmbis(el) {
-  let chains
-  try {
-    chains = JSON.parse(el.dataset.chains)
-  } catch(err) {
-    log('ERR: JSON chains')
-    return
+export function showAmbis(el, chains) {
+  if (!chains) {
+    try {
+      chains = JSON.parse(el.dataset.chains)
+    } catch(err) {
+      log('ERR: JSON chains', el)
+      return
+    }
   }
   // log('SHOW AMBIS', chains)
   let oul = placeAmbi(el)
@@ -106,7 +107,7 @@ export function showAmbis(el) {
 }
 
 export function showCompound(el, chains) {
-  log('COMPOUND', el.textContent, chains)
+  // log('COMPOUND', el.textContent, chains)
   let oul = placeAmbi(el)
   if (chains.length > 1) showAmbis(el, chains)
   else {
