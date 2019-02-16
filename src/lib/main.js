@@ -82,7 +82,7 @@ function commonParts(chains) {
     let chain = chains[0]
     ambi.seg = chain.map(seg=>{ return seg.seg}).join(tsek)
   })
-  log('___AMBIS___', ambis)
+  // log('___AMBIS___', ambis)
   // if (!common) ambi = first.map(seg=> { return seg.seg } ).join(tsek)
   // return (common) ? clean : [{ambi: true, seg: ambi, docs: []}]
   return clean
