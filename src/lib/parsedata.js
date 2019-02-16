@@ -54,11 +54,11 @@ export function parsePhrase(el, chain) {
   el.textContent = ''
   chain.forEach((seg, idx)=> {
     let ospan
-    if (seg.docs.length) {
-      ospan = span(seg.seg, 'tibwf')
-      ospan.dataset.docs = JSON.stringify(seg.docs)
-    } else if (seg.ambi) {
+    if (seg.ambi) {
       ospan = span(seg.seg, 'tibambi')
+      ospan.dataset.chains = JSON.stringify(seg.chains)
+    } else if (seg.docs.length) {
+      ospan = span(seg.seg, 'tibwf')
       ospan.dataset.docs = JSON.stringify(seg.docs)
     } else {
       ospan = span(seg.seg, 'tibphrase')
@@ -80,22 +80,27 @@ function placeAmbi(el) {
   return oul
 }
 
-function showAmbis(el, chain) {
-  log('SHOW AMBI', chain)
-  return
+export function showAmbis(el) {
+  let chains
+  try {
+    chains = JSON.parse(el.dataset.chains)
+  } catch(err) {
+    log('ERR: JSON chains')
+    return
+  }
+  // log('SHOW AMBIS', chains)
   let oul = placeAmbi(el)
   oul.classList.add('danger')
   // let oul = create('ul', 'ambilist')
   // oambi.appendChild(oul)
-  bests.forEach(chain=> {
+  chains.forEach(chain=> {
     let oline = create('li', 'ambiline')
     oul.appendChild(oline)
     chain.forEach(seg=> {
-      // log('===>SEG', seg)
+      // log('===>AMBISEG', seg)
       let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
       if (seg.docs.length) owf.dataset.docs = JSON.stringify(seg.docs)
       oline.appendChild(owf)
-      showResults(el)
     })
   })
 }
@@ -122,8 +127,16 @@ export function showResults(el) {
   let oresult = q('#result')
   empty(oresult)
   let wf = el.textContent
+
   let docs = JSON.parse(el.dataset.docs)
+  try {
+    docs = JSON.parse(el.dataset.docs)
+  } catch(err) {
+    log('ERR: JSON docs')
+    return
+  }
   // log('RESULT docs', wf, docs)
+
   let odict = create('div', 'dict')
   oresult.appendChild(odict)
   let owf = create('p', 'dict-wf')
@@ -138,6 +151,8 @@ export function showResults(el) {
     odict.appendChild(oarticle)
     let oul = create('ul', 'dict-ul')
     odict.appendChild(oul)
+    if (!doc.trns) log('NO TRNS', doc)
+    if (!doc.trns) return
     doc.trns.forEach(trn=> {
       let oline = create('li', 'dict-line')
       oline.textContent = trn

@@ -4,7 +4,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords } from './utils'
 import { scrape, segmenter, totalKeys } from "./segmenter";
 import { getPossible } from "./pouch";
 import { tibsyms, tibsyls } from "./tibetan_data";
-import { parsePhrase, noResult, showCompound, showAmbis } from "./parsedata";
+import { parsePhrase, noResult, showCompound } from "./parsedata";
 
 let tsek = tibsyms.tsek
 const log = console.log
@@ -49,8 +49,7 @@ export function mainResults(el, structure) {
 
       log('CHAIN:', chain)
       log('STRUCT:', structure, el.dataset.docs)
-      if (structure && !el.dataset.docs.length) showAmbis(el, chain)
-      else if (structure) showCompound(el, chains)
+      if (structure) showCompound(el, chains)
       else parsePhrase(el, chain)
       progress.classList.remove('is-shown')
     })

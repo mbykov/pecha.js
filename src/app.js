@@ -9,7 +9,7 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords, getInnermostHovered } from './lib/utils'
 import { navigate } from './lib/nav';
 import sband from "./lib/sband";
-import { showCholok, showResults } from "./lib/parsedata";
+import { showCholok, showResults, showAmbis } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
 import { parseStarDict, parseCSV } from "./lib/dict";
 import { checkCfg, setDBs, cleanupDB } from "./lib/pouch";
@@ -83,7 +83,6 @@ document.addEventListener("mouseover", function(ev) {
     if (ev.shiftKey == true) {
       showCholok(ev.target)
     } else {
-      // log('FRASE', ev.target.textContent)
       mainResults(ev.target)
     }
   } else if (ev.target.classList.contains('tibwf')) {
@@ -92,8 +91,8 @@ document.addEventListener("mouseover", function(ev) {
     if (parent.classList.contains('tibphrase')) hidePopups()
     showResults(ev.target)
   } else if (ev.target.classList.contains('tibambi')) {
-    log('SHOW AMBI')
-    mainResults(ev.target , true)
+    // log('START AMBI')
+    showAmbis(ev.target)
   }
 }, false)
 
