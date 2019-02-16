@@ -1,14 +1,14 @@
 //
 
 export const tibsyms = {
-  tsek: '་',
-  connective: 'འི',
-  subordinative: 'ར', // ladon
-  narrative: 'འོ',
-  interrog: 'འམ',
-  coupling: 'འི',
-  ergative: 'ས',
-  concessive: 'འང'
+  tsek: '་'
+  // connective: 'འི',
+  // subordinative: 'ར', // ladon
+  // narrative: 'འོ',
+  // interrog: 'འམ',
+  // coupling: 'འི',
+  // ergative: 'ས',
+  // concessive: 'འང'
 }
 
 export const tibsyls = ['འི', 'ར', 'འོ', 'འམ', 'འི', 'ས', 'འང']
