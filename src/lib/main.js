@@ -9,24 +9,22 @@ import { parsePhrase, noResult, showCompound } from "./parsedata";
 let tsek = tibsyms.tsek
 const log = console.log
 
-export function mainResults(el, structure) {
+export function mainResults(el, compound) {
   let progress = q('#progress')
   progress.classList.add('is-shown')
   let retsek = new RegExp(tsek+'$')
   let str = el.textContent.trim().replace(retsek, '')
   let segs = str.split(tsek)
 
-  let parent = el.parentNode
-  // log('PARENT', parent.classList)
-  let depth = false
-  if (parent.classList.contains('tibphrase')) depth = true
-  let pdchs = segmenter(str, depth)
+  let pdchs = segmenter(str)
   // log('MAIN pdchs:', segs.length, '=>', pdchs.length)
 
-  let keys = totalKeys(pdchs)
-  if (structure) keys = _.filter(keys, key=> { return key != str})
-  // log('MAIN keys:', keys.length)
-  // return
+  let keys
+  let keyres = totalKeys(pdchs)
+  if (compound) keys = _.filter(keyres.main, key=> { return key != str})
+  else keys =  keyres.main.concat(keyres.added)
+  log('MAIN keys:', keyres.main, 'full', keys)
+keys = keyres.main
 
   getPossible(keys)
     .then(docs=> {
@@ -43,11 +41,10 @@ export function mainResults(el, structure) {
       let chain
       if (chains.length > 1) {
         chain = commonParts(chains)
-        // log('COMMON', chain)
       } else if (chains.length == 1) chain = chains[0]
 
       // log('CHAIN:', chain)
-      if (structure) showCompound(el, chains)
+      if (compound) showCompound(el, chains)
       else parsePhrase(el, chain)
       progress.classList.remove('is-shown')
     })
@@ -76,17 +73,12 @@ function commonParts(chains) {
       let chain = ambi.docs.map(adocs=> { return adocs[idx] })
       chains.push(chain)
     }
-    // ambi.docs.forEach(segs=>{
-    // })
     ambi.chains = chains
     let chain = chains[0]
     ambi.seg = chain.map(seg=>{ return seg.seg}).join(tsek)
   })
   // log('___AMBIS___', ambis)
-  // if (!common) ambi = first.map(seg=> { return seg.seg } ).join(tsek)
-  // return (common) ? clean : [{ambi: true, seg: ambi, docs: []}]
   return clean
-  // log('CLEAN', clean)
 }
 
 function makeChains(pdchs, docs) {

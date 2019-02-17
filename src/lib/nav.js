@@ -92,7 +92,6 @@ function showSection(section) {
 }
 
 function goLeft() {
-  // log('left', hstate, history.length)
   if (hstate <= 0) return
   else hstate--
   let state = history[hstate]
@@ -101,22 +100,12 @@ function goLeft() {
 }
 
 function goRight() {
-  // log('right', hstate, history.length)
   if (hstate >= history.length-1) return
   else hstate++
   let state = history[hstate]
-  // log('RIGTH', state)
   state.old = true
   navigate(state)
 }
-
-// let last = _.last(history)
-// if (!last) history.push(state)
-// else {
-//   if (last.section != section) history.push(state)
-//   // history.push(state)
-//   hstate = history.length-1
-// }
 
 export function navigate(state) {
   try {

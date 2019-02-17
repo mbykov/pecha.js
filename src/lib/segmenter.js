@@ -6,17 +6,18 @@ const log = console.log
 const tsek = tibsyms.tsek
 
 export function totalKeys(pdchs) {
-  let segs = _.uniq(_.flatten(pdchs))
+  let mainKeys = _.uniq(_.flatten(pdchs))
   let added = []
-  segs.forEach(seg=>{
+  mainKeys.forEach(seg=>{
     tibsyls.forEach(syl=>{
       let resyl = new RegExp(syl+'$')
       let poss = seg.replace(resyl, '')
       if (seg != poss) added.push(poss)
     })
   })
-  let keys = segs.concat(added)
-  return _.uniq(keys)
+  return {main: mainKeys, added: added}
+  // let keys = segs.concat(added)
+  // return _.uniq(keys)
   // return _.uniq(_.flatten(pdchs))
 }
 

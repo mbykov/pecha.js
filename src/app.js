@@ -106,29 +106,21 @@ document.addEventListener("mouseleave", function(ev) {
   if (ev.target.classList.contains('tibphrase')) {
     let otrans = q('#transcript')
     otrans.classList.add('is-hidden')
-  } else if (ev.target.classList.contains('ambi')) {
-    log('MOUSE LEAVE')
+    // } else if (ev.target.classList.contains('ambi')) {
+    // log('MOUSE LEAVE')
+    // }
   }
-  // let oambi = q('#ambi')
-  // oambi.classList.add('is-hidden')
 }, false)
 
 document.addEventListener("keyup", function(ev) {
-  hidePopups()
-  // let otrans = q('#transcript')
-  // otrans.classList.add('is-hidden')
-  // let oambi = q('#ambi')
-  // oambi.classList.add('is-hidden')
+  // hidePopups()
 }, false)
 
 document.addEventListener("keydown", function(ev) {
   hidePopups()
-  // let otrans = q('#transcript')
-  // otrans.classList.add('is-hidden')
-  // let oambi = q('#ambi')
-  // oambi.classList.add('is-hidden')
   if (ev.shiftKey != true) return
   let ohover = getInnermostHovered()
+  if (!ohover) return
   showCholok(ohover)
   // log('HOVER', ohover.textContent)
 }, false)

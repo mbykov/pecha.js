@@ -92,13 +92,10 @@ export function showAmbis(el, chains) {
   // log('SHOW AMBIS', chains)
   let oul = placeAmbi(el)
   oul.classList.add('danger')
-  // let oul = create('ul', 'ambilist')
-  // oambi.appendChild(oul)
   chains.forEach(chain=> {
     let oline = create('li', 'ambiline')
     oul.appendChild(oline)
     chain.forEach(seg=> {
-      // log('===>AMBISEG', seg)
       let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
       if (seg.docs.length) owf.dataset.docs = JSON.stringify(seg.docs)
       oline.appendChild(owf)
@@ -107,7 +104,7 @@ export function showAmbis(el, chains) {
 }
 
 export function showCompound(el, chains) {
-  // log('COMPOUND', el.textContent, chains)
+  log('COMPOUND', el.textContent, chains)
   let oul = placeAmbi(el)
   if (chains.length > 1) showAmbis(el, chains)
   else {
