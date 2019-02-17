@@ -78,16 +78,10 @@ document.addEventListener('click', (ev) => {
 
 document.addEventListener("mouseover", function(ev) {
   if (!ev.target.textContent) return
-  let parent = ev.target.parentNode
-  let pparent = parent.parentNode
-  // if (pparent && pparent.classList && pparent.classList.contains('tibpar')) hidePopups()
   let tpar = ev.target.closest('.tibpar')
-  // log('TPAR', tpar)
   if (tpar) hidePopups()
 
   if (ev.target.classList.contains('tibphrase')) {
-    // let tpar = ev.target.closest('.tibpar')
-    // log('TPAR', tpar)
     if (ev.shiftKey == true) {
       showCholok(ev.target)
     } else {
@@ -102,13 +96,9 @@ document.addEventListener("mouseover", function(ev) {
 
 document.addEventListener("mouseleave", function(ev) {
   if (!ev.target.classList) return
-  // hidePopups()
   if (ev.target.classList.contains('tibphrase')) {
     let otrans = q('#transcript')
     otrans.classList.add('is-hidden')
-    // } else if (ev.target.classList.contains('ambi')) {
-    // log('MOUSE LEAVE')
-    // }
   }
 }, false)
 
@@ -122,7 +112,6 @@ document.addEventListener("keydown", function(ev) {
   let ohover = getInnermostHovered()
   if (!ohover) return
   showCholok(ohover)
-  // log('HOVER', ohover.textContent)
 }, false)
 
 clipboard
@@ -130,22 +119,14 @@ clipboard
     let txt = clipboard.readText()
     let pars = sband('tib', txt)
     if (!pars || !pars.length) return
-    // orthoPars(pars)
-    // hstates.push(pars)
-    // hstate = hstates.length-1
     let state = {section: 'main', pars: pars}
     navigate(state)
-    // showText(pars)
   })
   .startWatching()
 
 checkCfg()
 
 function hidePopups() {
-  // let otrans = q('#transcript')
-  // otrans.classList.add('is-hidden')
-  // let oambi = q('#ambi')
-  // oambi.classList.add('is-hidden')
   qs('.popup').forEach(popup=> {
     popup.classList.add('is-hidden')
   })
