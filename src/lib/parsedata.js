@@ -74,7 +74,7 @@ function createPopup(el, upper) {
   let coords = getCoords(el)
   empty(oambi)
   oambi.classList.remove('is-hidden')
-  let ncoords = {top: coords.bottom + 2, left: coords.left}
+  let ncoords = {top: coords.bottom-3, left: coords.left}
   placePopup(ncoords, oambi)
   let oul = create('ul', 'ambilist')
   oambi.appendChild(oul)
@@ -114,7 +114,7 @@ function showAmbi(oul, chains) {
 }
 
 function showCompound(oul, chains) {
-  log('COMPOUND', chains)
+  // log('COMPOUND', chains)
   chains.forEach(seg=> {
     let oline = create('li', 'ambiline')
     oul.appendChild(oline)

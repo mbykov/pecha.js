@@ -33,7 +33,7 @@ export function mainResults(el, compound) {
       // return
       let res = makeChains(pdchs, docs)
       let chains = res.chains
-      log('FULL, CHAINS', res.full, chains.length, chains)
+      // log('FULL, CHAINS', res.full, chains.length, chains)
       let chain
       if (chains.length > 1) chain = commonParts(chains)
       else if (chains.length == 1) chain = chains[0]
@@ -43,7 +43,7 @@ export function mainResults(el, compound) {
       }
       // log('CHAIN:', chain)
       if (compound) {
-        log('main-compound', chains.length, chain)
+        // log('main-compound', chains.length, chain)
         el.dataset.chains = JSON.stringify(chain)
         showPopup(el, true)
       }
@@ -116,6 +116,10 @@ function selectBests(chains) {
   // log('MIN', min)
   let shortests  = _.filter(longests, chain => { return chain.length == min })
   return shortests
+  // let maxlong = _.max(longests.map(chain => {  return chain.length } ) )
+  // // log('maxlong', maxlong)
+  // longests  = _.filter(longests, chain => { return chain.length == maxlong })
+  // return longests
 }
 
 function startWith(str, head) {

@@ -80,9 +80,14 @@ document.addEventListener("mouseover", function(ev) {
   if (!ev.target.textContent) return
   let parent = ev.target.parentNode
   let pparent = parent.parentNode
-  if (pparent && pparent.classList && pparent.classList.contains('tibpar')) hidePopups()
+  // if (pparent && pparent.classList && pparent.classList.contains('tibpar')) hidePopups()
+  let tpar = ev.target.closest('.tibpar')
+  // log('TPAR', tpar)
+  if (tpar) hidePopups()
 
   if (ev.target.classList.contains('tibphrase')) {
+    // let tpar = ev.target.closest('.tibpar')
+    // log('TPAR', tpar)
     if (ev.shiftKey == true) {
       showCholok(ev.target)
     } else {
