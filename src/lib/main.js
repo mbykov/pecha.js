@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, getCoords } from './utils'
 import { scrape, segmenter, totalKeys } from "./segmenter";
 import { getPossible } from "./pouch";
-import { tibsyms, tibsyls } from "./tibetan_data";
+import { tibsyms, tibsuff } from "./tibetan_data";
 import { parsePhrase, noResult, showCompound } from "./parsedata";
 
 let tsek = tibsyms.tsek
@@ -17,14 +17,14 @@ export function mainResults(el, compound) {
   let segs = str.split(tsek)
 
   let pdchs = segmenter(str)
-  // log('MAIN pdchs:', segs.length, '=>', pdchs.length)
+  // log('MAIN pdchs:', segs.length, '=>', pdchs.length, pdchs)
 
   let keys
   let keyres = totalKeys(pdchs)
   if (compound) keys = _.filter(keyres.main, key=> { return key != str})
-  else keys =  keyres.main.concat(keyres.added)
-  log('MAIN keys:', keyres.main, 'full', keys)
-keys = keyres.main
+  else keys =  _.uniq(keyres.main.concat(keyres.added))
+  // log('MAIN keys:', keyres.main, 'add', keyres.added)
+  // keys = keyres.main
 
   getPossible(keys)
     .then(docs=> {
@@ -33,7 +33,7 @@ keys = keyres.main
       // return
       let res = makeChains(pdchs, docs)
       let chains = res.chains
-      // log('FULL, CHAINS', res.full, chains.length, chains)
+      log('FULL, CHAINS', res.full, chains.length, chains)
       if (!chains.length) {
         noResult(el)
         return
@@ -42,11 +42,10 @@ keys = keyres.main
       if (chains.length > 1) {
         chain = commonParts(chains)
       } else if (chains.length == 1) chain = chains[0]
-
       // log('CHAIN:', chain)
+      // в компаунде chains всегда больше 1, иначе какой же он компаунд
       if (compound) showCompound(el, chains)
       else parsePhrase(el, chain)
-      progress.classList.remove('is-shown')
     })
 }
 
@@ -110,7 +109,7 @@ function selectBests(chains) {
   let longests = _.filter(chains, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length >= max - 1 })
   // longests = _.sortBy(longests, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length }).reverse()
   // log('LNGST', longests)
-
+  // return longests
   let min = _.min(longests.map(chain => {  return chain.length } ) )
   // log('MIN', min)
   let shortests  = _.filter(longests, chain => { return chain.length == min })
@@ -121,14 +120,13 @@ function startWith(str, head) {
   if (str == head) return true
   let reh = new RegExp('^' + head)
   let tail = str.replace(reh, '')
-  return (str != tail && tibsyls.includes(tail)) ?  true : false
+  return (str != tail && tibsuff.includes(tail)) ?  true : false
 }
 
 function fullChains(chains) {
   let fulls = []
   chains.forEach(segs => {
     let full = true
-    // let dsegs = segs.slice(0, -1)
     segs.forEach(seg => {
       if (!seg.docs.length) full = false
     })
@@ -136,14 +134,3 @@ function fullChains(chains) {
   })
   return fulls
 }
-
-// let progress = {}
-// progress.show = function() {
-//   let progress = q('#progress')
-//   progress.classList.add('is-shown')
-// }
-
-// progress.hide = function() {
-//   let progress = q('#progress')
-//   progress.classList.remove('is-shown')
-// }

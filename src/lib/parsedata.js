@@ -50,7 +50,6 @@ export function showCholok(el) {
 }
 
 export function parsePhrase(el, chain) {
-  // let parent = el.parentNode
   el.textContent = ''
   chain.forEach((seg, idx)=> {
     let ospan
@@ -66,10 +65,14 @@ export function parsePhrase(el, chain) {
     el.appendChild(ospan)
     if (idx < chain.length-1) el.appendChild(span(tsek, 'tsek'))
   })
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
 }
 
-function placeAmbi(el) {
-  let oambi = q('#ambi')
+function createPopup(el, upper) {
+  let oambi = (upper) ? q('#upper') : q('#ambi')
+  // if (upper) oambi = q('#upper')
+  // else oambi = q('#ambi')
   let coords = getCoords(el)
   empty(oambi)
   oambi.classList.remove('is-hidden')
@@ -80,17 +83,16 @@ function placeAmbi(el) {
   return oul
 }
 
-export function showAmbis(el, chains) {
-  if (!chains) {
-    try {
-      chains = JSON.parse(el.dataset.chains)
-    } catch(err) {
-      log('ERR: JSON chains', el)
-      return
-    }
+export function showPopup(el, upper) {
+  let chains
+  try {
+    chains = JSON.parse(el.dataset.chains)
+  } catch(err) {
+    log('ERR: JSON chains', el)
+    return
   }
   // log('SHOW AMBIS', chains)
-  let oul = placeAmbi(el)
+  let oul = createPopup(el, upper)
   oul.classList.add('danger')
   chains.forEach(chain=> {
     let oline = create('li', 'ambiline')
@@ -105,19 +107,25 @@ export function showAmbis(el, chains) {
 
 export function showCompound(el, chains) {
   log('COMPOUND', el.textContent, chains)
-  let oul = placeAmbi(el)
-  if (chains.length > 1) showAmbis(el, chains)
-  else {
-    let chain = chains[0]
-    chain.forEach(seg=> {
-      let oline = create('li', 'ambiline')
-      oul.appendChild(oline)
-      let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
-      oline.appendChild(owf)
-      owf.dataset.docs = JSON.stringify(seg.docs)
-      // log('OLINE', seg, oline.textContent)
-    })
-  }
+  el.dataset.chains = JSON.stringify(chains)
+  showPopup(el, true)
+  // if (chains.length > 1) showPopup(el, true)
+  // else {
+  //   log('ERROR', chains.length, (chains.length > 1), chains)
+  //   throw new Error('showCompound SHORT')
+  //   // let oul = createPopup(el)
+  //   // let chain = chains[0]
+  //   // chain.forEach(seg=> {
+  //   //   let oline = create('li', 'ambiline')
+  //   //   oul.appendChild(oline)
+  //   //   let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
+  //   //   oline.appendChild(owf)
+  //   //   owf.dataset.docs = JSON.stringify(seg.docs)
+  //   //   // log('OLINE', seg, oline.textContent)
+  //   // })
+  // }
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
 }
 
 export function showResults(el) {

@@ -6,10 +6,10 @@ import { remote } from "electron";
 import { shell } from 'electron'
 import { ipcRenderer } from "electron";
 
-import { q, qs, empty, create, remove, span, p, div, getCoords, getInnermostHovered, findAncestor } from './lib/utils'
+import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { navigate } from './lib/nav';
 import sband from "./lib/sband";
-import { showCholok, showResults, showAmbis } from "./lib/parsedata";
+import { showCholok, showResults, showPopup } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
 import { parseStarDict, parseCSV } from "./lib/dict";
 import { checkCfg, setDBs, cleanupDB } from "./lib/pouch";
@@ -73,7 +73,6 @@ document.addEventListener('click', (ev) => {
     navigate({section: data.section})
   } else if (data.docs) {
     mainResults(ev.target , true)
-  } else {
   }
 })
 
@@ -88,15 +87,10 @@ document.addEventListener("mouseover", function(ev) {
   } else if (ev.target.classList.contains('tibwf')) {
     let parent = ev.target.parentNode
     let pparent = parent.parentNode
-    // log('PARENT', parent.classList)
-    // let tibpar = findAncestor(ev.target, 'tibpar')
     if (pparent && pparent.classList.contains('tibpar')) hidePopups()
-    // log('TIBPAR', tibpar)
-    // if (tibpar) hidePopups()
     showResults(ev.target)
   } else if (ev.target.classList.contains('tibambi')) {
-    // log('START AMBI')
-    showAmbis(ev.target)
+    showPopup(ev.target)
   }
 }, false)
 
@@ -113,7 +107,7 @@ document.addEventListener("mouseleave", function(ev) {
 }, false)
 
 document.addEventListener("keyup", function(ev) {
-  // hidePopups()
+  hidePopups()
 }, false)
 
 document.addEventListener("keydown", function(ev) {

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { getPossible } from "./pouch";
-import { tibsyms, tibsyls } from "./tibetan_data";
+import { tibsyms, tibsuff } from "./tibetan_data";
 
 const log = console.log
 const tsek = tibsyms.tsek
@@ -9,7 +9,7 @@ export function totalKeys(pdchs) {
   let mainKeys = _.uniq(_.flatten(pdchs))
   let added = []
   mainKeys.forEach(seg=>{
-    tibsyls.forEach(syl=>{
+    tibsuff.forEach(syl=>{
       let resyl = new RegExp(syl+'$')
       let poss = seg.replace(resyl, '')
       if (seg != poss) added.push(poss)

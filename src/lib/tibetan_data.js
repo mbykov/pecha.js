@@ -11,4 +11,4 @@ export const tibsyms = {
   // concessive: 'འང'
 }
 
-export const tibsyls = ['འི', 'ར', 'འོ', 'འམ', 'འི', 'ས', 'འང']
+export const tibsuff = ['འི', 'ར', 'འོ', 'འམ', 'འི', 'ས', 'འང']
