@@ -78,6 +78,10 @@ document.addEventListener('click', (ev) => {
 
 document.addEventListener("mouseover", function(ev) {
   if (!ev.target.textContent) return
+  let parent = ev.target.parentNode
+  let pparent = parent.parentNode
+  if (pparent && pparent.classList && pparent.classList.contains('tibpar')) hidePopups()
+
   if (ev.target.classList.contains('tibphrase')) {
     if (ev.shiftKey == true) {
       showCholok(ev.target)
@@ -85,12 +89,9 @@ document.addEventListener("mouseover", function(ev) {
       mainResults(ev.target)
     }
   } else if (ev.target.classList.contains('tibwf')) {
-    let parent = ev.target.parentNode
-    let pparent = parent.parentNode
-    if (pparent && pparent.classList.contains('tibpar')) hidePopups()
     showResults(ev.target)
   } else if (ev.target.classList.contains('tibambi')) {
-    showPopup(ev.target)
+    showPopup(ev.target) // mouseover, tibambi
   }
 }, false)
 
@@ -136,8 +137,11 @@ clipboard
 checkCfg()
 
 function hidePopups() {
-  let otrans = q('#transcript')
-  otrans.classList.add('is-hidden')
-  let oambi = q('#ambi')
-  oambi.classList.add('is-hidden')
+  // let otrans = q('#transcript')
+  // otrans.classList.add('is-hidden')
+  // let oambi = q('#ambi')
+  // oambi.classList.add('is-hidden')
+  qs('.popup').forEach(popup=> {
+    popup.classList.add('is-hidden')
+  })
 }

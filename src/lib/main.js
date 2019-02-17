@@ -4,7 +4,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords } from './utils'
 import { scrape, segmenter, totalKeys } from "./segmenter";
 import { getPossible } from "./pouch";
 import { tibsyms, tibsuff } from "./tibetan_data";
-import { parsePhrase, noResult, showCompound } from "./parsedata";
+import { parsePhrase, noResult, showPopup } from "./parsedata";
 
 let tsek = tibsyms.tsek
 const log = console.log
@@ -34,17 +34,19 @@ export function mainResults(el, compound) {
       let res = makeChains(pdchs, docs)
       let chains = res.chains
       log('FULL, CHAINS', res.full, chains.length, chains)
-      if (!chains.length) {
+      let chain
+      if (chains.length > 1) chain = commonParts(chains)
+      else if (chains.length == 1) chain = chains[0]
+      else {
         noResult(el)
         return
       }
-      let chain
-      if (chains.length > 1) {
-        chain = commonParts(chains)
-      } else if (chains.length == 1) chain = chains[0]
       // log('CHAIN:', chain)
-      // в компаунде chains всегда больше 1, иначе какой же он компаунд
-      if (compound) showCompound(el, chains)
+      if (compound) {
+        log('main-compound', chains.length, chain)
+        el.dataset.chains = JSON.stringify(chain)
+        showPopup(el, true)
+      }
       else parsePhrase(el, chain)
     })
 }

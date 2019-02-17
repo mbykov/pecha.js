@@ -71,8 +71,6 @@ export function parsePhrase(el, chain) {
 
 function createPopup(el, upper) {
   let oambi = (upper) ? q('#upper') : q('#ambi')
-  // if (upper) oambi = q('#upper')
-  // else oambi = q('#ambi')
   let coords = getCoords(el)
   empty(oambi)
   oambi.classList.remove('is-hidden')
@@ -83,7 +81,7 @@ function createPopup(el, upper) {
   return oul
 }
 
-export function showPopup(el, upper) {
+export function showPopup(el, compound) {
   let chains
   try {
     chains = JSON.parse(el.dataset.chains)
@@ -91,8 +89,18 @@ export function showPopup(el, upper) {
     log('ERR: JSON chains', el)
     return
   }
-  // log('SHOW AMBIS', chains)
+  let upper = (el.closest('.tibpar')) ? false : true
   let oul = createPopup(el, upper)
+  // if (el.classList.contains('tibambi')) showAmbi(oul, chains)
+  // else if (el.classList.contains('tibwf')) showCompound(oul, chains)
+  if (compound) showCompound(oul, chains)
+  else showAmbi(oul, chains)
+
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
+}
+
+function showAmbi(oul, chains) {
   oul.classList.add('danger')
   chains.forEach(chain=> {
     let oline = create('li', 'ambiline')
@@ -105,27 +113,23 @@ export function showPopup(el, upper) {
   })
 }
 
-export function showCompound(el, chains) {
-  log('COMPOUND', el.textContent, chains)
-  el.dataset.chains = JSON.stringify(chains)
-  showPopup(el, true)
-  // if (chains.length > 1) showPopup(el, true)
-  // else {
-  //   log('ERROR', chains.length, (chains.length > 1), chains)
-  //   throw new Error('showCompound SHORT')
-  //   // let oul = createPopup(el)
-  //   // let chain = chains[0]
-  //   // chain.forEach(seg=> {
-  //   //   let oline = create('li', 'ambiline')
-  //   //   oul.appendChild(oline)
-  //   //   let owf = (seg.docs.length) ? span(seg.seg, 'tibwf') : span(seg.seg, 'tibphrase')
-  //   //   oline.appendChild(owf)
-  //   //   owf.dataset.docs = JSON.stringify(seg.docs)
-  //   //   // log('OLINE', seg, oline.textContent)
-  //   // })
-  // }
-  let progress = q('#progress')
-  progress.classList.remove('is-shown')
+function showCompound(oul, chains) {
+  log('COMPOUND', chains)
+  chains.forEach(seg=> {
+    let oline = create('li', 'ambiline')
+    oul.appendChild(oline)
+    let ospan
+    if (seg.ambi) {
+      ospan = span(seg.seg, 'tibambi')
+      ospan.dataset.chains = JSON.stringify(seg.chains)
+    } else if (seg.docs.length) {
+      ospan = span(seg.seg, 'tibwf')
+      ospan.dataset.docs = JSON.stringify(seg.docs)
+    } else {
+      ospan = span(seg.seg, 'tibphrase')
+    }
+    oline.appendChild(ospan)
+  })
 }
 
 export function showResults(el) {
@@ -170,8 +174,8 @@ export function showResults(el) {
 
 export function noResult(el) {
   log('NO RESULT')
-  let oresult = q('#result')
-  empty(oresult)
+  // let oresult = q('#result')
+  // empty(oresult)
   let progress = q('#progress')
   progress.classList.remove('is-shown')
 }
