@@ -70,7 +70,14 @@ export function parsePhrase(el, chain) {
 }
 
 function createPopup(el, upper) {
-  let oambi = (upper) ? q('#upper') : q('#ambi')
+  let oambi
+  // is-hidden upper popup
+  if (upper) {
+    oambi = create('div', 'popup')
+    oambi.classList.add('upper')
+    document.body.appendChild(oambi)
+  } else oambi = q('#ambi')
+  // let oambi = (upper) ? q('#upper') : q('#ambi')
   let coords = getCoords(el)
   empty(oambi)
   oambi.classList.remove('is-hidden')

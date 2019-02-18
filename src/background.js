@@ -82,9 +82,10 @@ app.on("ready", () => {
     win.webContents.send('reload')
   })
 
-  // globalShortcut.register('CommandOrControl+R', () => win.webContents.send('reread'));
+  globalShortcut.register('CommandOrControl+R', () => win.webContents.send('reread'));
   // globalShortcut.register('CommandOrControl+R', () => win.reload());
   globalShortcut.register('CommandOrControl+Shift+R', () => win.reload());
+  // globalShortcut.register('CommandOrControl+R', () => win.reload());
 });
 
 

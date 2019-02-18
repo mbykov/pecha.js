@@ -56,6 +56,13 @@ ipcRenderer.on('action', function (event, action) {
   else if (action == 'cleanupdb') cleanupDB()
 })
 
+// ctrl-R
+ipcRenderer.on('reread', function (event) {
+  let state = settings.get('state')
+  getCurrentWindow().reload()
+  navigate(state)
+})
+
 // let home = q('#home')
 // home.classList.add('is-shown')
 let state = settings.get('state')
@@ -78,6 +85,7 @@ document.addEventListener('click', (ev) => {
 
 document.addEventListener("mouseover", function(ev) {
   if (!ev.target.textContent) return
+  if (ev.ctrlKey == true) return
   let tpar = ev.target.closest('.tibpar')
   if (tpar) hidePopups()
 
@@ -96,6 +104,7 @@ document.addEventListener("mouseover", function(ev) {
 
 document.addEventListener("mouseleave", function(ev) {
   if (!ev.target.classList) return
+  if (ev.ctrlKey == true) return
   if (ev.target.classList.contains('tibphrase')) {
     let otrans = q('#transcript')
     otrans.classList.add('is-hidden')
@@ -103,10 +112,12 @@ document.addEventListener("mouseleave", function(ev) {
 }, false)
 
 document.addEventListener("keyup", function(ev) {
+  if (ev.ctrlKey == true) return
   hidePopups()
 }, false)
 
 document.addEventListener("keydown", function(ev) {
+  if (ev.ctrlKey == true) return
   hidePopups()
   if (ev.shiftKey != true) return
   let ohover = getInnermostHovered()

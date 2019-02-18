@@ -17,7 +17,8 @@ export function mainResults(el, compound) {
   let segs = str.split(tsek)
 
   let pdchs = segmenter(str)
-  // log('MAIN pdchs:', segs.length, '=>', pdchs.length, pdchs)
+  // log('MAIN pdchs:', segs.length, '=>', pdchs.length)
+  // return
 
   let keys
   let keyres = totalKeys(pdchs)
@@ -99,6 +100,7 @@ function makeChains(pdchs, docs) {
     if (any) chains.push(chain)
     if (full) fulls.push(chain)
   })
+  // здесь full только для справки, убрать!!!
   let bests, full
   if (fulls.length) bests = selectBests(fulls), full = true
   else bests = selectBests(chains)
@@ -112,6 +114,12 @@ function selectBests(chains) {
   // longests = _.sortBy(longests, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length }).reverse()
   // log('LNGST', longests)
   // return longests
+
+  // // квадраты - выберет более равномерное деление, да, но отбросит тоже хорошие
+  // let max = _.max(chains.map(chain => {  return _.sum(chain.map(segment => { return segment.docs.length ? Math.pow(segment.seg.length, 2) : 0 }))/chain.length } ) )
+  // // log('MAX', max)
+  // let longests = _.filter(chains, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? Math.pow(segment.seg.length, 2) : 0 }))/chain.length >= max - 10 })
+
   let min = _.min(longests.map(chain => {  return chain.length } ) )
   // log('MIN', min)
   let shortests  = _.filter(longests, chain => { return chain.length == min })

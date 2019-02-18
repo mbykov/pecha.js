@@ -23,7 +23,7 @@ export function totalKeys(pdchs) {
 
 export function segmenter(str) {
   let segs = str.split(tsek)
-  let depth = (segs.length < 15) ? 10 : 2
+  let depth = (segs.length < 10) ? 10 : 2
   // log('SEGS', segs)
   let old = str
   let size = segs.length

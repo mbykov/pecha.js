@@ -129,6 +129,6 @@ export function navigate(state) {
   if (section == 'main') twoPanes(state), showText(state)
   else progress.classList.remove('is-shown')
 
-  state = {section: 'home'}
+  // state = {section: 'home'}
   settings.set('state', state)
 }
