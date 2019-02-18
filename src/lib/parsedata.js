@@ -49,7 +49,7 @@ export function showCholok(el) {
   placePopup(ncoords, otrans)
 }
 
-export function parsePhrase(el, chain) {
+export function parsePhrase(el, chain, lastsek) {
   el.textContent = ''
   chain.forEach((seg, idx)=> {
     let ospan
@@ -65,6 +65,7 @@ export function parsePhrase(el, chain) {
     el.appendChild(ospan)
     if (idx < chain.length-1) el.appendChild(span(tsek, 'tsek'))
   })
+  if (lastsek) el.appendChild(span(tsek, 'tsek'))
   let progress = q('#progress')
   progress.classList.remove('is-shown')
 }

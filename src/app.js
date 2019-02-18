@@ -113,12 +113,14 @@ document.addEventListener("mouseleave", function(ev) {
 
 document.addEventListener("keyup", function(ev) {
   if (ev.ctrlKey == true) return
-  hidePopups()
+  // hidePopups()
+  let transcript = q('#transcript')
+  transcript.classList.add('is-hidden')
 }, false)
 
 document.addEventListener("keydown", function(ev) {
   if (ev.ctrlKey == true) return
-  hidePopups()
+  // hidePopups()
   if (ev.shiftKey != true) return
   let ohover = getInnermostHovered()
   if (!ohover) return

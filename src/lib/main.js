@@ -12,10 +12,12 @@ const log = console.log
 export function mainResults(el, compound) {
   let progress = q('#progress')
   progress.classList.add('is-shown')
+  let text = el.textContent.trim()
   let retsek = new RegExp(tsek+'$')
-  let str = el.textContent.trim().replace(retsek, '')
-  let segs = str.split(tsek)
-
+  let str = text.replace(retsek, '')
+  let last = _.last(text)
+  let lastsek = (last == tsek) ? true : false
+  // let segs = str.split(tsek)
   let pdchs = segmenter(str)
   // log('MAIN pdchs:', segs.length, '=>', pdchs.length)
   // return
@@ -48,7 +50,7 @@ export function mainResults(el, compound) {
         el.dataset.chains = JSON.stringify(chain)
         showPopup(el, true)
       }
-      else parsePhrase(el, chain)
+      else parsePhrase(el, chain, lastsek)
     })
 }
 
