@@ -39,8 +39,8 @@ export function showText(state) {
 }
 
 export function showCholok(el) {
+  // log('SHOW CHOLOK', el)
   let coords = getCoords(el)
-  // log('SHOW TRANS', coords)
   let trnanscript = cholok(el.textContent)
   let ncoords = {top: coords.top - 40, left: coords.left + 15}
   let otrans = q('#transcript')

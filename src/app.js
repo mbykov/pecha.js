@@ -120,10 +120,9 @@ document.addEventListener("keyup", function(ev) {
 
 document.addEventListener("keydown", function(ev) {
   if (ev.ctrlKey == true) return
-  // hidePopups()
   if (ev.shiftKey != true) return
   let ohover = getInnermostHovered()
-  if (!ohover) return
+  if (ohover.id == 'source') ohover = q('.tibpar')
   showCholok(ohover)
 }, false)
 
