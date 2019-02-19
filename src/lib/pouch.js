@@ -105,16 +105,22 @@ export function replicateDB() {
   })
 }
 
-export function remoteDictsList() {
-  let remoteDBs = new PouchDB('http://localhost:5984/_all_dbs')
-  log('DBS LIST', remoteDBs)
+export function remoteDictsList(cb) {
   let url = 'http://localhost:5984/_all_dbs'
+  let error = 'something goes wrong, no connection?'
   curl.get(url, {}, function(err, res, body) {
     if (err) {
-      log('CURL ERR', err)
+      cb(error)
       return
     }
-    log('RESPONSE', res)
-    log('BODY', body)
+    if (res.statusCode == 200) {
+      try {
+        let rdbs = JSON.parse(body)
+        cb(rdbs)
+      } catch(err) {
+        cb(error)
+      }
+    }
+    else cb(error)
   });
 }

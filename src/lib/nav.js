@@ -4,7 +4,7 @@ import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
 import { replicateDB } from "./pouch";
-import { cloneServerDicts, parseCSV } from "./dict";
+import { serverDicts, parseCSV } from "./dict";
 
 const log = console.log
 const clipboard = require('electron-clipboard-extended')
@@ -123,7 +123,7 @@ export function navigate(state) {
   let progress = q('#progress')
   log('BEFORE')
   if (section == 'main') twoPanes(state), showText(state)
-  else if (section == 'clone') cloneServerDicts()
+  else if (section == 'clone') serverDicts()
   else progress.classList.remove('is-shown')
 
   // state = {section: 'home'}

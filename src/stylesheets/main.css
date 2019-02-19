@@ -84,7 +84,8 @@ h4 {
 }
 
 .link {
-    cursor: pointer;
+  cursor: pointer;
+  color: maroon;
 }
 
 .clause {

@@ -13,6 +13,7 @@ import { showCholok, showResults, showPopup } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
 // import { synchServer, parseCSV } from "./lib/dict";
 import { checkCfg, cleanupDB } from "./lib/pouch";
+import { startCloning } from "./lib/dict";
 
 const settings = require('electron').remote.require('electron-settings')
 // const Mousetrap = require('mousetrap')
@@ -78,6 +79,8 @@ document.addEventListener('click', (ev) => {
     shell.openExternal(href)
   } else if (data.section) {
     navigate({section: data.section})
+  } else if (data.clone) {
+    startCloning(data.clone)
   } else if (data.docs) {
     mainResults(ev.target , true)
   }
