@@ -3,8 +3,6 @@ import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
 import cholok from 'cholok'
 import { tibsyms, tibsyls } from "./tibetan_data";
-// import { possibleKeys } from "./segmenter";
-// import { getPossible } from "./pouch";
 
 let tsek = tibsyms.tsek
 const log = console.log

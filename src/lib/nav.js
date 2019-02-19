@@ -4,6 +4,7 @@ import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
 import { replicateDB } from "./pouch";
+import { cloneServerDicts, parseCSV } from "./dict";
 
 const log = console.log
 const clipboard = require('electron-clipboard-extended')
@@ -85,12 +86,6 @@ function hideAll () {
   oambi.classList.add('is-hidden')
 }
 
-function showSection(section) {
-  hideAll()
-  const sectionId = ['#', section].join('')
-  q(sectionId).classList.add('is-shown')
-}
-
 function goLeft() {
   if (hstate <= 0) return
   else hstate--
@@ -126,9 +121,18 @@ export function navigate(state) {
   }
   // log('HIST', history)
   let progress = q('#progress')
+  log('BEFORE')
   if (section == 'main') twoPanes(state), showText(state)
+  else if (section == 'clone') cloneServerDicts()
   else progress.classList.remove('is-shown')
 
   // state = {section: 'home'}
   settings.set('state', state)
+}
+
+function showSection(section) {
+  hideAll()
+  const sectionId = ['#', section].join('')
+  log('SEC ID', sectionId)
+  q(sectionId).classList.add('is-shown')
 }

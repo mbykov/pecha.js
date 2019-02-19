@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { getPossible } from "./pouch";
 import { tibsyms, tibsuff } from "./tibetan_data";
 
 const log = console.log

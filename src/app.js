@@ -11,8 +11,8 @@ import { navigate } from './lib/nav';
 import sband from "./lib/sband";
 import { showCholok, showResults, showPopup } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
-import { parseStarDict, parseCSV } from "./lib/dict";
-import { checkCfg, setDBs, cleanupDB } from "./lib/pouch";
+// import { synchServer, parseCSV } from "./lib/dict";
+import { checkCfg, cleanupDB } from "./lib/pouch";
 
 const settings = require('electron').remote.require('electron-settings')
 // const Mousetrap = require('mousetrap')
@@ -51,7 +51,7 @@ ipcRenderer.on('section', function (event, section) {
 })
 
 ipcRenderer.on('action', function (event, action) {
-  if (action == 'stardict') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, parseStarDict)
+  if (action == 'clonedicts') navigate({section: 'clone'})
   else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, parseCSV)
   else if (action == 'cleanupdb') cleanupDB()
 })

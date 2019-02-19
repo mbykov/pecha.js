@@ -50,7 +50,6 @@ export function checkCfg() {
 }
 
 function createZeroCfg(upath, version) {
-  log('__ZERO CFG__')
   let destpath = path.resolve(upath, 'pouch')
   let fns = fse.readdirSync(destpath)
 
@@ -62,10 +61,7 @@ function createZeroCfg(upath, version) {
     cfg.push(cf)
   })
   settings.set('cfg', cfg)
-
   log('__ZERO CFG__', cfg)
-  // let versionpath = path.resolve(upath, 'version.json')
-  // fse.writeJsonSync(versionpath, {version: version})
   return cfg
 }
 
