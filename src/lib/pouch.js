@@ -2,7 +2,8 @@ import _ from 'lodash'
 import { remote } from "electron";
 
 const path = require('path')
-let fse = require('fs-extra')
+const fse = require('fs-extra')
+const curl = require('curl')
 const app = remote.app;
 const apath = app.getAppPath()
 const upath = app.getPath("userData")
@@ -102,4 +103,18 @@ export function replicateDB() {
   }).on('error', function (err) {
     log('boo, something went wrong!', err)
   })
+}
+
+export function remoteDictsList() {
+  let remoteDBs = new PouchDB('http://localhost:5984/_all_dbs')
+  log('DBS LIST', remoteDBs)
+  let url = 'http://localhost:5984/_all_dbs'
+  curl.get(url, {}, function(err, res, body) {
+    if (err) {
+      log('CURL ERR', err)
+      return
+    }
+    log('RESPONSE', res)
+    log('BODY', body)
+  });
 }

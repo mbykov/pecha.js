@@ -418,3 +418,7 @@ div.qtext > p.hidden {
 .dict-article {
   padding-top: 12px;
 }
+
+#server-dicts-table {
+  width: 75%;
+}
