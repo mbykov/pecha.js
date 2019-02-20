@@ -10,6 +10,7 @@ import { libMenuTemplate } from "./menu/lib_menu_template";
 import { aboutMenuTemplate } from "./menu/about_menu_template";
 import { dictMenuTemplate } from "./menu/dict_menu_template";
 import { helpMenuTemplate } from "./menu/help_menu_template";
+import { replicate } from "../../replicator.js";
 
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
@@ -82,11 +83,29 @@ app.on("ready", () => {
     win.webContents.send('reload')
   })
 
+
   globalShortcut.register('CommandOrControl+R', () => win.webContents.send('reread'));
   // globalShortcut.register('CommandOrControl+R', () => win.reload());
   globalShortcut.register('CommandOrControl+Shift+R', () => win.reload());
   // globalShortcut.register('CommandOrControl+R', () => win.reload());
-});
+
+  const apath = app.getAppPath()
+  const upath = app.getPath("userData")
+  let localpath = path.resolve(upath, 'pouch', 'vasilyev')
+  let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
+
+  console.log('APATH', apath, 'UPATH', upath)
+
+  ipcMain.on('replicate', (event, arg) => {
+    console.log('PING', arg) // prints "ping"
+    replicate(remotepath, localpath, function(res) {
+      console.log('REPL RES:', res)
+    })
+    // event.sender.send('asynchronous-reply', 'pong')
+  })
+
+
+})
 
 
 

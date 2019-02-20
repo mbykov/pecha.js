@@ -34,6 +34,7 @@
     "axios": "^0.18.0",
     "cholok": "^0.1.5",
     "curl": "^0.1.4",
+    "debug": "^4.1.1",
     "directory-tree": "^2.1.0",
     "electron-clipboard-extended": "^1.1.1",
     "electron-is-dev": "^1.0.1",

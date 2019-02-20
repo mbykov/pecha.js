@@ -1,9 +1,10 @@
 //
 import _ from "lodash"
+import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
-import { replicateDB } from "./pouch";
+import { replicateDB, createNewDB } from "./pouch";
 import { serverDicts, parseCSV } from "./dict";
 
 const log = console.log
@@ -67,7 +68,12 @@ Mousetrap.bind(['esc'], function(ev) {
 
 Mousetrap.bind(['ctrl+k'], function(ev) {
   log('CLICK CLONE')
-  replicateDB()
+  createNewDB()
+})
+
+Mousetrap.bind(['ctrl+j'], function(ev) {
+  log('MESS TO BACKG')
+  ipcRenderer.send('replicate', 'ping')
 })
 
 Mousetrap.bind(['ctrl+p'], function(ev) {

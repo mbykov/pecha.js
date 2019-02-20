@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { remote } from "electron";
+// import { replicate } from "../../../replicator.js";
 
 const path = require('path')
 const fse = require('fs-extra')
@@ -10,7 +11,7 @@ const upath = app.getPath("userData")
 const settings = remote.require('electron-settings')
 const log = console.log
 const PouchDB = require('pouchdb')
-
+const isDev = require('electron-is-dev')
 
 let dbs = []
 let pouchpath = path.resolve(upath, 'pouch')
@@ -93,15 +94,155 @@ export function setDBs() {
 // useradd --system -b /opt/couchdb --shell /bin/bash -g couchdb couchdb
 // sudo -i -u couchdb bin/couchdb
 // lobsang vasilyev
-export function replicateDB() {
-  if (!dbs.length) setDBs()
-  let localDB = _.find(dbs, db=> { return db.dname == 'vasilyev'})
-  log('DB-name', localDB.dname)
-  let remoteDB = new PouchDB('http://localhost:5984/vasilyev')
-  localDB.replicate.to(remoteDB).on('complete', function () {
-    log('yay, were done!')
+
+export function createNewDB() {
+  let localpath = path.resolve(upath, 'pouch', 'vasilyev')
+  let localDB = new PouchDB(localpath)
+  localDB.info().then(function (info) {
+    log('LOCAL INFO', info);
+  })
+  let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
+  let remoteDB = new PouchDB(remotepath)
+
+  remoteDB.info().then(function (info) {
+    // log('REMOTE INFO', info);
+  })
+}
+
+export function replicateDB_(dbname, cb) {
+  let localpath = path.resolve(upath, 'pouch', dbname)
+  let localDB = new PouchDB(localpath)
+  localDB.dname = dbname
+  let remotepath = ['http://localhost:5984', dbname].join('/')
+  let remoteDB = new PouchDB(remotepath)
+
+  // var db = new PouchDB('http://example.com/dbname', {
+  //   fetch: function (url, opts) {
+  //     opts.headers.set('X-Some-Special-Header', 'foo');
+  //     return PouchDB.fetch(url, opts);
+  //   }
+  // });
+
+
+  // replicate(remotepath, localpath, function(res) {
+  //   log('HERE RES', res)
+  //   cb(res)
+  // })
+  // return
+
+  // let remoteDB = new PouchDB(remotepath, {
+  //   ajax: {
+  //     method: 'POST',
+  //     mode: 'cors',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'withCredentials' : true
+  //     },
+  //     credentials: 'include',
+  //     withCredentials: true
+  //   }
+  // });
+  // remoteDB.info().then(function (info) {
+  //   log('REMOTE INFO', info);
+  // })
+
+  log('LOCALPATH', localpath)
+  log('REMOTEPATH', remotepath)
+
+  remoteDB.replicate.to(localDB).on('complete', function (res) {
+    log('ok, were done!', res)
   }).on('error', function (err) {
     log('boo, something went wrong!', err)
+  })
+
+  return
+
+  // localDB.replicate.from(remoteDB)
+  //   .on('complete', function(info) {
+  //     // then two-way, continuous, retriable sync
+  //     log('SYNC', info)
+  //   }).on('error', log('ERR'));
+
+  localDB.replicate.from(remoteDB, {batch_size: 1000})
+    .on('complete', function (info) {
+      log('REPL', info)
+      cb(true)
+    }).on('error', function (err) {
+      // handle error
+      log('____ERR', err)
+      cb(false)
+    })
+
+  return
+
+  remoteDB.replicate.to(localDB).then(function (result) {
+    log('REPLICATION COMPLETED', result);
+    cb(true)
+  }).catch(function (err) {
+    log(err);
+    cb(false)
+  });
+
+  // remoteDB.replicate.to(localDB, {batch_size: 1000}).then(function (result) {
+  //   log('REPLICATION COMPLETED', result);
+  //   cb(true)
+  // }).catch(function (err) {
+  //   log(err);
+  //   cb(false)
+  // });
+
+  return
+
+  remoteDB.info().then(function (info) {
+    log('REMOTE INFO', info);
+    cb(true)
+  })
+  // let replication = localDB.replicate.from(remoteDB, {live: false, batch_size: 1000, batches_limit: 30}) .on('change', function (info) { console.log('change event'); console.log(info); }).on('complete', function (info) { console.log('complete event'); console.log(info); }).on('error', function (err) { console.log('error event'); console.log(err); });
+  // return
+
+  // localDB.sync(remoteDB) //No options here -> One time sync
+  //   .on('complete', (info) => {
+  //     log('SYNC', info)
+  //   });
+  log('BEFORE REMOTE');
+
+  remoteDB.replicate.to(localDB, {batch_size: 1000, batches_limit: 30}).then(function (result) {
+    log('REPLICATION COMPLETED', result);
+    cb(true)
+  }).catch(function (err) {
+    log(err);
+    cb(false)
+  });
+  return
+
+  var rep = PouchDB.replicate(remoteDB, localDB, {
+    // live: true,
+    // retry: true
+  }).on('change', function (info) {
+    log('change', info)
+  }).on('paused', function (err) {
+    log('paused', err)
+  }).on('active', function (res) {
+    log('active', res)
+  }).on('denied', function (err) {
+    log('denied', err)
+  }).on('complete', function (info) {
+    log('complete', info)
+  }).on('error', function (err) {
+    log('error', err)
+  });
+
+  return
+
+  localDB.info().then(function (info) {
+    log('LOCAL INFO', info);
+    remoteDB.replicate.to(localDB).on('complete', function () {
+      log('ok, DB cloned to', localpath)
+      cb(true)
+    }).on('error', function (err) {
+      log('something went wrong!', err)
+      cb(false)
+    })
   })
 }
 
@@ -118,9 +259,9 @@ export function remoteDictsList(cb) {
         let rdbs = JSON.parse(body)
         cb(rdbs)
       } catch(err) {
-        cb(error)
+        cb(err)
       }
     }
-    else cb(error)
+    else cb(res.statusCode)
   });
 }
