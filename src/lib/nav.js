@@ -4,8 +4,12 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
-import { replicateDB, createNewDB } from "./pouch";
+import { replicateDB, infoNewDB } from "./pouch";
 import { serverDicts, parseCSV } from "./dict";
+import { remote } from "electron";
+const app = remote.app;
+const apath = app.getAppPath()
+const upath = app.getPath("userData")
 
 const log = console.log
 const clipboard = require('electron-clipboard-extended')
@@ -15,6 +19,7 @@ const fse = require('fs-extra')
 const path = require('path')
 const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
+
 
 let init = {section: 'home'}
 let history = []
@@ -68,7 +73,7 @@ Mousetrap.bind(['esc'], function(ev) {
 
 Mousetrap.bind(['ctrl+k'], function(ev) {
   log('CLICK CLONE')
-  createNewDB()
+  infoNewDB(upath)
 })
 
 Mousetrap.bind(['ctrl+j'], function(ev) {

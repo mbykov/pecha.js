@@ -1,21 +1,22 @@
 import _ from 'lodash'
-import { remote } from "electron";
+// import { remote } from "electron";
 // import { replicate } from "../../../replicator.js";
 
 const path = require('path')
 const fse = require('fs-extra')
 const curl = require('curl')
-const app = remote.app;
-const apath = app.getAppPath()
-const upath = app.getPath("userData")
-const settings = remote.require('electron-settings')
+// const app = remote.app;
+// const apath = app.getAppPath()
+// const upath = app.getPath("userData")
+
+const settings = require('electron-settings')
 const log = console.log
 const PouchDB = require('pouchdb')
 const isDev = require('electron-is-dev')
 
 let dbs = []
-let pouchpath = path.resolve(upath, 'pouch')
-fse.ensureDirSync(pouchpath)
+// let pouchpath = path.resolve(upath, 'pouch')
+// fse.ensureDirSync(pouchpath)
 
 export function cleanupDB(state) {
   log('CLEAN UP')
@@ -95,26 +96,38 @@ export function setDBs() {
 // sudo -i -u couchdb bin/couchdb
 // lobsang vasilyev
 
-export function createNewDB() {
+export function infoNewDB(upath) {
   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
   let localDB = new PouchDB(localpath)
   localDB.info().then(function (info) {
     log('LOCAL INFO', info);
+    localDB.close()
   })
   let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
-  let remoteDB = new PouchDB(remotepath)
+  // let remoteDB = new PouchDB(remotepath)
 
-  remoteDB.info().then(function (info) {
-    // log('REMOTE INFO', info);
-  })
+  // remoteDB.info().then(function (info) {
+  //   // log('REMOTE INFO', info);
+  //   remoteDB.close()
+  // })
+
 }
 
-export function replicateDB_(dbname, cb) {
-  let localpath = path.resolve(upath, 'pouch', dbname)
+export function replicateDB(dbname, cb) {}
+
+export function replicate(remotepath, localpath, cb) {
   let localDB = new PouchDB(localpath)
-  localDB.dname = dbname
-  let remotepath = ['http://localhost:5984', dbname].join('/')
+  // localDB.dname = dbname
   let remoteDB = new PouchDB(remotepath)
+
+  remoteDB.replicate.to(localDB).then(function (result) {
+    log('REPLICATION COMPLETED', result);
+    cb(true)
+  }).catch(function (err) {
+    log(err);
+    cb(false)
+  });
+  return
 
   // var db = new PouchDB('http://example.com/dbname', {
   //   fetch: function (url, opts) {

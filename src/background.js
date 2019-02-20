@@ -10,7 +10,7 @@ import { libMenuTemplate } from "./menu/lib_menu_template";
 import { aboutMenuTemplate } from "./menu/about_menu_template";
 import { dictMenuTemplate } from "./menu/dict_menu_template";
 import { helpMenuTemplate } from "./menu/help_menu_template";
-import { replicate } from "../../replicator.js";
+import { replicate } from "./lib/pouch";
 
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
