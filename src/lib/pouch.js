@@ -107,68 +107,78 @@ export function cleanupDB(state) {
   log('CLEAN UP')
 }
 
-export function replicate(remotepath, localpath, cb) {
-  // log('LOCALPATH', localpath)
-  // log('REMOTEPATH', remotepath)
-
-  let localDB = new PouchDB(localpath)
+export function replicate(remotepath, localpath) {
+  log('LOCALPATH', localpath)
+  log('REMOTEPATH', remotepath)
+   let localDB = new PouchDB(localpath)
   // localDB.dname = dbname
   let remoteDB = new PouchDB(remotepath)
 
-  remoteDB.replicate.to(localDB).then(function (result) {
-    log('REPLICATION COMPLETED', result);
-    cb(true)
-  }).catch(function (err) {
-    log(err);
-    cb(false)
-  });
-
-  localDB.replicate.from(remoteDB, {batch_size: 1000})
-    .on('complete', function (info) {
-      log('REPL', info)
-      cb(true)
-    }).on('error', function (err) {
-      // handle error
-      log('____ERR', err)
-      cb(false)
+  return localDB.info()
+    .then(function(info) {
+      return PouchDB.replicate(remoteDB, localDB, {
+        // live: true,
+        // retry: true
+        batch_size: 10000,
+        timeout: false
+      }).on('change', function (info) {
+        log('change', info)
+      }).on('paused', function (err) {
+        log('paused', err)
+      }).on('active', function (res) {
+        log('active', res)
+      }).on('denied', function (err) {
+        log('denied', err)
+      }).on('complete', function (info) {
+        log('complete', info)
+      }).on('error', function (err) {
+        log('error', err)
+      })
     })
 
-  return
-
-  var rep = PouchDB.replicate(remoteDB, localDB, {
-    // live: true,
-    // retry: true
-  }).on('change', function (info) {
-    log('change', info)
-  }).on('paused', function (err) {
-    log('paused', err)
-  }).on('active', function (res) {
-    log('active', res)
-  }).on('denied', function (err) {
-    log('denied', err)
-  }).on('complete', function (info) {
-    log('complete', info)
-  }).on('error', function (err) {
-    log('error', err)
-  })
+  // remoteDB.replicate.to(localDB).then(function (result) {
+  //   log('REPLICATION COMPLETED', result);
+  //   localDB.info()
+  //     .then(function(info) {
+  //           return result
+  //     })
+  // }).catch(function (err) {
+  //   log(err);
+  // })
 }
 
-export function remoteDicts(cb) {
-  let url = 'http://localhost:5984/_all_dbs'
-  let error = 'something goes wrong, no connection?'
-  curl.get(url, {}, function(err, res, body) {
-    if (err) {
-      cb(error)
-      return
-    }
-    if (res.statusCode == 200) {
-      try {
-        let rdbs = JSON.parse(body)
-        cb(rdbs)
-      } catch(err) {
-        cb(err)
-      }
-    }
-    else cb(res.statusCode)
-  });
+  // localDB.replicate.from(remoteDB, {batch_size: 1000})
+  //   .on('complete', function (info) {
+  //     log('REPL', info)
+  //     cb(true)
+  //   }).on('error', function (err) {
+  //     // handle error
+  //     log('____ERR', err)
+  //     cb(false)
+  //   })
+
+// {
+//   var rep = PouchDB.replicate(remoteDB, localDB, {
+//     // live: true,
+//     // retry: true
+//   }).on('change', function (info) {
+//     log('change', info)
+//   }).on('paused', function (err) {
+//     log('paused', err)
+//   }).on('active', function (res) {
+//     log('active', res)
+//   }).on('denied', function (err) {
+//     log('denied', err)
+//   }).on('complete', function (info) {
+//     log('complete', info)
+//   }).on('error', function (err) {
+//     log('error', err)
+//   })
+// }
+
+export function remoteDicts() {
+  return couch.listDatabases()
+    .catch(function(err) {
+      log('REMOTE DICTS ERR', err)
+    })
 }

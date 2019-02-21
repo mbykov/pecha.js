@@ -5,10 +5,13 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, getInnermostHove
 import { scrape, segmenter, totalKeys } from "./segmenter";
 import { tibsyms, tibsuff } from "./tibetan_data";
 import { parsePhrase, noResult, showPopup } from "./parsedata";
-// import { queryDBs } from "./pouch";
 
 let tsek = tibsyms.tsek
 const log = console.log
+
+ipcRenderer.on('replayDBs', function (event, query) {
+  compactDocs(query)
+})
 
 export function mainResults(el, compound) {
   let progress = q('#progress')
@@ -32,10 +35,6 @@ export function mainResults(el, compound) {
   let query = {keys: keys, pdchs: pdchs, compound: compound, lastsek: lastsek}
   ipcRenderer.send('queryDBs', query)
 }
-
-ipcRenderer.on('replayDBs', function (event, query) {
-  compactDocs(query)
-})
 
 // let query = {keys: keys, pdchs: pdchs, compound: compound, lastsek: lastsek}
 function compactDocs(query) {

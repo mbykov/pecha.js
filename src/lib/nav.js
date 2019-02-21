@@ -4,7 +4,6 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
-import { replicateDB, infoNewDB } from "./pouch";
 import { serverDicts, parseCSV } from "./dict";
 import { remote } from "electron";
 const app = remote.app;
@@ -74,13 +73,8 @@ Mousetrap.bind(['esc'], function(ev) {
 Mousetrap.bind(['ctrl+i'], function(ev) {
   log('CLICK INFO')
   ipcRenderer.send('info', 'vasilyev')
-  // infoNewDB(upath)
 })
 
-Mousetrap.bind(['ctrl+j'], function(ev) {
-  log('MESS TO BACKG')
-  ipcRenderer.send('replicate', 'ping')
-})
 
 Mousetrap.bind(['ctrl+p'], function(ev) {
   log('ZERO CFG')
@@ -133,7 +127,7 @@ export function navigate(state) {
   }
   let progress = q('#progress')
   if (section == 'main') twoPanes(state), showText(state)
-  else if (section == 'clone') serverDicts()
+  else if (section == 'clone') ipcRenderer.send('remoteDicts', '') // serverDicts()
   else progress.classList.remove('is-shown')
 
   // state = {section: 'home'}

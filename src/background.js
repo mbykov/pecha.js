@@ -11,7 +11,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { setDBs, getCfg, replicate, infoDB, queryDBs } from "./lib/pouch"
+import { setDBs, getCfg, replicate, infoDB, queryDBs, remoteDicts } from "./lib/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -101,12 +101,13 @@ app.on("ready", () => {
   let cfg = getCfg(upath)
   console.log('CFG', cfg)
 
-  ipcMain.on('replicate', (event, arg) => {
-    console.log('B:REPLICATE', arg) // prints "ping"
-    replicate(remotepath, localpath, function(res) {
-      console.log('REPL RES:', res)
-    })
-    // event.sender.send('asynchronous-reply', 'pong')
+  ipcMain.on('replicate', (event, dbname) => {
+    console.log('B:REPLICATE', dbname)
+    replicate(remotepath, localpath)
+      .then(function(res) {
+        console.log('BB:REPL RES:', res)
+        event.sender.send('replicateReply', res)
+      })
   })
 
   ipcMain.on('info', (event, arg) => {
@@ -124,6 +125,13 @@ app.on("ready", () => {
       .then(function(docs) {
         query.docs = docs
         event.sender.send('replayDBs', query)
+      })
+  })
+
+  ipcMain.on('remoteDicts', (event, query) => {
+    remoteDicts()
+      .then(function(dbs) {
+        event.sender.send('remoteDictsReply', dbs)
       })
   })
 
