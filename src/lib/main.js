@@ -1,10 +1,11 @@
 //
 import _ from 'lodash'
-import { q, qs, empty, create, remove, span, p, div, getCoords } from './utils'
+import { ipcRenderer } from "electron";
+import { q, qs, empty, create, remove, span, p, div, getCoords, getInnermostHovered } from './utils'
 import { scrape, segmenter, totalKeys } from "./segmenter";
-import { getPossible } from "./pouch";
 import { tibsyms, tibsuff } from "./tibetan_data";
 import { parsePhrase, noResult, showPopup } from "./parsedata";
+// import { queryDBs } from "./pouch";
 
 let tsek = tibsyms.tsek
 const log = console.log
@@ -20,7 +21,6 @@ export function mainResults(el, compound) {
   // let segs = str.split(tsek)
   let pdchs = segmenter(str)
   // log('MAIN pdchs:', segs.length, '=>', pdchs.length)
-  // return
 
   let keys
   let keyres = totalKeys(pdchs)
@@ -29,30 +29,37 @@ export function mainResults(el, compound) {
   // log('MAIN keys:', keyres.main, 'add', keyres.added)
   // keys = keyres.main
 
-  getPossible(keys)
-    .then(docs=> {
-      docs = _.flatten(docs)
-      // log('DOCS', docs)
-      // return
-      let res = makeChains(pdchs, docs)
-      let chains = res.chains
-      // log('FULL, CHAINS', res.full, chains.length, chains)
-      let chain
-      if (chains.length > 1) chain = commonParts(chains)
-      else if (chains.length == 1) chain = chains[0]
-      else {
-        noResult(el)
-        return
-      }
-      // log('CHAIN:', chain)
-      if (compound) {
-        // log('main-compound', chains.length, chain)
-        el.dataset.chains = JSON.stringify(chain)
-        showPopup(el, true)
-      }
-      else parsePhrase(el, chain, lastsek)
-    })
+  let query = {keys: keys, pdchs: pdchs, compound: compound, lastsek: lastsek}
+  ipcRenderer.send('queryDBs', query)
 }
+
+ipcRenderer.on('replayDBs', function (event, query) {
+  compactDocs(query)
+})
+
+// let query = {keys: keys, pdchs: pdchs, compound: compound, lastsek: lastsek}
+function compactDocs(query) {
+  let el = getInnermostHovered()
+  let docs = _.flatten(query.docs)
+  let res = makeChains(query.pdchs, docs)
+  let chains = res.chains
+  // log('FULL, CHAINS', res.full, chains.length, chains)
+  let chain
+  if (chains.length > 1) chain = commonParts(chains)
+  else if (chains.length == 1) chain = chains[0]
+  else {
+    noResult(el)
+    return
+  }
+  // log('CHAIN:', chain)
+  if (query.compound) {
+    // log('main-compound', chains.length, chain)
+    el.dataset.chains = JSON.stringify(chain)
+    showPopup(el, true)
+  }
+  else parsePhrase(el, chain, query.lastsek)
+}
+
 
 function commonParts(chains) {
   let first = chains[0]

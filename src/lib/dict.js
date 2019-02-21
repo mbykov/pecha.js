@@ -1,6 +1,6 @@
 //
 import _ from 'lodash'
-import { checkCfg, remoteDictsList, replicateDB } from "./pouch";
+import { checkCfg, remoteDicts, replicateDB } from "./pouch";
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
 
 const log = console.log
@@ -10,7 +10,7 @@ export function serverDicts() {
   // log('CLONE DICTS: CFG:', cfg)
   log('SERVER DICTS START__________________')
   let defaults = ['terms', 'verbs', 'lobsang', '_users']
-  remoteDictsList(function(rdbs) {
+  remoteDicts(function(rdbs) {
     let otable = q('#server-dicts-table tbody')
     // log('TABLE', otable)
     let dbnames = _.difference(rdbs, defaults)

@@ -12,7 +12,6 @@ import sband from "./lib/sband";
 import { showCholok, showResults, showPopup } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
 // import { synchServer, parseCSV } from "./lib/dict";
-import { checkCfg, cleanupDB } from "./lib/pouch";
 import { startCloning } from "./lib/dict";
 
 const settings = require('electron').remote.require('electron-settings')
@@ -138,8 +137,6 @@ clipboard
     navigate(state)
   })
   .startWatching()
-
-checkCfg()
 
 function hidePopups() {
   qs('.popup').forEach(popup=> {

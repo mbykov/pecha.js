@@ -71,9 +71,10 @@ Mousetrap.bind(['esc'], function(ev) {
   // похоже, общий метод не получится
 })
 
-Mousetrap.bind(['ctrl+k'], function(ev) {
-  log('CLICK CLONE')
-  infoNewDB(upath)
+Mousetrap.bind(['ctrl+i'], function(ev) {
+  log('CLICK INFO')
+  ipcRenderer.send('info', 'vasilyev')
+  // infoNewDB(upath)
 })
 
 Mousetrap.bind(['ctrl+j'], function(ev) {
@@ -130,9 +131,7 @@ export function navigate(state) {
     history.push(state)
     hstate = history.length-1
   }
-  // log('HIST', history)
   let progress = q('#progress')
-  log('BEFORE')
   if (section == 'main') twoPanes(state), showText(state)
   else if (section == 'clone') serverDicts()
   else progress.classList.remove('is-shown')
