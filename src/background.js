@@ -95,7 +95,10 @@ app.on("ready", () => {
   const upath = app.getPath("userData")
   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
   let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
+  // let localpath = ''
+  // let remotepath = ''
   let dbnames = setDBs(upath)
+
   console.log('B:dbnames', dbnames)
   // console.log('APATH', apath, 'UPATH', upath)
   let cfg = getCfg(upath)
@@ -103,21 +106,28 @@ app.on("ready", () => {
 
   ipcMain.on('replicate', (event, dbname) => {
     console.log('B:REPLICATE', dbname)
+    // replicate(remotepath, localpath)
+    //   .then(function(res) {
+    //     console.log('BB:REPL RES:', res)
+    //     event.sender.send('replicateReply', res)
+    //   })
     replicate(remotepath, localpath)
-      .then(function(res) {
-        console.log('BB:REPL RES:', res)
+      .then(function (res) {
+        console.log('Hooray the stream replication is complete!');
         event.sender.send('replicateReply', res)
-      })
+      }).catch(function (err) {
+        console.log('oh no an error', err);
+      });
   })
 
-  ipcMain.on('info', (event, arg) => {
-    let localpath = path.resolve(upath, 'pouch', 'vasilyev')
-    console.log('B:INFO', arg) // prints "ping"
-    infoDB(localpath)
-      .then(function(info) {
-        console.log('B: INFO:', info)
-      })
-  })
+  // ipcMain.on('info', (event, arg) => {
+  //   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
+  //   console.log('B:INFO', arg) // prints "ping"
+  //   infoDB(localpath)
+  //     .then(function(info) {
+  //       console.log('B: INFO:', info)
+  //     })
+  // })
 
   // let query = {keys: keys, el: el, pdchs: pdchs, compound: compound}
   ipcMain.on('queryDBs', (event, query) => {

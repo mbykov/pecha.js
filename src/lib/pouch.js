@@ -3,19 +3,21 @@ import _ from 'lodash'
 // import { replicate } from "../../../replicator.js";
 
 const path = require('path')
-// const { app } = require('electron') || require('electron').remote
-// const apath = app.getAppPath()
-// const upath = app.getPath("userData")
-// let localpath = path.resolve(upath, 'pouch', 'vasilyev')
-// let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
 
 const fse = require('fs-extra')
 // const curl = require('curl')
 
+const isDev = require('electron-is-dev')
 const settings = require('electron-settings')
 const log = console.log
 const PouchDB = require('pouchdb')
-const isDev = require('electron-is-dev')
+
+PouchDB.plugin(require('pouchdb-load'));
+
+// let replicationStream = require('pouchdb-replication-stream');
+// PouchDB.plugin(replicationStream.plugin);
+// let MemoryStream = require('memorystream');
+// PouchDB.adapter('writableStream', replicationStream.adapters.writableStream);
 
 const NodeCouchDb = require('node-couchdb');
 const couch = new NodeCouchDb()
@@ -37,6 +39,7 @@ let dbs = []
 export function setDBs(upath) {
   let cfg = settings.get('cfg')
   if (!cfg) cfg = createZeroCfg(upath)
+  cfg = createZeroCfg(upath)
   log('===setDBs CFG===', cfg)
   let dbnames = _.compact(cfg.map(cf => { return (cf.active) ? cf.name : null }))
   log('POUCH:DBNS', dbnames)
@@ -53,6 +56,7 @@ export function setDBs(upath) {
 export function getCfg(upath) {
   let cfg = settings.get('cfg')
   if (!cfg) cfg = createZeroCfg(upath)
+  cfg = createZeroCfg(upath)
   return cfg
 }
 
@@ -62,7 +66,7 @@ function createZeroCfg(upath, version) {
   let fns = fse.readdirSync(pouchpath)
   let cfg = []
   fns.forEach((dn, idx) => {
-    if (dn == 'cfg.json') return
+    // if (dn == 'cfg.json') return
     let dpath = path.resolve(pouchpath, dn)
     let cf = {name: dn, active: true, idx: idx}
     cfg.push(cf)
@@ -101,40 +105,90 @@ export function infoDB(localpath) {
   return localDB.info()
 }
 
-export function replicateDB(dbname, cb) {}
+// export function replicateDB(dbname, cb) {}
 
 export function cleanupDB(state) {
   log('CLEAN UP')
 }
 
+export function replicate_STREAM(remotepath, localpath) {
+  let stream = new MemoryStream();
+  let source = new PouchDB(remotepath);
+  let dest = new PouchDB(localpath);
+
+  return Promise.all([
+    source.dump(stream),
+    dest.load(stream)
+  ])
+    // .then(function () {
+    //   console.log('Hooray the stream replication is complete!');
+    // }).catch(function (err) {
+    //   console.log('oh no an error', err);
+    // });
+}
+
 export function replicate(remotepath, localpath) {
+  let dumppath = path.resolve('/home/michael/tibetan/pecha.js', 'dump.txt')
+  log('DUMP', dumppath)
+  let localDB = new PouchDB(localpath);
+  return localDB.load('http://ru.diglossa.org/dump.txt')
+}
+
+export function replicate_(remotepath, localpath) {
+  // localpath += '___'
+  let upath = '/home/michael/.config/Pecha.js\ \(development\)'
+  localpath = path.resolve(upath, 'pouch', 'vasilyev')
+  remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
   log('LOCALPATH', localpath)
   log('REMOTEPATH', remotepath)
    let localDB = new PouchDB(localpath)
   // localDB.dname = dbname
   let remoteDB = new PouchDB(remotepath)
 
-  return localDB.info()
-    .then(function(info) {
-      return PouchDB.replicate(remoteDB, localDB, {
-        // live: true,
-        // retry: true
-        batch_size: 10000,
-        timeout: false
-      }).on('change', function (info) {
-        log('change', info)
-      }).on('paused', function (err) {
-        log('paused', err)
-      }).on('active', function (res) {
-        log('active', res)
-      }).on('denied', function (err) {
-        log('denied', err)
-      }).on('complete', function (info) {
-        log('complete', info)
-      }).on('error', function (err) {
-        log('error', err)
-      })
-    })
+  return PouchDB.replicate(remoteDB, localDB, {
+    // live: true,
+    // retry: true
+    batch_size: 100,
+    timeout: false
+  }).on('change', function (info) {
+    log('change', info.ok)
+  }).on('paused', function (err) {
+    log('paused', err)
+  }).on('active', function (res) {
+    log('active', res)
+  }).on('denied', function (err) {
+    log('denied', err)
+  }).on('complete', function (info) {
+    log('complete', info.ok)
+  }).on('error', function (err) {
+    log('error', err)
+  })
+
+
+  // return localDB.info()
+  //   .then(function(info) {
+  //     return PouchDB.replicate(remoteDB, localDB, {
+  //       // live: true,
+  //       // retry: true
+  //       batch_size: 10000,
+  //       timeout: false
+  //     }).on('change', function (info) {
+  //       log('change', info.ok)
+  //     }).on('paused', function (err) {
+  //       log('paused', err)
+  //     }).on('active', function (res) {
+  //       log('active', res)
+  //     }).on('denied', function (err) {
+  //       log('denied', err)
+  //     }).on('complete', function (info) {
+  //       log('complete', info.ok)
+  //     }).on('error', function (err) {
+  //       log('error', err)
+  //     })
+  //   })
+  //   // .then(function() {
+  //   //   localDB.info()
+  //   // })
 
   // remoteDB.replicate.to(localDB).then(function (result) {
   //   log('REPLICATION COMPLETED', result);
@@ -158,7 +212,7 @@ export function replicate(remotepath, localpath) {
   //   })
 
 // {
-//   var rep = PouchDB.replicate(remoteDB, localDB, {
+//   let rep = PouchDB.replicate(remoteDB, localDB, {
 //     // live: true,
 //     // retry: true
 //   }).on('change', function (info) {

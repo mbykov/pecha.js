@@ -5,6 +5,8 @@ import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
 import { serverDicts, parseCSV } from "./dict";
+// import { replicate } from "./pouch_";
+
 import { remote } from "electron";
 const app = remote.app;
 const apath = app.getAppPath()
@@ -18,7 +20,6 @@ const fse = require('fs-extra')
 const path = require('path')
 const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
-
 
 let init = {section: 'home'}
 let history = []
@@ -72,8 +73,18 @@ Mousetrap.bind(['esc'], function(ev) {
 
 Mousetrap.bind(['ctrl+i'], function(ev) {
   log('CLICK INFO')
-  ipcRenderer.send('info', 'vasilyev')
+  // ipcRenderer.send('info', 'vasilyev')
 })
+
+// Mousetrap.bind(['ctrl+j'], function(ev) {
+//   log('REPLICA_')
+//   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
+//   let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
+//   replicate(remotepath, localpath)
+//     .then(function(res) {
+//       log('CTRL-J', res)
+//     })
+// })
 
 
 Mousetrap.bind(['ctrl+p'], function(ev) {
