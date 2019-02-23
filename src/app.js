@@ -11,7 +11,7 @@ import { navigate } from './lib/nav';
 import sband from "./lib/sband";
 import { showCholok, showResults, showPopup } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
-// import { synchServer, parseCSV } from "./lib/dict";
+import { moveDictFirst } from "./lib/dict";
 
 const settings = require('electron').remote.require('electron-settings')
 // const Mousetrap = require('mousetrap')
@@ -80,6 +80,9 @@ document.addEventListener('click', (ev) => {
     navigate({section: data.section})
   } else if (data.clone) {
     ipcRenderer.send('replicate', data.clone)
+  } else if (data.activedict) {
+    let dbname = data.activedict
+    moveDictFirst(dbname)
   } else if (data.docs) {
     mainResults(ev.target , true)
   }

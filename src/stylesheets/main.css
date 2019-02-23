@@ -422,8 +422,19 @@ div.qtext > p.hidden {
 
 #server-dicts-table {
   width: 75%;
+  margin-top: 25px;
+}
+
+#local-dicts-table {
+  width: 75%;
+  margin-top: 25px;
 }
 
 #arrange-dicts {
   margin-top: 50px;
+}
+
+.dictname {
+  cursor: pointer;
+  color: maroon;
 }
