@@ -106,11 +106,8 @@ app.on("ready", () => {
 
   ipcMain.on('replicate', (event, dbname) => {
     console.log('B:REPLICATE', dbname)
-    // replicate(remotepath, localpath)
-    //   .then(function(res) {
-    //     console.log('BB:REPL RES:', res)
-    //     event.sender.send('replicateReply', res)
-    //   })
+    let localpath = path.resolve(upath, 'pouch', dbname)
+    // remotepath - пока dump.txt
     replicate(remotepath, localpath)
       .then(function (res) {
         console.log('Hooray the stream replication is complete!');

@@ -105,10 +105,15 @@ export function infoDB(localpath) {
   return localDB.info()
 }
 
-// export function replicateDB(dbname, cb) {}
-
 export function cleanupDB(state) {
   log('CLEAN UP')
+}
+
+export function replicate(remotepath, localpath) {
+  log('REPLICATE LOCAL', localpath)
+  let localDB = new PouchDB(localpath);
+  // return localDB.load('http://ru.diglossa.org/dump.txt')
+  return localDB.load('http://localhost:3000/dumps/dump.txt')
 }
 
 export function replicate_STREAM(remotepath, localpath) {
@@ -125,13 +130,6 @@ export function replicate_STREAM(remotepath, localpath) {
     // }).catch(function (err) {
     //   console.log('oh no an error', err);
     // });
-}
-
-export function replicate(remotepath, localpath) {
-  let dumppath = path.resolve('/home/michael/tibetan/pecha.js', 'dump.txt')
-  log('DUMP', dumppath)
-  let localDB = new PouchDB(localpath);
-  return localDB.load('http://ru.diglossa.org/dump.txt')
 }
 
 export function replicate_(remotepath, localpath) {

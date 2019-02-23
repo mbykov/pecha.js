@@ -5,7 +5,7 @@ import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
 import { serverDicts, parseCSV } from "./dict";
-// import { replicate } from "./pouch_";
+import { signup } from "./auth";
 
 import { remote } from "electron";
 const app = remote.app;
@@ -73,6 +73,12 @@ Mousetrap.bind(['esc'], function(ev) {
 
 Mousetrap.bind(['ctrl+i'], function(ev) {
   log('CLICK INFO')
+  // ipcRenderer.send('info', 'vasilyev')
+})
+
+Mousetrap.bind(['ctrl+u'], function(ev) {
+  log('CLICK SIGNUP')
+  signup(upath)
   // ipcRenderer.send('info', 'vasilyev')
 })
 

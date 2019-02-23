@@ -4,9 +4,9 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
 
 const log = console.log
+const settings = require('electron-settings')
 
 ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
-  log('____________ show remote')
   showRemoteDicts(rdbs)
 })
 
@@ -15,17 +15,21 @@ ipcRenderer.on('replicateReply', function (event, res) {
 })
 
 export function showRemoteDicts(rdbs) {
-  // let cfg = checkCfg()
+  let cfg = settings.get('cfg')
   // log('CLONE DICTS: CFG:', cfg)
-  log('SERVER DICTS START__________________')
   let defaults = ['terms', 'verbs', 'lobsang', '_users']
+  let readynames = cfg.map(cf=> { return cf.name })
+  let installed = _.uniq(defaults.concat(readynames))
+  let dbnames = _.difference(rdbs, installed)
+  // log('INSTALLED___', installed, dbnames)
+
   let otable = q('#server-dicts-table tbody')
-  // log('TABLE', otable)
-  let dbnames = _.difference(rdbs, defaults)
-  log('RDBS=>', rdbs, 'dfs', defaults, 'dbns', dbnames)
   dbnames.forEach(dbname=> {
-    // log('DBNAME_________', dbname)
+    let calls = qs('#server-dicts-table tr td')
+    let tdnames = _.map(calls, tr=> { return tr.textContent})
+    if (tdnames.includes(_.capitalize(dbname))) return
     let otr = create('tr')
+    otr.setAttribute('newtr', true)
     otable.appendChild(otr)
     let odt = create('td')
     otr.appendChild(odt)
