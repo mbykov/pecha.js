@@ -423,3 +423,7 @@ div.qtext > p.hidden {
 #server-dicts-table {
   width: 75%;
 }
+
+#arrange-dicts {
+  margin-top: 50px;
+}

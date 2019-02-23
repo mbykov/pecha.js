@@ -2,6 +2,7 @@
 import _ from 'lodash'
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
+import { navigate } from './nav';
 
 const log = console.log
 const settings = require('electron-settings')
@@ -11,8 +12,17 @@ ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
 })
 
 ipcRenderer.on('replicateReply', function (event, res) {
-  log('____________ replicate', res)
+  log('____________ replicateReply', res)
+  let state = {section: 'activedicts'}
+  navigate(state)
 })
+
+/*
+  встроенные - всегда - terms, verbs, lobsang - V
+  installed  - V
+  остальные - sync
+
+*/
 
 export function showRemoteDicts(rdbs) {
   let cfg = settings.get('cfg')
@@ -35,11 +45,17 @@ export function showRemoteDicts(rdbs) {
     otr.appendChild(odt)
     odt.textContent = _.capitalize(dbname)
     let oink = create('td', 'link')
-    oink.textContent = 'clone'
+    oink.textContent = 'sync'
     oink.dataset.clone = dbname
     otr.appendChild(oink)
   })
 }
+
+export function arrangeDicts(rdbs) {
+  let cfg = settings.get('cfg')
+  log('ACTIVE CFG:', cfg)
+}
+
 
 export function parseCSV() {
   log('PARSE STAR CSV')

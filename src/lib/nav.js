@@ -4,7 +4,7 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
-import { serverDicts, parseCSV } from "./dict";
+import { serverDicts, arrangeDicts, parseCSV } from "./dict";
 import { signup } from "./auth";
 
 import { remote } from "electron";
@@ -98,6 +98,13 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
   settings.set('cfg', '')
 })
 
+Mousetrap.bind(['ctrl+d'], function(ev) {
+  log('DDD')
+  navigate({section: 'activedicts'})
+})
+
+
+
 function hideAll () {
   const sections = document.querySelectorAll('.section.is-shown')
   Array.prototype.forEach.call(sections, (section) => {
@@ -145,6 +152,7 @@ export function navigate(state) {
   let progress = q('#progress')
   if (section == 'main') twoPanes(state), showText(state)
   else if (section == 'clone') ipcRenderer.send('remoteDicts', '') // serverDicts()
+  else if (section == 'activedicts') arrangeDicts()
   else progress.classList.remove('is-shown')
 
   // state = {section: 'home'}

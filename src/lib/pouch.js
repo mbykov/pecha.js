@@ -116,21 +116,21 @@ export function replicate(remotepath, localpath) {
   return localDB.load('http://localhost:3000/dumps/dump.txt')
 }
 
-export function replicate_STREAM(remotepath, localpath) {
-  let stream = new MemoryStream();
-  let source = new PouchDB(remotepath);
-  let dest = new PouchDB(localpath);
+// export function replicate_STREAM(remotepath, localpath) {
+//   let stream = new MemoryStream();
+//   let source = new PouchDB(remotepath);
+//   let dest = new PouchDB(localpath);
 
-  return Promise.all([
-    source.dump(stream),
-    dest.load(stream)
-  ])
-    // .then(function () {
-    //   console.log('Hooray the stream replication is complete!');
-    // }).catch(function (err) {
-    //   console.log('oh no an error', err);
-    // });
-}
+//   return Promise.all([
+//     source.dump(stream),
+//     dest.load(stream)
+//   ])
+//     // .then(function () {
+//     //   console.log('Hooray the stream replication is complete!');
+//     // }).catch(function (err) {
+//     //   console.log('oh no an error', err);
+//     // });
+// }
 
 export function replicate_(remotepath, localpath) {
   // localpath += '___'

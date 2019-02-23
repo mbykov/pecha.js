@@ -51,6 +51,7 @@ ipcRenderer.on('section', function (event, section) {
 
 ipcRenderer.on('action', function (event, action) {
   if (action == 'clonedicts') navigate({section: 'clone'})
+  else if (action == 'arrangeDicts') navigate({section: 'activedicts'})
   else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, parseCSV)
   else if (action == 'cleanupdb') cleanupDB()
 })

@@ -110,7 +110,7 @@ app.on("ready", () => {
     // remotepath - пока dump.txt
     replicate(remotepath, localpath)
       .then(function (res) {
-        console.log('Hooray the stream replication is complete!');
+        console.log('Hooray the stream replication is complete!', res);
         event.sender.send('replicateReply', res)
       }).catch(function (err) {
         console.log('oh no an error', err);
