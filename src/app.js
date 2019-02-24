@@ -53,7 +53,7 @@ ipcRenderer.on('action', function (event, action) {
   if (action == 'clonedicts') navigate({section: 'clone'})
   else if (action == 'arrangeDicts') navigate({section: 'activedicts'})
   else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, parseCSV)
-  else if (action == 'cleanupdb') cleanupDB()
+  else if (action == 'cleanupdb') navigate({section: 'clone'})
 })
 
 // ctrl-R
@@ -82,13 +82,13 @@ document.addEventListener('click', (ev) => {
   } else if (data.clone) {
     ipcRenderer.send('replicate', data.clone)
   } else if (data.firstdict) {
-    moveDictFirst(data.firstdict)
+    moveDictFirst(data.firstdict) // ev.target,
   } else if (data.activedict) {
-    log('CKLICK ACTIVE')
     activeDict(ev.target)
   } else if (parent.dataset.activedict) {
-    log('CKLICK PARENT')
     activeDict(parent)
+  } else if (ev.target.id == 'cleanupdb') {
+    log('CLEAN UP DBs!')
   } else if (data.docs) {
     mainResults(ev.target , true)
   }

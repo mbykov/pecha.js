@@ -6,6 +6,8 @@ import Split from 'split.js'
 import { showText } from "./parsedata";
 import { serverDicts, arrangeDicts, parseCSV } from "./dict";
 import { signup } from "./auth";
+import { createZeroCfg } from "./pouch";
+
 
 import { remote } from "electron";
 const app = remote.app;
@@ -95,15 +97,12 @@ Mousetrap.bind(['ctrl+u'], function(ev) {
 
 Mousetrap.bind(['ctrl+p'], function(ev) {
   log('ZERO CFG')
-  settings.set('cfg', '')
+  createZeroCfg(upath)
 })
 
-Mousetrap.bind(['ctrl+d'], function(ev) {
-  log('DDD')
-  navigate({section: 'activedicts'})
-})
-
-
+// Mousetrap.bind(['ctrl+d'], function(ev) {
+//   navigate({section: 'activedicts'})
+// })
 
 function hideAll () {
   const sections = document.querySelectorAll('.section.is-shown')
@@ -162,6 +161,6 @@ export function navigate(state) {
 function showSection(section) {
   hideAll()
   const sectionId = ['#', section].join('')
-  log('SEC ID', sectionId)
+  // log('SEC ID', sectionId)
   q(sectionId).classList.add('is-shown')
 }

@@ -16,8 +16,8 @@ import { setDBs, getCfg, replicate, infoDB, queryDBs, remoteDicts } from "./lib/
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
 // import createWindow from "./helpers/window"
-const windowStateKeeper = require('electron-window-state')
 const settings = require('electron-settings')
+// const windowStateKeeper = require('electron-window-state')
 const log = console.log
 
 // Special module holding environment variables which you declared
@@ -45,20 +45,32 @@ if (env.name !== "production") {
 app.on("ready", () => {
   setApplicationMenu()
 
-  let mainWindowState = windowStateKeeper({
-    defaultWidth: 1000,
-    defaultHeight: 800
-  })
+  // let mainWindowState = windowStateKeeper({
+  //   defaultWidth: 1000,
+  //   defaultHeight: 800
+  // })
 
-  const win = new BrowserWindow({
-    'x': mainWindowState.x,
-    'y': mainWindowState.y,
-    'width': mainWindowState.width,
-    'height': mainWindowState.height,
-    webPreferences: {
-      nodeIntegration: true
-    }
-  })
+  let winBounds = settings.get('winBounds')
+  winBounds.y -= 21
+  log('winBounds', winBounds)
+
+  let opts = {webPreferences: {
+    nodeIntegration: true
+  }}
+
+  // Object.assign(opts, winBounds)
+
+  const win = new BrowserWindow(opts)
+  win.setBounds(winBounds)
+  // const win = new BrowserWindow({
+  //   'x': mainWindowState.x,
+  //   'y': mainWindowState.y -20,
+  //   'width': mainWindowState.width,
+  //   'height': mainWindowState.height,
+  //   webPreferences: {
+  //     nodeIntegration: true
+  //   }
+  // })
 
   win.loadURL(
     url.format({
@@ -85,14 +97,20 @@ app.on("ready", () => {
     win.webContents.send('reload')
   })
 
+  win.on('close', () => {
+    settings.set('winBounds', win.getBounds())
+  })
 
-  globalShortcut.register('CommandOrControl+R', () => win.webContents.send('reread'))
+  // globalShortcut.register('CommandOrControl+R', () => win.webContents.send('reread'))
   // globalShortcut.register('CommandOrControl+R', () => win.reload())
   globalShortcut.register('CommandOrControl+Shift+R', () => win.reload())
   // globalShortcut.register('CommandOrControl+R', () => win.reload())
 
   const apath = app.getAppPath()
   const upath = app.getPath("userData")
+  settings.set('apath', apath)
+  settings.set('upath', upath)
+
   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
   let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
   // let localpath = ''
@@ -142,7 +160,7 @@ app.on("ready", () => {
       })
   })
 
-
+  // mainWindowState.manage(win);
 })
 
 

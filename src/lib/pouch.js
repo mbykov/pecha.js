@@ -35,11 +35,8 @@ const couchAuth = new NodeCouchDb({
 
 let dbs = []
 
-// а если новая база?
 export function setDBs(upath) {
-  let cfg = settings.get('cfg')
-  if (!cfg) cfg = createZeroCfg(upath)
-  cfg = createZeroCfg(upath)
+  let cfg = getCfg(upath)
   log('===setDBs CFG===', cfg)
   let dbnames = _.compact(cfg.map(cf => { return (cf.active) ? cf.name : null }))
   log('POUCH:DBNS', dbnames)
@@ -56,23 +53,20 @@ export function setDBs(upath) {
 export function getCfg(upath) {
   let cfg = settings.get('cfg')
   if (!cfg) cfg = createZeroCfg(upath)
-  cfg = createZeroCfg(upath)
   return cfg
 }
 
-function createZeroCfg(upath, version) {
+export function createZeroCfg(upath, version) {
   let pouchpath = path.resolve(upath, 'pouch')
   fse.ensureDirSync(pouchpath)
   let fns = fse.readdirSync(pouchpath)
   let cfg = []
   fns.forEach((dn, idx) => {
-    // if (dn == 'cfg.json') return
     let dpath = path.resolve(pouchpath, dn)
     let cf = {name: dn, active: true, idx: idx}
     cfg.push(cf)
   })
   settings.set('cfg', cfg)
-  // log('__ZERO CFG__', cfg)
   return cfg
 }
 

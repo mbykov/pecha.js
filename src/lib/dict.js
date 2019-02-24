@@ -12,39 +12,34 @@ ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
 })
 
 ipcRenderer.on('replicateReply', function (event, res) {
-  log('____________ replicateReply', res)
   let state = {section: 'activedicts'}
   navigate(state)
 })
 
-/*
-  встроенные - всегда - terms, verbs, lobsang - V
-  installed  - V
-  остальные - sync
-
-*/
-
-export function showRemoteDicts(rdbs) {
+function showRemoteDicts(rdbs) {
+  let upath = settings.get('upath')
   let cfg = settings.get('cfg')
   // log('CLONE DICTS: CFG:', cfg)
-  let defaults = ['terms', 'verbs', 'lobsang', '_users']
-  let readynames = cfg.map(cf=> { return cf.name })
-  let installed = _.uniq(defaults.concat(readynames))
-  let dbnames = _.difference(rdbs, installed)
-  // log('INSTALLED___', installed, dbnames)
+  let defaults = ['_users']
+  let locals = cfg.map(dict=> { return dict.name })
+  let installed = _.uniq(defaults.concat(locals))
 
   let otable = q('#server-dicts-table tbody')
-  dbnames.forEach(dbname=> {
-    let cells = qs('#server-dicts-table tr td')
-    let tdnames = _.map(cells, tr=> { return tr.textContent})
-    if (tdnames.includes(_.capitalize(dbname))) return
+  empty(otable)
+  rdbs.forEach(dbname=> {
+    if (defaults.includes(dbname)) return
     let otr = create('tr')
     otable.appendChild(otr)
     let odt = create('td')
     otr.appendChild(odt)
     odt.textContent = _.capitalize(dbname)
     let oink = create('td', 'link')
-    oink.textContent = 'sync'
+    if (installed.includes(dbname)) {
+      let check = checkmark()
+      oink.appendChild(check)
+    } else {
+      oink.textContent = 'sync'
+    }
     oink.dataset.clone = dbname
     otr.appendChild(oink)
   })
