@@ -52,20 +52,25 @@ export function showRemoteDicts(rdbs) {
 
 export function arrangeDicts() {
   let cfg = settings.get('cfg')
-  // log('ACTIVE CFG:', cfg)
   let dbnames = cfg.map(cf=> { return cf.name })
   let otable = q('#local-dicts-table tbody')
   empty(otable)
-  dbnames.forEach(dbname=> {
+  cfg.forEach(dict=> {
+    let name = dict.name
     let otr = create('tr')
     otable.appendChild(otr)
     let odt = create('td', 'dictname')
     otr.appendChild(odt)
-    odt.textContent = _.capitalize(dbname)
-    odt.dataset.activedict = dbname
+    odt.textContent = _.capitalize(name)
+    odt.dataset.firstdict = name
     let oactive = create('td', 'active-dict')
-    oactive.textContent = 'activate'
-    oactive.dataset.active = dbname
+    if (dict.active) {
+      let check = checkmark()
+      oactive.appendChild(check)
+    } else {
+      oactive.textContent = 'activate'
+    }
+    oactive.dataset.activedict = name
     otr.appendChild(oactive)
   })
 }
@@ -79,6 +84,28 @@ export function moveDictFirst(dbname) {
   cfg.forEach((dict, idx)=> { dict.idx = idx })
   settings.set('cfg', cfg)
   arrangeDicts()
+}
+
+export function activeDict(el) {
+  let cfg = settings.get('cfg')
+  let dict = _.find(cfg, dict=> { return dict.name == el.dataset.activedict })
+  let check = checkmark()
+  if (el.textContent) {
+    el.textContent = ''
+    el.appendChild(check)
+    dict.active = true
+  } else {
+    empty(el)
+    el.textContent = 'activate'
+    dict.active = false
+  }
+  settings.set('cfg', cfg)
+}
+
+function checkmark() {
+  let check = create('img', 'dict-check')
+  check.setAttribute('src', '../resources/check.png')
+  return check
 }
 
 export function parseCSV() {

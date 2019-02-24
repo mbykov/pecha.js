@@ -438,3 +438,12 @@ div.qtext > p.hidden {
   cursor: pointer;
   color: maroon;
 }
+
+.dict-check {
+  width: 20px;
+  height: 20px;
+}
+
+.active-dict {
+  width: 100px;
+}

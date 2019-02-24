@@ -11,7 +11,7 @@ import { navigate } from './lib/nav';
 import sband from "./lib/sband";
 import { showCholok, showResults, showPopup } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
-import { moveDictFirst } from "./lib/dict";
+import { moveDictFirst, activeDict } from "./lib/dict";
 
 const settings = require('electron').remote.require('electron-settings')
 // const Mousetrap = require('mousetrap')
@@ -73,6 +73,7 @@ navigate(state)
 document.addEventListener('click', (ev) => {
   let data = ev.target.dataset
   if (!data) return
+  let parent = ev.target.parentElement
   if (data.external) {
     let href = ev.target.textContent
     shell.openExternal(href)
@@ -80,9 +81,14 @@ document.addEventListener('click', (ev) => {
     navigate({section: data.section})
   } else if (data.clone) {
     ipcRenderer.send('replicate', data.clone)
+  } else if (data.firstdict) {
+    moveDictFirst(data.firstdict)
   } else if (data.activedict) {
-    let dbname = data.activedict
-    moveDictFirst(dbname)
+    log('CKLICK ACTIVE')
+    activeDict(ev.target)
+  } else if (parent.dataset.activedict) {
+    log('CKLICK PARENT')
+    activeDict(parent)
   } else if (data.docs) {
     mainResults(ev.target , true)
   }
