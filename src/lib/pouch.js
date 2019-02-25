@@ -14,10 +14,7 @@ const PouchDB = require('pouchdb')
 
 PouchDB.plugin(require('pouchdb-load'));
 
-// let replicationStream = require('pouchdb-replication-stream');
-// PouchDB.plugin(replicationStream.plugin);
-// let MemoryStream = require('memorystream');
-// PouchDB.adapter('writableStream', replicationStream.adapters.writableStream);
+let dbs = []
 
 const NodeCouchDb = require('node-couchdb');
 const couch = new NodeCouchDb()
@@ -33,13 +30,37 @@ const couchAuth = new NodeCouchDb({
   }
 })
 
-let dbs = []
+export function remoteDicts() {
+  return couch.listDatabases()
+    .catch(function(err) {
+      log('REMOTE DICTS ERR', err)
+    })
+}
 
-export function setDBs(upath) {
-  let cfg = getCfg(upath)
-  log('===setDBs CFG===', cfg)
-  let dbnames = _.compact(cfg.map(cf => { return (cf.active) ? cf.name : null }))
-  log('POUCH:DBNS', dbnames)
+export function replicate(remotepath, localpath) {
+  log('REPLICATE LOCAL', localpath)
+  let localDB = new PouchDB(localpath);
+  // return localDB.load('http://localhost:3000/dumps/dump.txt')
+  return localDB.info()
+    .then(function(info) {
+      log('REPL-BEFORE-INFO', info)
+      return localDB.load('http://localhost:3000/dumps/dump.txt')
+    })
+
+  // let dumpedString = 'http://localhost:3000/api/vasilyev'
+  // log('REPL:dumpedString', dumpedString.length)
+  // return localDB.load('http://localhost:3000/api/vasilyev')
+  // return localDB.load('http://localhost:3000/dumps/dump.txt')
+}
+
+function setDBs(upath, cfg) {
+  // let pouchpath = path.resolve(upath, 'pouch')
+  // fse.ensureDirSync(pouchpath)
+  // let cfg = getCfg(upath)
+  // log('===setDBs CFG===', cfg)
+  dbs = []
+  let dbnames = _.compact(cfg.map(dict => { return (dict.active) ? dict.name : null }))
+  log('setDBNS', dbnames)
   dbnames.forEach((dn, idx) => {
     let dpath = path.resolve(upath, 'pouch', dn)
     let pouch = new PouchDB(dpath)
@@ -51,22 +72,23 @@ export function setDBs(upath) {
 }
 
 export function getCfg(upath) {
-  let cfg = settings.get('cfg')
-  if (!cfg) cfg = createZeroCfg(upath)
-  return cfg
-}
-
-export function createZeroCfg(upath, version) {
   let pouchpath = path.resolve(upath, 'pouch')
-  fse.ensureDirSync(pouchpath)
+  // fse.ensureDirSync(pouchpath)
   let fns = fse.readdirSync(pouchpath)
+  let oldcfg = settings.get('cfg') || []
   let cfg = []
   fns.forEach((dn, idx) => {
-    let dpath = path.resolve(pouchpath, dn)
-    let cf = {name: dn, active: true, idx: idx}
-    cfg.push(cf)
+    let old = _.find(oldcfg, dict=> {return dict.name == dn })
+    if (old) cfg.push(old)
+    else {
+      let newdict = {name: dn, active: true, idx: 100+idx}
+      cfg.push(newdict)
+    }
   })
+  cfg = _.sortBy(cfg, 'idx')
+  cfg.forEach((dict, idx)=> { dict.idx = idx })
   settings.set('cfg', cfg)
+  setDBs(upath, cfg)
   return cfg
 }
 
@@ -82,6 +104,7 @@ export function queryDBs (keys) {
         let docs = _.flatten(_.compact(rdocs.map(rdoc => { return rdoc.docs })))
         if (!docs.length) return []
         docs.forEach(doc => { doc.dname = db.dname, doc.weight = db.weight })
+        log('======DOCS', docs)
         return docs
       }).catch(function (err) {
         console.log('ERR GET DBs', err)
@@ -101,13 +124,6 @@ export function infoDB(localpath) {
 
 export function cleanupDB(state) {
   log('CLEAN UP')
-}
-
-export function replicate(remotepath, localpath) {
-  log('REPLICATE LOCAL', localpath)
-  let localDB = new PouchDB(localpath);
-  // return localDB.load('http://ru.diglossa.org/dump.txt')
-  return localDB.load('http://localhost:3000/dumps/dump.txt')
 }
 
 // export function replicate_STREAM(remotepath, localpath) {
@@ -221,10 +237,3 @@ export function replicate_(remotepath, localpath) {
 //     log('error', err)
 //   })
 // }
-
-export function remoteDicts() {
-  return couch.listDatabases()
-    .catch(function(err) {
-      log('REMOTE DICTS ERR', err)
-    })
-}

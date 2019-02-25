@@ -4,9 +4,9 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
-import { serverDicts, arrangeDicts, parseCSV } from "./dict";
+import { serverDicts, showActiveDicts, parseCSV } from "./dict";
 import { signup } from "./auth";
-import { createZeroCfg } from "./pouch";
+import { getCfg } from "./pouch";
 
 
 import { remote } from "electron";
@@ -23,7 +23,7 @@ const path = require('path')
 const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
 
-let init = {section: 'home'}
+// let init = {section: 'home'}
 let history = []
 let hstate = 0
 let split
@@ -73,36 +73,16 @@ Mousetrap.bind(['esc'], function(ev) {
   // похоже, общий метод не получится
 })
 
-Mousetrap.bind(['ctrl+i'], function(ev) {
-  log('CLICK INFO')
-  // ipcRenderer.send('info', 'vasilyev')
-})
-
 Mousetrap.bind(['ctrl+u'], function(ev) {
   log('CLICK SIGNUP')
   signup(upath)
-  // ipcRenderer.send('info', 'vasilyev')
 })
 
-// Mousetrap.bind(['ctrl+j'], function(ev) {
-//   log('REPLICA_')
-//   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
-//   let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
-//   replicate(remotepath, localpath)
-//     .then(function(res) {
-//       log('CTRL-J', res)
-//     })
-// })
-
-
-Mousetrap.bind(['ctrl+p'], function(ev) {
-  log('ZERO CFG')
-  createZeroCfg(upath)
+Mousetrap.bind(['ctrl+i'], function(ev) {
+  let cfg = getCfg(upath)
+  let str = JSON.parse(JSON.stringify(cfg))
+  log('RE-INIT-DBs', str)
 })
-
-// Mousetrap.bind(['ctrl+d'], function(ev) {
-//   navigate({section: 'activedicts'})
-// })
 
 function hideAll () {
   const sections = document.querySelectorAll('.section.is-shown')
@@ -150,8 +130,8 @@ export function navigate(state) {
   }
   let progress = q('#progress')
   if (section == 'main') twoPanes(state), showText(state)
-  else if (section == 'clone') ipcRenderer.send('remoteDicts', '') // serverDicts()
-  else if (section == 'activedicts') arrangeDicts()
+  else if (section == 'clonedicts') ipcRenderer.send('remoteDicts', '') // serverDicts()
+  else if (section == 'activedicts') showActiveDicts()
   else progress.classList.remove('is-shown')
 
   // state = {section: 'home'}
@@ -161,6 +141,5 @@ export function navigate(state) {
 function showSection(section) {
   hideAll()
   const sectionId = ['#', section].join('')
-  // log('SEC ID', sectionId)
   q(sectionId).classList.add('is-shown')
 }

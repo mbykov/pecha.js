@@ -2,7 +2,7 @@
 import _ from 'lodash'
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
-import { navigate } from './nav';
+import { navigate } from './nav'
 
 const log = console.log
 const settings = require('electron-settings')
@@ -11,13 +11,13 @@ ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
   showRemoteDicts(rdbs)
 })
 
-ipcRenderer.on('replicateReply', function (event, res) {
+ipcRenderer.on('replicateOK', function (event, res) {
   let state = {section: 'activedicts'}
   navigate(state)
 })
 
 function showRemoteDicts(rdbs) {
-  let upath = settings.get('upath')
+  // let upath = settings.get('upath')
   let cfg = settings.get('cfg')
   // log('CLONE DICTS: CFG:', cfg)
   let defaults = ['_users']
@@ -45,7 +45,7 @@ function showRemoteDicts(rdbs) {
   })
 }
 
-export function arrangeDicts() {
+export function showActiveDicts() {
   let cfg = settings.get('cfg')
   let dbnames = cfg.map(cf=> { return cf.name })
   let otable = q('#local-dicts-table tbody')
@@ -78,10 +78,10 @@ export function moveDictFirst(dbname) {
   cfg = rest
   cfg.forEach((dict, idx)=> { dict.idx = idx })
   settings.set('cfg', cfg)
-  arrangeDicts()
+  showActiveDicts()
 }
 
-export function activeDict(el) {
+export function activateDict(el) {
   let cfg = settings.get('cfg')
   let dict = _.find(cfg, dict=> { return dict.name == el.dataset.activedict })
   let check = checkmark()

@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
 import cholok from 'cholok'
 import { tibsyms, tibsyls } from "./tibetan_data";
+const settings = require('electron').remote.require('electron-settings')
 
 let tsek = tibsyms.tsek
 const log = console.log
@@ -151,7 +152,12 @@ export function showResults(el) {
     log('ERR: JSON docs')
     return
   }
-  // log('RESULT docs', wf, docs)
+
+  // let cfg = settings.get('cfg')
+  // log('CFG', cfg)
+  // let str = JSON.parse(JSON.stringify(cfg))
+  // log('CFG', str)
+  log('RESULT docs', wf, docs)
 
   let odict = create('div', 'dict')
   oresult.appendChild(odict)

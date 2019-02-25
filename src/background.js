@@ -11,7 +11,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { setDBs, getCfg, replicate, infoDB, queryDBs, remoteDicts } from "./lib/pouch"
+import { getCfg, replicate, infoDB, queryDBs, remoteDicts } from "./lib/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -111,40 +111,26 @@ app.on("ready", () => {
   settings.set('apath', apath)
   settings.set('upath', upath)
 
+  getCfg(upath)
+
   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
   let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
   // let localpath = ''
   // let remotepath = ''
-  let dbnames = setDBs(upath)
-
-  console.log('B:dbnames', dbnames)
-  // console.log('APATH', apath, 'UPATH', upath)
-  let cfg = getCfg(upath)
-  console.log('CFG', cfg)
 
   ipcMain.on('replicate', (event, dbname) => {
     console.log('B:REPLICATE', dbname)
     let localpath = path.resolve(upath, 'pouch', dbname)
-    // remotepath - пока dump.txt
     replicate(remotepath, localpath)
       .then(function (res) {
         console.log('Hooray the stream replication is complete!', res);
-        event.sender.send('replicateReply', res)
+        getCfg(upath)
+        event.sender.send('replicateOK', res)
       }).catch(function (err) {
         console.log('oh no an error', err);
       });
   })
 
-  // ipcMain.on('info', (event, arg) => {
-  //   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
-  //   console.log('B:INFO', arg) // prints "ping"
-  //   infoDB(localpath)
-  //     .then(function(info) {
-  //       console.log('B: INFO:', info)
-  //     })
-  // })
-
-  // let query = {keys: keys, el: el, pdchs: pdchs, compound: compound}
   ipcMain.on('queryDBs', (event, query) => {
     queryDBs(query.keys)
       .then(function(docs) {
@@ -154,16 +140,14 @@ app.on("ready", () => {
   })
 
   ipcMain.on('remoteDicts', (event, query) => {
+    log('B: REMOTE DICTS START')
     remoteDicts()
-      .then(function(dbs) {
-        event.sender.send('remoteDictsReply', dbs)
+      .then(function(rdbs) {
+        log('REMOTE DICTS', rdbs)
+        event.sender.send('remoteDictsReply', rdbs)
       })
   })
-
-  // mainWindowState.manage(win);
 })
-
-
 
 app.on("window-all-closed", () => {
   app.quit()

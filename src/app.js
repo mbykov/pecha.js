@@ -11,7 +11,7 @@ import { navigate } from './lib/nav';
 import sband from "./lib/sband";
 import { showCholok, showResults, showPopup } from "./lib/parsedata";
 import { mainResults } from "./lib/main";
-import { moveDictFirst, activeDict } from "./lib/dict";
+import { moveDictFirst, activateDict } from "./lib/dict";
 
 const settings = require('electron').remote.require('electron-settings')
 // const Mousetrap = require('mousetrap')
@@ -74,7 +74,7 @@ document.addEventListener('click', (ev) => {
   let data = ev.target.dataset
   if (!data) return
   let parent = ev.target.parentElement
-  if (data.external) {
+  if (ev.target.classList.contains('external')) {
     let href = ev.target.textContent
     shell.openExternal(href)
   } else if (data.section) {
@@ -84,9 +84,9 @@ document.addEventListener('click', (ev) => {
   } else if (data.firstdict) {
     moveDictFirst(data.firstdict) // ev.target,
   } else if (data.activedict) {
-    activeDict(ev.target)
+    activateDict(ev.target)
   } else if (parent.dataset.activedict) {
-    activeDict(parent)
+    activateDict(parent)
   } else if (ev.target.id == 'cleanupdb') {
     log('CLEAN UP DBs!')
   } else if (data.docs) {
