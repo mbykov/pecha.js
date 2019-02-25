@@ -79,7 +79,7 @@ Mousetrap.bind(['ctrl+u'], function(ev) {
 })
 
 Mousetrap.bind(['ctrl+i'], function(ev) {
-  let cfg = getCfg(upath)
+  let cfg = getCfg()
   let str = JSON.parse(JSON.stringify(cfg))
   log('RE-INIT-DBs', str)
 })

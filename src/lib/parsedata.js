@@ -153,10 +153,13 @@ export function showResults(el) {
     return
   }
 
-  // let cfg = settings.get('cfg')
-  // log('CFG', cfg)
-  // let str = JSON.parse(JSON.stringify(cfg))
-  // log('CFG', str)
+  let cfg = settings.get('cfg')
+  let str = JSON.parse(JSON.stringify(cfg))
+  log('CFG', str)
+  log('RESULT docs', wf, docs)
+
+  docs.forEach(doc=> { doc.weight = _.find(cfg, dict=> { return doc.dname == dict.name }).idx })
+  docs = _.sortBy(docs, 'weight')
   log('RESULT docs', wf, docs)
 
   let odict = create('div', 'dict')

@@ -54,10 +54,6 @@ export function replicate(remotepath, localpath) {
 }
 
 function setDBs(upath, cfg) {
-  // let pouchpath = path.resolve(upath, 'pouch')
-  // fse.ensureDirSync(pouchpath)
-  // let cfg = getCfg(upath)
-  // log('===setDBs CFG===', cfg)
   dbs = []
   let dbnames = _.compact(cfg.map(dict => { return (dict.active) ? dict.name : null }))
   log('setDBNS', dbnames)
@@ -71,9 +67,9 @@ function setDBs(upath, cfg) {
   return dbnames
 }
 
-export function getCfg(upath) {
+export function getCfg() {
+  let upath = settings.get('upath')
   let pouchpath = path.resolve(upath, 'pouch')
-  // fse.ensureDirSync(pouchpath)
   let fns = fse.readdirSync(pouchpath)
   let oldcfg = settings.get('cfg') || []
   let cfg = []

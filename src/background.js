@@ -111,7 +111,7 @@ app.on("ready", () => {
   settings.set('apath', apath)
   settings.set('upath', upath)
 
-  getCfg(upath)
+  getCfg()
 
   let localpath = path.resolve(upath, 'pouch', 'vasilyev')
   let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
@@ -124,7 +124,7 @@ app.on("ready", () => {
     replicate(remotepath, localpath)
       .then(function (res) {
         console.log('Hooray the stream replication is complete!', res);
-        getCfg(upath)
+        getCfg()
         event.sender.send('replicateOK', res)
       }).catch(function (err) {
         console.log('oh no an error', err);

@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
 import { navigate } from './nav'
+import { getCfg } from "./pouch";
 
 const log = console.log
 const settings = require('electron-settings')
@@ -78,6 +79,7 @@ export function moveDictFirst(dbname) {
   cfg = rest
   cfg.forEach((dict, idx)=> { dict.idx = idx })
   settings.set('cfg', cfg)
+  getCfg()
   showActiveDicts()
 }
 
