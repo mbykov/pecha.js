@@ -3,11 +3,11 @@ import { app, BrowserWindow } from "electron";
 export const dictMenuTemplate = {
   label: "Dict",
   submenu: [
-    { label: "clone dicts from server", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'clonedicts') } },
-    { label: "arrange local dicts", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'activedicts') } },
-    { label: "export CSV to dict", click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'csv') } },
-    { label: "create CSV dict from texts", click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'localdict') } },
-    // { label: "upload dict to server (disabled)", click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'upload') } },
-    { label: "cleanup DBs completely", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'cleanup') } }
+    { label: "Clone dicts from server", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'clonedicts') } },
+    { label: "Arrange local dicts", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'activedicts') } },
+    { label: "Create CSV dict from texts", click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'localdict') } },
+    { label: "Convert CSV to dict", click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'csv') } },
+    { label: "upload new dict to server (disabled)", click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'upload') } },
+    { label: "Cleanup DBs completely", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'cleanup') } }
   ]
 };

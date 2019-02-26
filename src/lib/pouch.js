@@ -44,7 +44,8 @@ export function replicate(remotepath, localpath) {
   return localDB.info()
     .then(function(info) {
       log('REPL-BEFORE-INFO', info)
-      return localDB.load('http://localhost:3000/dumps/dump.txt')
+      return localDB.load('http://localhost:3000/api/vasilyev')
+      // return localDB.load('http://localhost:3000/dumps/dump.txt')
     })
 
   // let dumpedString = 'http://localhost:3000/api/vasilyev'

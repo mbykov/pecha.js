@@ -1,5 +1,9 @@
 /* @import "./treeview.min.css" */
 
+p {
+  padding-bottom: 6px;
+}
+
 h4 {
   color: maroon;
 }

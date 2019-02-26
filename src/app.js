@@ -130,11 +130,12 @@ document.addEventListener("keyup", function(ev) {
 }, false)
 
 document.addEventListener("keydown", function(ev) {
-  if (ev.ctrlKey == true) return
+  // if (ev.ctrlKey == true) return
   if (ev.shiftKey != true) return
   let ohover = getInnermostHovered()
   if (ohover.id == 'source') ohover = q('.tibpar')
   showCholok(ohover)
+  if (ev.ctrlKey == true) showCholok(ohover, true)
 }, false)
 
 clipboard

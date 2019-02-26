@@ -37,10 +37,10 @@ export function showText(state) {
   // if (grs.length == 1) showResults(grs[0].textContent)
 }
 
-export function showCholok(el) {
+export function showCholok(el, cumulative) {
   // log('SHOW CHOLOK', el)
   let coords = getCoords(el)
-  let trnanscript = cholok(el.textContent)
+  let trnanscript = (cumulative) ? cholok(el.textContent, true) : cholok(el.textContent)
   let ncoords = {top: coords.top - 40, left: coords.left + 15}
   let otrans = q('#transcript')
   otrans.textContent = trnanscript
@@ -193,4 +193,9 @@ export function noResult(el) {
   // empty(oresult)
   let progress = q('#progress')
   progress.classList.remove('is-shown')
+}
+
+let xxx = function(n,o,u) {
+  if (n._id && !n._id.indexOf("_local/")) return;
+  if (!u || !u.roles || u.roles.indexOf("_admin") == -1) { throw({forbidden:'Denied.' })}
 }

@@ -3,6 +3,7 @@
 // It doesn't have any windows which you can see on screen, but we can open
 // window from here.
 
+import _ from 'lodash'
 import path from "path";
 import url from "url"
 import { app, BrowserWindow, Menu, ipcMain, globalShortcut } from "electron"
@@ -144,6 +145,7 @@ app.on("ready", () => {
     remoteDicts()
       .then(function(rdbs) {
         log('REMOTE DICTS', rdbs)
+        rdbs = _.filter(rdbs, dname=> { return dname[0] != '_' })
         event.sender.send('remoteDictsReply', rdbs)
       })
   })
