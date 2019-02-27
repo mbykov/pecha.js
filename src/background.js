@@ -114,14 +114,10 @@ app.on("ready", () => {
 
   getCfg()
 
-  let localpath = path.resolve(upath, 'pouch', 'vasilyev')
-  let remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
-  // let localpath = ''
-  // let remotepath = ''
-
   ipcMain.on('replicate', (event, dbname) => {
     console.log('B:REPLICATE', dbname)
     let localpath = path.resolve(upath, 'pouch', dbname)
+    let remotepath = ['http://localhost:3000/api', dbname].join('/')
     replicate(remotepath, localpath)
       .then(function (res) {
         console.log('Hooray the stream replication is complete!', res);

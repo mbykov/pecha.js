@@ -100,6 +100,7 @@ function goLeft() {
   else hstate--
   let state = history[hstate]
   state.old = true
+  hideAll()
   navigate(state)
 }
 
@@ -108,6 +109,7 @@ function goRight() {
   else hstate++
   let state = history[hstate]
   state.old = true
+  hideAll()
   navigate(state)
 }
 

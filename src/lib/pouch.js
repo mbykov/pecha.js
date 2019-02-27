@@ -44,14 +44,9 @@ export function replicate(remotepath, localpath) {
   return localDB.info()
     .then(function(info) {
       log('REPL-BEFORE-INFO', info)
-      return localDB.load('http://localhost:3000/api/vasilyev')
+      return localDB.load(remotepath)
       // return localDB.load('http://localhost:3000/dumps/dump.txt')
     })
-
-  // let dumpedString = 'http://localhost:3000/api/vasilyev'
-  // log('REPL:dumpedString', dumpedString.length)
-  // return localDB.load('http://localhost:3000/api/vasilyev')
-  // return localDB.load('http://localhost:3000/dumps/dump.txt')
 }
 
 function setDBs(upath, cfg) {
@@ -101,7 +96,7 @@ export function queryDBs (keys) {
         let docs = _.flatten(_.compact(rdocs.map(rdoc => { return rdoc.docs })))
         if (!docs.length) return []
         docs.forEach(doc => { doc.dname = db.dname, doc.weight = db.weight })
-        log('======DOCS', docs)
+        // log('======DOCS', docs)
         return docs
       }).catch(function (err) {
         console.log('ERR GET DBs', err)
@@ -112,7 +107,6 @@ export function queryDBs (keys) {
 // adduser --system --home /opt/couchdb --no-create-home --shell /bin/bash -g couchdb couchdb
 // useradd --system -b /opt/couchdb --shell /bin/bash -g couchdb couchdb
 // sudo -i -u couchdb bin/couchdb
-// lobsang vasilyev
 
 export function infoDB(localpath) {
   let localDB = new PouchDB(localpath)
@@ -142,8 +136,8 @@ export function cleanupDB(state) {
 export function replicate_(remotepath, localpath) {
   // localpath += '___'
   let upath = '/home/michael/.config/Pecha.js\ \(development\)'
-  localpath = path.resolve(upath, 'pouch', 'vasilyev')
-  remotepath = ['http://localhost:5984', 'vasilyev'].join('/')
+  localpath = path.resolve(upath, 'pouch', 'XXX')
+  remotepath = ['http://localhost:5984', 'XXX'].join('/')
   log('LOCALPATH', localpath)
   log('REMOTEPATH', remotepath)
    let localDB = new PouchDB(localpath)

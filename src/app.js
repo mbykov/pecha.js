@@ -85,7 +85,7 @@ document.addEventListener('click', (ev) => {
     moveDictFirst(data.firstdict) // ev.target,
   } else if (data.activedict) {
     activateDict(ev.target)
-  } else if (parent.dataset.activedict) {
+  } else if (parent && parent.dataset && parent.dataset.activedict) {
     activateDict(parent)
   } else if (ev.target.id == 'cleanupdb') {
     log('CLEAN UP DBs!')
@@ -102,7 +102,7 @@ document.addEventListener("mouseover", function(ev) {
 
   if (ev.target.classList.contains('tibphrase')) {
     if (ev.shiftKey == true) {
-      showCholok(ev.target)
+      // showCholok(ev.target)
     } else {
       mainResults(ev.target)
     }
@@ -138,6 +138,11 @@ document.addEventListener("keydown", function(ev) {
   if (ev.ctrlKey == true) showCholok(ohover, true)
 }, false)
 
+document.addEventListener("wheel", function(ev) {
+  scrollPane(ev, state)
+}, false)
+
+
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
@@ -152,4 +157,11 @@ function hidePopups() {
   qs('.popup').forEach(popup=> {
     popup.classList.add('is-hidden')
   })
+}
+
+export function scrollPane(ev, state) {
+  if (ev.shiftKey == true) return;
+  let delta = (ev.deltaY > 0) ? 24 : -24
+  let opane = q('.section.is-shown')
+  opane.scrollTop += delta
 }

@@ -155,12 +155,11 @@ export function showResults(el) {
 
   let cfg = settings.get('cfg')
   let str = JSON.parse(JSON.stringify(cfg))
-  log('CFG', str)
-  log('RESULT docs', wf, docs)
+  // log('CFG', str)
 
   docs.forEach(doc=> { doc.weight = _.find(cfg, dict=> { return doc.dname == dict.name }).idx })
   docs = _.sortBy(docs, 'weight')
-  log('RESULT docs', wf, docs)
+  // log('RESULT docs', wf, docs)
 
   let odict = create('div', 'dict')
   oresult.appendChild(odict)
@@ -188,7 +187,7 @@ export function showResults(el) {
 
 
 export function noResult(el) {
-  log('NO RESULT')
+  // log('NO RESULT')
   // let oresult = q('#result')
   // empty(oresult)
   let progress = q('#progress')
