@@ -6,8 +6,6 @@ import Split from 'split.js'
 import { showText } from "./parsedata";
 import { serverDicts, showActiveDicts, parseCSV } from "./dict";
 import { signup } from "./auth";
-import { getCfg } from "./pouch";
-
 
 import { remote } from "electron";
 const app = remote.app;
@@ -73,15 +71,16 @@ Mousetrap.bind(['esc'], function(ev) {
   // похоже, общий метод не получится
 })
 
+Mousetrap.bind(['ctrl+d'], function(ev) {
+  let datapath = '/home/michael/diglossa.texts/Tibetan'
+  ipcRenderer.send('queryLocalDict', datapath)
+})
+
+
+
 Mousetrap.bind(['ctrl+u'], function(ev) {
   log('CLICK SIGNUP')
   signup(upath)
-})
-
-Mousetrap.bind(['ctrl+i'], function(ev) {
-  let cfg = getCfg()
-  let str = JSON.parse(JSON.stringify(cfg))
-  log('RE-INIT-DBs', str)
 })
 
 function hideAll () {

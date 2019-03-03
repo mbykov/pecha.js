@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
 import { navigate } from './nav'
-import { getCfg } from "./pouch";
+import { getCfg } from "../dbs/pouch";
 
 const log = console.log
 const settings = require('electron-settings')

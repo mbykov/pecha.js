@@ -1,33 +1,29 @@
 //
 import _ from 'lodash'
-import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getInnermostHovered } from './utils'
 import cholok from 'cholok'
 import { tibsyms, tibsyls } from "./tibetan_data";
+import { ipcRenderer } from "electron";
 const settings = require('electron').remote.require('electron-settings')
 
 let tsek = tibsyms.tsek
 const log = console.log
 
 export function showText(state) {
-  if (!state || !state.pars || !state.pars.length) return
   let pars = state.pars
-  // log('PARS', pars)
-  // let progress = q('#progress')
-  // progress.classList.add('is-shown')
   let osource = q('#source')
   let oresult = q('#result')
   empty(osource)
   empty(oresult)
 
-  // let wfs = []
   pars.forEach(spans => {
     let opar = p()
     opar.classList.add('tibpar')
     spans.forEach(spn => {
       let ospan = span(spn.text)
-      if (spn.tib) ospan.classList.add('tibphrase') // , wfs.push(spn.text)
-      if (spn.punct) ospan.classList.add('punct') //, wfs.push(spn.text)
-      if (spn.text == ' ') ospan.classList.add('space')
+      if (spn.lang) ospan.classList.add('tibphrase') // , wfs.push(spn.text)
+      else if (spn.punct) ospan.classList.add('punct') //, wfs.push(spn.text)
+      else ospan.classList.add('space')
       opar.appendChild(ospan)
     })
     osource.appendChild(opar)
@@ -38,7 +34,6 @@ export function showText(state) {
 }
 
 export function showCholok(el, cumulative) {
-  // log('SHOW CHOLOK', el)
   let coords = getCoords(el)
   let trnanscript = (cumulative) ? cholok(el.textContent, true) : cholok(el.textContent)
   let ncoords = {top: coords.top - 40, left: coords.left + 15}
@@ -71,13 +66,12 @@ export function parsePhrase(el, chain, lastsek) {
 
 function createPopup(el, upper) {
   let oambi
-  // is-hidden upper popup
   if (upper) {
     oambi = create('div', 'popup')
     oambi.classList.add('upper')
     document.body.appendChild(oambi)
   } else oambi = q('#ambi')
-  // let oambi = (upper) ? q('#upper') : q('#ambi')
+
   let coords = getCoords(el)
   empty(oambi)
   oambi.classList.remove('is-hidden')
@@ -93,7 +87,7 @@ export function showPopup(el, compound) {
   try {
     chains = JSON.parse(el.dataset.chains)
   } catch(err) {
-    log('ERR: JSON chains', el)
+    log('ERR: JSON chains', el) // ================== ошибка есть
     return
   }
   let upper = (el.closest('.tibpar')) ? false : true
@@ -198,3 +192,32 @@ let xxx = function(n,o,u) {
   if (n._id && !n._id.indexOf("_local/")) return;
   if (!u || !u.roles || u.roles.indexOf("_admin") == -1) { throw({forbidden:'Denied.' })}
 }
+
+
+// ======================= DBS ==============================
+
+export function askDBs(el, compound) {
+  let progress = q('#progress')
+  progress.classList.add('is-shown')
+  let text = el.textContent.trim()
+  let retsek = new RegExp(tsek+'$')
+  let str = text.replace(retsek, '')
+  let last = _.last(text)
+  let lastsek = (last == tsek) ? true : false
+  let query = {str: str, compound: compound, lastsek: lastsek}
+  ipcRenderer.send('queryDBs', query)
+}
+
+ipcRenderer.on('replayDBs', function (event, query) {
+  let chain = query.chain
+  let el = getInnermostHovered()
+  if (!chain) {
+    noResult(el)
+    return
+  }
+  if (query.compound) {
+    el.dataset.chains = JSON.stringify(chain)
+    showPopup(el, true)
+  }
+  else parsePhrase(el, chain, query.lastsek)
+})

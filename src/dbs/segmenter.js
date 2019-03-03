@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { tibsyms, tibsuff } from "./tibetan_data";
+import { tibsyms, tibsuff } from "../lib/tibetan_data";
 
 const log = console.log
 const tsek = tibsyms.tsek
@@ -22,7 +22,9 @@ export function totalKeys(pdchs) {
 
 export function segmenter(str) {
   let segs = str.split(tsek)
-  let depth = (segs.length < 10) ? 10 : 2
+  // let depth = (segs.length < 10) ? 10 : 2
+  // let depth = (segs.length > 10) ? 7 : 100
+  let depth = 4
   // log('SEGS', segs)
   let old = str
   let size = segs.length

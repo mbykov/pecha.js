@@ -8,9 +8,9 @@ import { ipcRenderer } from "electron";
 
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { navigate } from './lib/nav';
-import sband from "./lib/sband";
-import { showCholok, showResults, showPopup } from "./lib/parsedata";
-import { mainResults } from "./lib/main";
+// import sband from "./lib/sband"; <<<=== убрать из lib
+import sband from "../../../sband";
+import { showCholok, showResults, showPopup, askDBs } from "./lib/parsedata";
 import { moveDictFirst, activateDict } from "./lib/dict";
 
 const settings = require('electron').remote.require('electron-settings')
@@ -90,7 +90,7 @@ document.addEventListener('click', (ev) => {
   } else if (ev.target.id == 'cleanupdb') {
     log('CLEAN UP DBs!')
   } else if (data.docs) {
-    mainResults(ev.target , true)
+    askDBs(ev.target , true)
   }
 })
 
@@ -104,7 +104,7 @@ document.addEventListener("mouseover", function(ev) {
     if (ev.shiftKey == true) {
       // showCholok(ev.target)
     } else {
-      mainResults(ev.target)
+      askDBs(ev.target)
     }
   } else if (ev.target.classList.contains('tibwf')) {
     showResults(ev.target)
@@ -146,7 +146,7 @@ document.addEventListener("wheel", function(ev) {
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    let pars = sband('tib', txt)
+    let pars = sband(txt, 'tib')
     if (!pars || !pars.length) return
     let state = {section: 'main', pars: pars}
     navigate(state)
