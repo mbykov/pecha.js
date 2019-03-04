@@ -16,10 +16,15 @@ const log = console.log
 const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
 const Mousetrap = require('mousetrap')
-const fse = require('fs-extra')
 const path = require('path')
 const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
+
+// READ WRITE
+const fse = require('fs-extra')
+const glob = require('glob-fs')({ gitignore: true })
+import sband from '../../../../sband'
+import { tibsyms, tibsuff } from "./tibetan_data";
 
 // let init = {section: 'home'}
 let history = []
@@ -74,6 +79,11 @@ Mousetrap.bind(['esc'], function(ev) {
 Mousetrap.bind(['ctrl+d'], function(ev) {
   let datapath = '/home/michael/diglossa.texts/Tibetan'
   ipcRenderer.send('queryLocalDict', datapath)
+})
+
+Mousetrap.bind(['ctrl+f'], function(ev) {
+  let datapath = '/home/michael/diglossa.texts/Tibetan'
+  readDir(datapath)
 })
 
 
@@ -143,4 +153,138 @@ function showSection(section) {
   hideAll()
   const sectionId = ['#', section].join('')
   q(sectionId).classList.add('is-shown')
+}
+
+// ====================== READ_WRITE
+
+function readDir(datapath) {
+  log('DATAPATH', datapath)
+  datapath = path.resolve(__dirname, datapath)
+  let files = glob.readdirSync('**/*\.tib*', {cwd: datapath})
+  files = _.uniq(files)
+  // log('LOCAL DICT', datapath)
+  log('F', files)
+  let wfs = selectTib(datapath, files)
+  log('WFS', wfs)
+  let queries = wfs.map(wf=> { return {str: wf}})
+  queries = queries.slice(0, 2)
+  log('Q', queries)
+  // let dicts = Qqueries(queries)
+  // log('DICTS', dicts)
+}
+
+let code = 'tib'
+const tsek = tibsyms.tsek
+let retsek = new RegExp(tsek+'$')
+
+function selectTib(datapath, files) {
+  let tibs = []
+  let tibkey = {}
+  files.forEach(file => {
+    let fpath = path.resolve(datapath, file)
+    let text = fse.readFileSync(fpath,'utf8').trim()
+    let rows = text.split('\n')
+    rows = _.compact(rows)
+    rows.forEach((row, idx)=> {
+      // log('ROW', idx, row)
+      let clean = cleanStr(row)
+      // log('CL', clean)
+      // if (idx > 0) return
+      let gpars = sband(clean, code)
+      // log('PARS', gpars)
+      gpars.forEach(gpar=> {
+        gpar.forEach(span=> {
+          if (span.lang != code) return
+          let wfs = span.text.split(' ')
+          wfs.forEach(wf=> {
+            wf = wf.replace(retsek, '')
+            if (tibkey[wf]) return
+            tibs.push(wf)
+            tibkey[wf] = true
+          })
+        })
+      })
+    })
+  })
+  return tibs
+}
+
+function cleanStr(row) {
+  let clean = row.trim()
+  clean = clean.replace(/\.$/, '')
+  return clean
+}
+
+const { Readable } = require('stream')
+const { Writable } = require('stream')
+
+class Source extends Readable {
+   constructor(array_of_data = [], opt = {}) {
+      super(opt)
+      this._array_of_data = array_of_data
+
+     this.on('data', (chunk)=> {
+       log('Readable on data ')
+     })
+      .on('error', (err)=>     {
+         log('Readable on error ', err)
+      })
+      .on('end', ()=>      {
+         log('Readable on end ')
+      })
+      .on('close', ()=>      {
+         log('Readable on close не все реализации генерируют это событие')
+      })
+   }
+   _read() {
+      let data = this._array_of_data.shift()
+      if (!data) {
+         this.push(null)
+      } else {
+         this.push(data)
+      }
+   }
+}
+
+class Writer extends Writable {
+   constructor(opt = {}) {
+      super(opt)
+      this.on('drain', ()=> {
+         log('writable on drain')
+      })
+      .on('error', (err)=> {
+         log('writable on error', err)
+      })
+      .on('finish', ()=> {
+         log('writable on finish')
+      })
+   }
+
+  _write(chunk, encoding, done) {
+      if (typeof chunk === 'object') {
+         log('chunk = ', chunk)
+      } else {
+        log('chunk not obj')
+      }
+      done()
+   }
+}
+
+function Qqueries(queries) {
+  let dicts = ['kuku']
+
+  let opts = {
+    objectMode: true
+  }
+  const source = new Source(queries, opts)
+  log('SOURCE', source)
+
+  let wopts = {
+    objectMode: true
+  }
+  const target = new Writer(wopts)
+  source.pipe(target)
+
+  return target
+  // return dicts
 }

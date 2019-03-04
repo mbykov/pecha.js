@@ -8,17 +8,19 @@ const tsek = tibsyms.tsek
 let retsek = new RegExp(tsek+'$')
 
 let hi = require('highland');
-let d = require('debug')('app')
 const path = require('path')
 const fse = require('fs-extra')
 let glob = require('glob-fs')({ gitignore: true })
 
 const isDev = require('electron-is-dev')
 const settings = require('electron-settings')
-const log = console.log
 const PouchDB = require('pouchdb')
-
 PouchDB.plugin(require('pouchdb-load'));
+
+// const log = console.log
+let debug = require('debug')
+let log = debug('app')
+// let d = debug('app')
 
 let tmp
 let tmps = []
@@ -151,6 +153,23 @@ export function queryDBs (query) {
     })
 }
 
+// let hiquery = hi.wrapCallback(queryDBs)
+
+function hiquery(query) {
+  return hi(function (push, next) {
+    queryDBs(query)
+      .then(function(qres) {
+        push(null, qres)
+        push(null, hi.nil)
+      })
+      .catch(function (err) {
+        push(err, null)
+        push(null, hi.nil)
+      })
+  })
+}
+
+
 export function localDict(datapath) {
   log('LOCAL', datapath)
   datapath = path.resolve(__dirname, datapath)
@@ -159,76 +178,57 @@ export function localDict(datapath) {
   // log('LOCAL DICT', datapath)
   // log('F', files)
   let wfs = selectTib(datapath, files)
-  log('QS', wfs.length, _.uniq(wfs).length)
+  log('WFS', wfs.length)
   let queries = wfs.map(wf=> { return {str: wf}})
-  // queries = queries.slice(0,10)
+  queries = queries.slice(0, 2)
+
   // log('QS1', queries)
   let dicts = []
-  // это работает:
-  // hi(queries)
-  //   .map(queryDBs)
-  //   .toArray(function (qpromises) {
-  //     log('QCHAINS', qpromises)
-  //     Promise.all(qpromises)
-  //       .then(function(qs) {
-  //         log('Q', qs)
-  //         log('CH', qs.map(q=> { return q.chain }))
-  //       })
-  //   })
 
   hi(queries)
-    .map(queryDBs)
-    .toArray(function (qpromises) {
-      // log('QPROMISES', qpromises)
-      let empties = []
-      let dicts = []
-      Promise.all(qpromises)
-        .then(function(qs) {
-          // log('Q', qs)
-          let chs = _.flatten(qs.map(q=> { return q.chain }))
-          // log('CHS', chs)
-          chs.forEach(ch=> {
-            if (ch.docs.length) dicts.push(ch.seg)
-            else empties.push(ch.seg)
-          })
-          log('dicts:', dicts)
-          log('empties:', empties)
-          let queries = empties.map(wf=> { return {str: wf}})
-          empties = []
-          hi(queries)
-            .map(queryDBs)
-            .toArray(function (qpromises) {
-              log('qpromises', qpromises)
-              Promise.all(qpromises)
-                .then(function(qs) {
-                  // log('Q', qs)
-                  let chs = _.flatten(qs.map(q=> { return q.chain }))
-                  log('CH', chs)
-                  chs.forEach(ch=> {
-                    if (ch.docs.length) dicts.push(ch.seg)
-                    else empties.push(ch.seg)
-                  })
-                  log('DICTS', dicts.length)
-                  log('EMPTIES', empties)
-                })
-            })
-        })
-    })
-
-  // hi(queries)
-  //   .doto(queryDBs)
-  //   .toArray(function (qpromises) {
-  //     log('QCHAINS', qpromises)
-  //     log('TMPS', tmps)
-  //     // Promise.all(qpromises)
-  //     //   .then(function(q) {
-  //     //     log('Q', q)
-  //     //   })
-  //   })
-
+    .map(hiquery)
+    .series()
+    .append(hiquery({str: test}))
+    // .through(append)
+    // .resume()
+    .toArray(hi.log)
+    // .toArray(function (s) {
+  // log('QP', s)
+  // })
 }
 
 
+var append = function (source) {
+  source.append({str: 'test-filter'})
+  return source
+}
+
+var filter = function (source) {
+  return source.consume(function (err, x, push, next) {
+    if (err) {
+      // pass errors along the stream and consume next value
+      push(err);
+      next();
+    }
+    else if (x === _.nil) {
+      // pass nil (end event) along the stream
+      push(null, x);
+    }
+    else {
+      // pass on the value only if the value passes the predicate
+      if (f(x)) {
+        log('________________________ AHA!')
+        // push(null, {str: 'test-filter'});
+        source.append({str: 'test-filter'})
+      }
+      next();
+    }
+  });
+};
+
+function f(x) {
+  return true
+}
 
 
 function selectTib(datapath, files) {
