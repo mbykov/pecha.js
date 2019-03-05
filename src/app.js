@@ -90,9 +90,10 @@ document.addEventListener('click', (ev) => {
   } else if (ev.target.id == 'cleanupdb') {
     log('CLEAN UP DBs!')
   } else if (ev.target.id == 'scandir') {
-    log('SCAN DIR')
     // dialog.showOpenDialog({properties: ['openDir'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, scanDir)
     dialog.showOpenDialog( {properties: ['openDirectory'] }, scanDir)
+  } else if (ev.target.id == 'importcsv') {
+    dialog.showOpenDialog({properties: ['openDir'], filters: [{name: 'CSV', extensions: ['csv'] }]}, importCSV)
   } else if (data.docs) {
     askDBs(ev.target , true)
   }
@@ -172,4 +173,12 @@ export function scrollPane(ev, state) {
 
 function scanDir(fns) {
   log('FNS', fns)
+}
+
+function importCSV(fns) {
+  log('FNS', fns)
+  if (!fns) return
+  let csvname = fns[0]
+  if (!csvname) return
+  ipcRenderer.send('importcsv', csvname)
 }

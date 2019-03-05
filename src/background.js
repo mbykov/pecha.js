@@ -12,7 +12,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { getCfg, replicate, infoDB, remoteDicts, queryDBs, localDict } from "./dbs/pouch"
+import { getCfg, replicate, infoDB, remoteDicts, queryDBs, localDict, importCSV } from "./dbs/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -134,6 +134,14 @@ app.on("ready", () => {
         event.sender.send('replayDBs', query)
       })
   })
+
+  ipcMain.on('importcsv', (event, csvname) => {
+    importCSV(csvname)
+      // .then(function(res) {
+      //   // event.sender.send('XXX', res)
+      // })
+  })
+
 
   ipcMain.on('queryLocalDict', (event, datapath) => {
     localDict(datapath)

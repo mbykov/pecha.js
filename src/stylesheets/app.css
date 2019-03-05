@@ -56,6 +56,12 @@ ul.about li:before {
     cursor: pointer;
 }
 
+a {
+  color: maroon;
+  cursor: pointer;
+}
+
+
 #new-version {
     display: none;
     position: absolute;

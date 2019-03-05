@@ -22,6 +22,7 @@ let debug = require('debug')
 // let d = debug('app')
 let H = require('highland');
 let miss = require('mississippi');
+let csv2 = require('csv2');
 
 
 let code = 'tib'
@@ -150,83 +151,6 @@ export function queryDBs (query) {
       // return chain
     })
 }
-
-
-let dicts = []
-let tmpdicts = []
-let qs = []
-
-export function localDict(datapath) {
-  log('LOCAL', datapath)
-  datapath = path.resolve(__dirname, datapath)
-  let files = glob.readdirSync('**/*\.tib*', {cwd: datapath})
-  files = _.uniq(files)
-  // log('LOCAL DICT', datapath)
-  // log('F', files)
-  let wfs = selectTib(datapath, files)
-  log('WFS', wfs.length)
-  let queries = wfs.map(wf=> { return {str: wf}})
-  queries = queries.slice(0, 3)
-  log('QS2', queries)
-
-  recQuery(queries)
-}
-
-function recQuery(queries) {
-  let rs = miss.from.obj(queries)
-  let ws = miss.to.obj(write, flush)
-  let  streamDB = miss.through.obj( // TODO parallel
-    function (chunk, enc, cb) {
-      queryDBs(chunk)
-        .then(function(query) {
-          cb(null, query)
-        })
-    },
-    // function (cb) {
-    //   cb(null, 'ONE LAST BIT OF UPPERCASE')
-    // }
-  )
-
-  miss.pipe(rs, streamDB, ws, function (err) {
-    if (err) return console.error('Copy error!', err)
-    console.log('Copied successfully')
-  })
-}
-
-function write (data, enc, cb) {
-  // log('writing', JSON.stringify(data))
-  log('_dbres_:', data)
-  if (!data.chain) return cb()
-  data.chain.forEach(seg=> {
-    if (seg.docs.length) dicts.push(seg.seg)
-    else qs.push(seg.seg)
-  })
-  cb()
-}
-
-function flush (cb) {
-  // i am called before finish is emitted
-  qs = _.uniq(qs)
-  dicts = _.uniq(dicts)
-  if (tmpdicts.length == dicts.length)  return log('__VERY END__', dicts)
-  else tmpdicts.length = dicts.length
-  log('FLUSH: DICTS', dicts.length, 'QS', qs)
-  if (qs.length) {
-    let queries = qs.map(qs=> { return {str: qs}})
-    recQuery(queries)
-  } else {
-    log('____THE END____')
-  }
-}
-
-// потом в рекурсию
-function localQueries(queries) {
-  queries.forEach(query=> {
-    queryDBs (query)
-  })
-}
-
-
 
 function selectTib(datapath, files) {
   let tibs = []
@@ -370,4 +294,91 @@ function fullChains(chains) {
     if (full) fulls.push(segs)
   })
   return fulls
+}
+
+// =====================
+
+let dicts = []
+let tmpdicts = []
+let qs = []
+
+export function localDict(datapath) {
+  log('LOCAL', datapath)
+  datapath = path.resolve(__dirname, datapath)
+  let files = glob.readdirSync('**/*\.tib*', {cwd: datapath})
+  files = _.uniq(files)
+  // log('LOCAL DICT', datapath)
+  // log('F', files)
+  let wfs = selectTib(datapath, files)
+  log('WFS', wfs.length)
+  let queries = wfs.map(wf=> { return {str: wf}})
+  queries = queries.slice(0, 3)
+  log('QS2', queries)
+
+  recQuery(queries)
+}
+
+function recQuery(queries) {
+  let rs = miss.from.obj(queries)
+  let ws = miss.to.obj(write, flush)
+  let  streamDB = miss.through.obj( // TODO parallel
+    function (chunk, enc, cb) {
+      queryDBs(chunk)
+        .then(function(query) {
+          cb(null, query)
+        })
+    },
+    // function (cb) {
+    //   cb(null, 'ONE LAST BIT OF UPPERCASE')
+    // }
+  )
+
+  miss.pipe(rs, streamDB, ws, function (err) {
+    if (err) return console.error('Copy error!', err)
+    console.log('Copied successfully')
+  })
+}
+
+function write (data, enc, cb) {
+  // log('writing', JSON.stringify(data))
+  log('_dbres_:', data)
+  if (!data.chain) return cb()
+  data.chain.forEach(seg=> {
+    if (seg.docs.length) dicts.push(seg.seg)
+    else qs.push(seg.seg)
+  })
+  cb()
+}
+
+function flush (cb) {
+  // i am called before finish is emitted
+  qs = _.uniq(qs)
+  dicts = _.uniq(dicts)
+  if (tmpdicts.length == dicts.length)  return log('__VERY END__', dicts)
+  else tmpdicts.length = dicts.length
+  log('FLUSH: DICTS', dicts.length, 'QS', qs)
+  if (qs.length) {
+    let queries = qs.map(qs=> { return {str: qs}})
+    recQuery(queries)
+  } else {
+    log('____THE END____')
+  }
+}
+
+// потом в рекурсию
+function localQueries(queries) {
+  queries.forEach(query=> {
+    queryDBs (query)
+  })
+}
+
+// =============== CSV
+
+export function importCSV(csvname) {
+  log('IMPORT CSV', csvname)
+
+  // добавить обработку # сомментариев
+  fse.createReadStream(csvname)
+      .pipe(csv2())
+      .on('data', console.log)
 }
