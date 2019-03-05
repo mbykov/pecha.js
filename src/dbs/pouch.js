@@ -7,7 +7,6 @@ import { tibsyms, tibsuff } from "../lib/tibetan_data";
 const tsek = tibsyms.tsek
 let retsek = new RegExp(tsek+'$')
 
-let hi = require('highland');
 const path = require('path')
 const fse = require('fs-extra')
 let glob = require('glob-fs')({ gitignore: true })
@@ -17,13 +16,13 @@ const settings = require('electron-settings')
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-load'));
 
-// const log = console.log
+const log = console.log
 let debug = require('debug')
-let log = debug('app')
+// let log = debug('app')
 // let d = debug('app')
+let H = require('highland');
+let miss = require('mississippi');
 
-let tmp
-let tmps = []
 
 let code = 'tib'
 let dbs = []
@@ -146,29 +145,15 @@ export function queryDBs (query) {
       // log('======DOCS', docs.length)
       let chain = compactDocs(docs, pdchs)
       // log('======CHAIN', chain)
-      tmps.push(chain)
       query.chain = chain
       return query
       // return chain
     })
 }
 
-// let hiquery = hi.wrapCallback(queryDBs)
 
-function hiquery(query) {
-  return hi(function (push, next) {
-    queryDBs(query)
-      .then(function(qres) {
-        push(null, qres)
-        push(null, hi.nil)
-      })
-      .catch(function (err) {
-        push(err, null)
-        push(null, hi.nil)
-      })
-  })
-}
-
+let dicts = []
+let qs = []
 
 export function localDict(datapath) {
   log('LOCAL', datapath)
@@ -180,55 +165,64 @@ export function localDict(datapath) {
   let wfs = selectTib(datapath, files)
   log('WFS', wfs.length)
   let queries = wfs.map(wf=> { return {str: wf}})
-  queries = queries.slice(0, 2)
+  queries = queries.slice(0, 3)
+  log('QS2', queries)
 
-  // log('QS1', queries)
-  let dicts = []
-
-  hi(queries)
-    .map(hiquery)
-    .series()
-    .append(hiquery({str: test}))
-    // .through(append)
-    // .resume()
-    .toArray(hi.log)
-    // .toArray(function (s) {
-  // log('QP', s)
-  // })
+  recQuery(queries)
 }
 
+function recQuery(queries) {
+  let rs = miss.from.obj(queries)
+  let ws = miss.to.obj(write, flush)
+  let  streamDB = miss.through.obj(
+    function (chunk, enc, cb) {
+      queryDBs(chunk)
+        .then(function(query) {
+          cb(null, query)
+        })
+    },
+    // function (cb) {
+    //   cb(null, 'ONE LAST BIT OF UPPERCASE')
+    // }
+  )
 
-var append = function (source) {
-  source.append({str: 'test-filter'})
-  return source
+  miss.pipe(rs, streamDB, ws, function (err) {
+    if (err) return console.error('Copy error!', err)
+    console.log('Copied successfully')
+  })
 }
 
-var filter = function (source) {
-  return source.consume(function (err, x, push, next) {
-    if (err) {
-      // pass errors along the stream and consume next value
-      push(err);
-      next();
-    }
-    else if (x === _.nil) {
-      // pass nil (end event) along the stream
-      push(null, x);
-    }
-    else {
-      // pass on the value only if the value passes the predicate
-      if (f(x)) {
-        log('________________________ AHA!')
-        // push(null, {str: 'test-filter'});
-        source.append({str: 'test-filter'})
-      }
-      next();
-    }
-  });
-};
-
-function f(x) {
-  return true
+function write (data, enc, cb) {
+  // log('writing', JSON.stringify(data))
+  log('_dbres_:', data)
+  if (!data.chain) return cb()
+  data.chain.forEach(seg=> {
+    if (seg.docs.length) dicts.push(seg.seg)
+    else qs.push(seg.seg)
+  })
+  cb()
 }
+
+function flush (cb) {
+  // i am called before finish is emitted
+  qs = _.uniq(qs)
+  dicts = _.uniq(dicts)
+  log('FLUSH: DICTS', dicts, 'QS', qs)
+  if (qs.length) {
+    let queries = qs.map(qs=> { return {str: qs}})
+    recQuery(queries)
+  } else {
+    log('____THE END____')
+  }
+}
+
+// потом в рекурсию
+function localQueries(queries) {
+  queries.forEach(query=> {
+    queryDBs (query)
+  })
+}
+
 
 
 function selectTib(datapath, files) {
