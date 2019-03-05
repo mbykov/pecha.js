@@ -52,7 +52,7 @@ ipcRenderer.on('section', function (event, section) {
 ipcRenderer.on('action', function (event, action) {
   if (action == 'clonedicts') navigate({section: 'clone'})
   else if (action == 'arrangeDicts') navigate({section: 'activedicts'})
-  else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, parseCSV)
+  else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'CSV', extensions: ['csv'] }]}, parseCSV)
   else if (action == 'cleanupdb') navigate({section: 'clone'})
 })
 
@@ -89,6 +89,10 @@ document.addEventListener('click', (ev) => {
     activateDict(parent)
   } else if (ev.target.id == 'cleanupdb') {
     log('CLEAN UP DBs!')
+  } else if (ev.target.id == 'scandir') {
+    log('SCAN DIR')
+    // dialog.showOpenDialog({properties: ['openDir'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, scanDir)
+    dialog.showOpenDialog( {properties: ['openDirectory'] }, scanDir)
   } else if (data.docs) {
     askDBs(ev.target , true)
   }
@@ -164,4 +168,8 @@ export function scrollPane(ev, state) {
   let delta = (ev.deltaY > 0) ? 24 : -24
   let opane = q('.section.is-shown')
   opane.scrollTop += delta
+}
+
+function scanDir(fns) {
+  log('FNS', fns)
 }

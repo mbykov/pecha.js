@@ -153,6 +153,7 @@ export function queryDBs (query) {
 
 
 let dicts = []
+let tmpdicts = []
 let qs = []
 
 export function localDict(datapath) {
@@ -174,7 +175,7 @@ export function localDict(datapath) {
 function recQuery(queries) {
   let rs = miss.from.obj(queries)
   let ws = miss.to.obj(write, flush)
-  let  streamDB = miss.through.obj(
+  let  streamDB = miss.through.obj( // TODO parallel
     function (chunk, enc, cb) {
       queryDBs(chunk)
         .then(function(query) {
@@ -207,7 +208,9 @@ function flush (cb) {
   // i am called before finish is emitted
   qs = _.uniq(qs)
   dicts = _.uniq(dicts)
-  log('FLUSH: DICTS', dicts, 'QS', qs)
+  if (tmpdicts.length == dicts.length)  return log('__VERY END__', dicts)
+  else tmpdicts.length = dicts.length
+  log('FLUSH: DICTS', dicts.length, 'QS', qs)
   if (qs.length) {
     let queries = qs.map(qs=> { return {str: qs}})
     recQuery(queries)
