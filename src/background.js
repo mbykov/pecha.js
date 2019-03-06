@@ -51,10 +51,6 @@ app.on("ready", () => {
   //   defaultHeight: 800
   // })
 
-  let winBounds = settings.get('winBounds')
-  winBounds.y -= 21
-  log('winBounds', winBounds)
-
   let opts = {webPreferences: {
     nodeIntegration: true
   }}
@@ -62,16 +58,12 @@ app.on("ready", () => {
   // Object.assign(opts, winBounds)
 
   const win = new BrowserWindow(opts)
+
+  let winBounds = settings.get('winBounds') || win.getBounds()
+  winBounds.y -= 21
+  log('winBounds', winBounds)
+
   win.setBounds(winBounds)
-  // const win = new BrowserWindow({
-  //   'x': mainWindowState.x,
-  //   'y': mainWindowState.y -20,
-  //   'width': mainWindowState.width,
-  //   'height': mainWindowState.height,
-  //   webPreferences: {
-  //     nodeIntegration: true
-  //   }
-  // })
 
   win.loadURL(
     url.format({
@@ -120,11 +112,10 @@ app.on("ready", () => {
     let remotepath = ['http://localhost:3000/api', dbname].join('/')
     replicate(remotepath, localpath)
       .then(function (res) {
-        console.log('Hooray the stream replication is complete!', res);
         getCfg()
         event.sender.send('replicateOK', res)
       }).catch(function (err) {
-        console.log('oh no an error', err);
+        // event.sender.send('replicateERR')
       });
   })
 
@@ -142,7 +133,6 @@ app.on("ready", () => {
       // })
   })
 
-
   ipcMain.on('queryLocalDict', (event, datapath) => {
     localDict(datapath)
   })
@@ -151,7 +141,7 @@ app.on("ready", () => {
     log('B: REMOTE DICTS START')
     remoteDicts()
       .then(function(rdbs) {
-        log('REMOTE DICTS', rdbs)
+        log('B: REMOTE DICTS:', rdbs)
         rdbs = _.filter(rdbs, dname=> { return dname[0] != '_' })
         event.sender.send('remoteDictsReply', rdbs)
       })
@@ -160,6 +150,9 @@ app.on("ready", () => {
   ipcMain.on('cleanupDB', (event, datapath) => {
     cleanupDB(upath)
   })
+
+
+
 })
 
 app.on("window-all-closed", () => {

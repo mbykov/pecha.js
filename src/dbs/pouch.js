@@ -40,13 +40,13 @@ const diglossa = new NodeCouchDb({
 })
 const couchAuth = new NodeCouchDb({
   auth: {
-    user: 'login',
-    pass: 'secret'
+    user: 'guest',
+    pass: 'guest'
   }
 })
 
 export function remoteDicts() {
-  return couch.listDatabases()
+  return couchAuth.listDatabases()
     .catch(function(err) {
       log('REMOTE DICTS ERR', err)
     })
@@ -61,6 +61,10 @@ export function replicate(remotepath, localpath) {
       log('REPL-BEFORE-INFO', info)
       return localDB.load(remotepath)
       // return localDB.load('http://localhost:3000/dumps/dump.txt')
+    })
+    .catch(function(err) {
+      localDB.destroy()
+      throw new Error(err)
     })
 }
 
@@ -81,11 +85,15 @@ function setDBs(upath, cfg) {
 export function getCfg() {
   let upath = settings.get('upath')
   let pouchpath = path.resolve(upath, 'pouch')
+  fse.ensureDirSync(pouchpath)
   let fns = fse.readdirSync(pouchpath)
+  // log('FNS', fns)
   let oldcfg = settings.get('cfg') || []
+  // log('OLDCFG', oldcfg)
   let cfg = []
   fns.forEach((dn, idx) => {
     let old = _.find(oldcfg, dict=> {return dict.name == dn })
+    // log('OLD', old)
     if (old) cfg.push(old)
     else {
       let newdict = {name: dn, active: true, idx: 100+idx}

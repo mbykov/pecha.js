@@ -17,6 +17,11 @@ ipcRenderer.on('replicateOK', function (event, res) {
   navigate(state)
 })
 
+ipcRenderer.on('replicateERR', function (event, res) {
+  let cloneErr = q('#cloneERR')
+  cloneErr.classList.remove('is-hidden')
+})
+
 function showRemoteDicts(rdbs) {
   // let upath = settings.get('upath')
   let cfg = settings.get('cfg')
