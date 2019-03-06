@@ -88,7 +88,7 @@ document.addEventListener('click', (ev) => {
   } else if (parent && parent.dataset && parent.dataset.activedict) {
     activateDict(parent)
   } else if (ev.target.id == 'cleanupdb') {
-    log('CLEAN UP DBs!')
+    ipcRenderer.send('cleanupDB')
   } else if (ev.target.id == 'scandir') {
     // dialog.showOpenDialog({properties: ['openDir'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, scanDir)
     dialog.showOpenDialog( {properties: ['openDirectory'] }, scanDir)

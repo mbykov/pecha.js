@@ -12,7 +12,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { getCfg, replicate, infoDB, remoteDicts, queryDBs, localDict, importCSV } from "./dbs/pouch"
+import { getCfg, replicate, infoDB, remoteDicts, queryDBs, localDict, importCSV, cleanupDB } from "./dbs/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -145,24 +145,6 @@ app.on("ready", () => {
 
   ipcMain.on('queryLocalDict', (event, datapath) => {
     localDict(datapath)
-    // queries = queries.slice(0, 5)
-    // Promise.all(queries.map(function(query) {
-    //   return queryDBs(query.keys)
-    //     .then(function(docs) {
-    //       query.docs = docs
-    //       return query
-    //     })
-    // }))
-    //   .then(function(queries) {
-    //     // log('QSRES', res)
-    //     event.sender.send('replayLocalDict', queries)
-    //   })
-
-    // queryDBs(query.keys)
-    //   .then(function(docs) {
-    //     query.docs = docs
-    //     event.sender.send('replayLocalDict', query)
-    //   })
   })
 
   ipcMain.on('remoteDicts', (event, query) => {
@@ -173,6 +155,10 @@ app.on("ready", () => {
         rdbs = _.filter(rdbs, dname=> { return dname[0] != '_' })
         event.sender.send('remoteDictsReply', rdbs)
       })
+  })
+
+  ipcMain.on('cleanupDB', (event, datapath) => {
+    cleanupDB(upath)
   })
 })
 

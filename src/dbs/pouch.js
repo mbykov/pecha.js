@@ -108,8 +108,16 @@ export function infoDB(localpath) {
   return localDB.info()
 }
 
-export function cleanupDB(state) {
-  log('CLEAN UP')
+export function cleanupDB(upath) {
+  let destpath = path.resolve(upath, 'pouch')
+  log('CLEAN UP', destpath)
+  try {
+    fse.removeSync(destpath)
+    getCfg()
+  } catch (err) {
+    log('ERR re-creating DBs', err)
+    // app.quit()
+  }
 }
 
 export function queryDBs (query) {
