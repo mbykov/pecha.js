@@ -73,6 +73,10 @@ export function showActiveDicts() {
     }
     oactive.dataset.activedict = name
     otr.appendChild(oactive)
+    let ocsv = create('td', 'dictcsv')
+    ocsv.textContent = 'toCSV'
+    ocsv.dataset.csv = name
+    otr.appendChild(ocsv)
   })
 }
 

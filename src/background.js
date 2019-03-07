@@ -125,14 +125,14 @@ app.on("ready", () => {
   })
 
   ipcMain.on('remoteDicts', (event, query) => {
-    log('B: REMOTE DICTS START')
+    // log('B: REMOTE DICTS START')
     remoteDicts()
       .then(function(rdbs) {
         log('B: REMOTE DICTS:', rdbs)
         rdbs = _.filter(rdbs, dname=> { return dname[0] != '_' })
         event.sender.send('remoteDictsReply', rdbs)
       }).catch(function (err) {
-        log('B: REMOTE DICTS ERR')
+        // log('B: REMOTE DICTS ERR')
         event.sender.send('replicateERR')
       });
   })

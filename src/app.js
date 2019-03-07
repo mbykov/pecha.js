@@ -49,12 +49,12 @@ ipcRenderer.on('section', function (event, section) {
   navigate({section: section})
 })
 
-ipcRenderer.on('action', function (event, action) {
-  if (action == 'clonedicts') navigate({section: 'clone'})
-  else if (action == 'arrangeDicts') navigate({section: 'activedicts'})
-  else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'CSV', extensions: ['csv'] }]}, parseCSV)
-  else if (action == 'cleanupdb') navigate({section: 'clone'})
-})
+// ipcRenderer.on('action', function (event, action) {
+//   if (action == 'clonedicts') navigate({section: 'clone'})
+//   else if (action == 'arrangeDicts') navigate({section: 'activedicts'})
+//   else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'CSV', extensions: ['csv'] }]}, parseCSV)
+//   else if (action == 'cleanupdb') navigate({section: 'clone'})
+// })
 
 // ctrl-R
 ipcRenderer.on('reread', function (event) {
@@ -85,12 +85,14 @@ document.addEventListener('click', (ev) => {
     moveDictFirst(data.firstdict) // ev.target,
   } else if (data.activedict) {
     activateDict(ev.target)
+  } else if (data.csv) {
+    // activateDict(ev.target)
+    log('CSV', data.csv)
   } else if (parent && parent.dataset && parent.dataset.activedict) {
     activateDict(parent)
   } else if (ev.target.id == 'cleanupdb') {
     ipcRenderer.send('cleanupDB')
   } else if (ev.target.id == 'scandir') {
-    // dialog.showOpenDialog({properties: ['openDir'], filters: [{name: 'JSON', extensions: ['stardict'] }]}, scanDir)
     dialog.showOpenDialog( {properties: ['openDirectory'] }, scanDir)
   } else if (ev.target.id == 'importcsv') {
     dialog.showOpenDialog({properties: ['openDir'], filters: [{name: 'CSV', extensions: ['csv'] }]}, importCSV)
@@ -138,6 +140,7 @@ document.addEventListener("keydown", function(ev) {
   // if (ev.ctrlKey == true) return
   if (ev.shiftKey != true) return
   let ohover = getInnermostHovered()
+  if (!ohover) return
   if (ohover.id == 'source') ohover = q('.tibpar')
   showCholok(ohover)
   if (ev.ctrlKey == true) showCholok(ohover, true)

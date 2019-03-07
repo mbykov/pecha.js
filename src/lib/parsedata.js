@@ -44,6 +44,7 @@ export function showCholok(el, cumulative) {
 }
 
 export function parsePhrase(el, chain, lastsek) {
+  if (!el) return
   el.textContent = ''
   chain.forEach((seg, idx)=> {
     let ospan
