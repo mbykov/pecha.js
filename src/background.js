@@ -106,19 +106,6 @@ app.on("ready", () => {
 
   getCfg()
 
-  ipcMain.on('replicate', (event, dbname) => {
-    console.log('B:REPLICATE', dbname)
-    let localpath = path.resolve(upath, 'pouch', dbname)
-    let remotepath = ['http://localhost:3000/api', dbname].join('/')
-    replicate(remotepath, localpath)
-      .then(function (res) {
-        getCfg()
-        event.sender.send('replicateOK', res)
-      }).catch(function (err) {
-        // event.sender.send('replicateERR')
-      });
-  })
-
   ipcMain.on('queryDBs', (event, query) => {
     queryDBs(query)
       .then(function(query) {
@@ -144,7 +131,22 @@ app.on("ready", () => {
         log('B: REMOTE DICTS:', rdbs)
         rdbs = _.filter(rdbs, dname=> { return dname[0] != '_' })
         event.sender.send('remoteDictsReply', rdbs)
-      })
+      }).catch(function (err) {
+        log('B: REMOTE DICTS ERR')
+        event.sender.send('replicateERR')
+      });
+  })
+
+  ipcMain.on('replicate', (event, dbname) => {
+    console.log('B:REPLICATE', dbname)
+    let localpath = path.resolve(upath, 'pouch', dbname)
+    replicate(upath, dbname)
+      .then(function (res) {
+        getCfg()
+        event.sender.send('replicateOK', res)
+      }).catch(function (err) {
+        // event.sender.send('replicateERR')
+      });
   })
 
   ipcMain.on('cleanupDB', (event, datapath) => {

@@ -7,6 +7,7 @@ import { tibsyms, tibsuff } from "../lib/tibetan_data";
 const tsek = tibsyms.tsek
 let retsek = new RegExp(tsek+'$')
 
+const request = require('request')
 const path = require('path')
 const fse = require('fs-extra')
 let glob = require('glob-fs')({ gitignore: true })
@@ -33,12 +34,11 @@ let rekuku = /༈/
 
 const NodeCouchDb = require('node-couchdb');
 const couch = new NodeCouchDb()
+
 const diglossa = new NodeCouchDb({
-  host: 'couchdb.external.service',
-  protocol: 'https',
-  port: 6984
-})
-const couchAuth = new NodeCouchDb({
+  host: 'diglossa.org',
+  protocol: 'http',
+  port: 5984,
   auth: {
     user: 'guest',
     pass: 'guest'
@@ -46,21 +46,24 @@ const couchAuth = new NodeCouchDb({
 })
 
 export function remoteDicts() {
-  return couchAuth.listDatabases()
+  return diglossa.listDatabases()
     .catch(function(err) {
       log('REMOTE DICTS ERR', err)
+      throw new Error(err)
     })
 }
 
-export function replicate(remotepath, localpath) {
-  log('REPLICATE LOCAL', localpath)
-  let localDB = new PouchDB(localpath);
-  // return localDB.load('http://localhost:3000/dumps/dump.txt')
+export function replicate(upath, dbname) {
+
+  let localpath = path.resolve(upath, 'pouch', dbname)
+  let localDB = new PouchDB(localpath)
+  let remotepath = ['http://diglossa.org/dump-', dbname].join('')
+  log('REPLICATE START', localpath, remotepath)
   return localDB.info()
     .then(function(info) {
       log('REPL-BEFORE-INFO', info)
+      // let api = 'http://localhost:5984/verbs/_all_docs'
       return localDB.load(remotepath)
-      // return localDB.load('http://localhost:3000/dumps/dump.txt')
     })
     .catch(function(err) {
       localDB.destroy()
@@ -129,7 +132,7 @@ export function cleanupDB(upath) {
 }
 
 export function queryDBs (query) {
-  log('QUERY->', query.str)
+  // log('QUERY->', query.str)
   let clean = query.str.replace(rekuku, '')
 
   let pdchs = segmenter(query.str)
