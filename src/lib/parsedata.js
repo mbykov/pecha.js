@@ -61,8 +61,6 @@ export function parsePhrase(el, chain, lastsek) {
     if (idx < chain.length-1) el.appendChild(span(tsek, 'tsek'))
   })
   if (lastsek) el.appendChild(span(tsek, 'tsek'))
-  let progress = q('#progress')
-  progress.classList.remove('is-shown')
 }
 
 function createPopup(el, upper) {
@@ -97,9 +95,6 @@ export function showPopup(el, compound) {
   // else if (el.classList.contains('tibwf')) showCompound(oul, chains)
   if (compound) showCompound(oul, chains)
   else showAmbi(oul, chains)
-
-  let progress = q('#progress')
-  progress.classList.remove('is-shown')
 }
 
 function showAmbi(oul, chains) {
@@ -185,8 +180,6 @@ export function noResult(el) {
   // log('NO RESULT')
   // let oresult = q('#result')
   // empty(oresult)
-  let progress = q('#progress')
-  progress.classList.remove('is-shown')
 }
 
 let xxx = function(n,o,u) {
@@ -210,6 +203,8 @@ export function askDBs(el, compound) {
 }
 
 ipcRenderer.on('replayDBs', function (event, query) {
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
   let chain = query.chain
   let el = getInnermostHovered()
   if (!chain) {

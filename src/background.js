@@ -133,7 +133,7 @@ app.on("ready", () => {
         event.sender.send('remoteDictsReply', rdbs)
       }).catch(function (err) {
         // log('B: REMOTE DICTS ERR')
-        event.sender.send('replicateERR')
+        event.sender.send('remoteDictsReply', false)
       });
   })
 

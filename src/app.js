@@ -71,6 +71,7 @@ if (!state) state = {section: 'home'}
 navigate(state)
 
 document.addEventListener('click', (ev) => {
+  let progress = q('#progress')
   let data = ev.target.dataset
   if (!data) return
   let parent = ev.target.parentElement
@@ -80,6 +81,7 @@ document.addEventListener('click', (ev) => {
   } else if (data.section) {
     navigate({section: data.section})
   } else if (data.clone) {
+    progress.classList.add('is-shown')
     ipcRenderer.send('replicate', data.clone)
   } else if (data.firstdict) {
     moveDictFirst(data.firstdict) // ev.target,
@@ -89,7 +91,8 @@ document.addEventListener('click', (ev) => {
     // activateDict(ev.target)
     log('CSV', data.csv)
   } else if (parent && parent.dataset && parent.dataset.activedict) {
-    activateDict(parent)
+    // activateDict(parent)
+    log('activateDict(parent)_______')
   } else if (ev.target.id == 'cleanupdb') {
     ipcRenderer.send('cleanupDB')
   } else if (ev.target.id == 'scandir') {

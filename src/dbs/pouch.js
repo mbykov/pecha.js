@@ -73,7 +73,7 @@ export function replicate(upath, dbname) {
 function setDBs(upath, cfg) {
   dbs = []
   let dbnames = _.compact(cfg.map(dict => { return (dict.active) ? dict.name : null }))
-  log('setDBNS', dbnames)
+  // log('setDBNS', dbnames)
   dbnames.forEach((dn, idx) => {
     let dpath = path.resolve(upath, 'pouch', dn)
     let pouch = new PouchDB(dpath)

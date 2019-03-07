@@ -9,17 +9,21 @@ const log = console.log
 const settings = require('electron-settings')
 
 ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
-  showRemoteDicts(rdbs)
+  let cloneErr = q('#cloneERR')
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
+  if (rdbs) showRemoteDicts(rdbs)
+  else cloneErr.classList.remove('is-hidden')
 })
 
 ipcRenderer.on('replicateOK', function (event, res) {
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
   let state = {section: 'activedicts'}
   navigate(state)
 })
 
 ipcRenderer.on('replicateERR', function (event, res) {
-  let cloneErr = q('#cloneERR')
-  cloneErr.classList.remove('is-hidden')
 })
 
 function showRemoteDicts(rdbs) {

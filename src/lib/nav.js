@@ -133,11 +133,12 @@ export function navigate(state) {
     history.push(state)
     hstate = history.length-1
   }
-  let progress = q('#progress')
   if (section == 'main') twoPanes(state), showText(state)
   else if (section == 'clonedicts') ipcRenderer.send('remoteDicts', '') // serverDicts()
   else if (section == 'activedicts') showActiveDicts()
-  else progress.classList.remove('is-shown')
+
+  let progress = q('#progress')
+  progress.classList.remove('is-shown')
 
   // state = {section: 'home'}
   settings.set('state', state)
