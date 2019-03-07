@@ -54,7 +54,6 @@ export function remoteDicts() {
 }
 
 export function replicate(upath, dbname) {
-
   let localpath = path.resolve(upath, 'pouch', dbname)
   let localDB = new PouchDB(localpath)
   let remotepath = ['http://diglossa.org/dump-', dbname].join('')
