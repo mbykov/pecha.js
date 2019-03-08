@@ -63,10 +63,7 @@ ipcRenderer.on('reread', function (event) {
   navigate(state)
 })
 
-// let home = q('#home')
-// home.classList.add('is-shown')
 let state = settings.get('state')
-// log('STATE1', state)
 if (!state) state = {section: 'home'}
 navigate(state)
 
@@ -81,15 +78,15 @@ document.addEventListener('click', (ev) => {
   } else if (data.section) {
     navigate({section: data.section})
   } else if (data.clone) {
-    progress.classList.add('is-shown')
+    progress.classList.remove('is-hidden')
     ipcRenderer.send('replicate', data.clone)
   } else if (data.firstdict) {
     moveDictFirst(data.firstdict) // ev.target,
   } else if (data.activedict) {
     activateDict(ev.target)
   } else if (data.csv) {
-    // activateDict(ev.target)
-    log('CSV', data.csv)
+    progress.classList.remove('is-hidden')
+    ipcRenderer.send('export-to-csv', data.csv)
   } else if (parent && parent.dataset && parent.dataset.activedict) {
     // activateDict(parent)
     log('activateDict(parent)_______')

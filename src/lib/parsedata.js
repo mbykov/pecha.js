@@ -192,7 +192,7 @@ let xxx = function(n,o,u) {
 
 export function askDBs(el, compound) {
   let progress = q('#progress')
-  progress.classList.add('is-shown')
+  progress.classList.remove('is-hidden')
   let text = el.textContent.trim()
   let retsek = new RegExp(tsek+'$')
   let str = text.replace(retsek, '')
@@ -204,7 +204,7 @@ export function askDBs(el, compound) {
 
 ipcRenderer.on('replayDBs', function (event, query) {
   let progress = q('#progress')
-  progress.classList.remove('is-shown')
+  progress.classList.remove('is-hidden')
   let chain = query.chain
   let el = getInnermostHovered()
   if (!chain) {

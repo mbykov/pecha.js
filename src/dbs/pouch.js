@@ -62,7 +62,11 @@ export function replicate(upath, dbname) {
     .then(function(info) {
       log('REPL-BEFORE-INFO', info)
       // let api = 'http://localhost:5984/verbs/_all_docs'
-      return localDB.load(remotepath)
+      localDB.load(remotepath)
+        .then(function(res) {
+          log('REPL OK, getting CFG')
+          return getCfg
+        })
     })
     .catch(function(err) {
       localDB.destroy()
@@ -384,11 +388,11 @@ function flush (cb) {
 }
 
 // потом в рекурсию
-function localQueries(queries) {
-  queries.forEach(query=> {
-    queryDBs (query)
-  })
-}
+// function localQueries(queries) {
+//   queries.forEach(query=> {
+//     queryDBs (query)
+//   })
+// }
 
 // =============== CSV
 
@@ -399,4 +403,39 @@ export function importCSV(csvname) {
   fse.createReadStream(csvname)
       .pipe(csv2())
       .on('data', console.log)
+}
+
+let key =  "ཀལ"
+let startkey =  'ཀ'
+let endkey = '\ufff0'
+
+export function exportCSV(csvname) {
+  log('export to CSV', csvname)
+  let db = _.find(dbs, db=> { return db.dname == csvname })
+  log('export DB', db.dname)
+  return db.allDocs({
+    include_docs: true,
+    startkey: startkey,
+    endkey: endkey
+  }).then(function (res) {
+    let upath = settings.get('upath')
+    let docs = res.rows.map(row=> { return row.doc })
+    let csv = ''
+    docs.forEach(doc=> {
+      let head = doc._id
+      let trns = doc.docs.map(rdoc=> { return rdoc.trns })
+      let trn = _.flatten(trns).join(';')
+      let commas = trn.split(',')
+      let value = (commas.length > 1) ? JSON.stringify(trn) : trn
+      let str = [head, value].join(',')
+      str = [str, '\n'].join('')
+      csv += str
+    })
+    let filename = [csvname, 'csv'].join('.')
+    let filepath = path.resolve(upath, filename)
+    fse.writeFile(filepath, csv, function(err) {
+      console.log("The file was saved!");
+      return true
+    })
+  })
 }

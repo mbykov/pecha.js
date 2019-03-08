@@ -12,7 +12,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { getCfg, replicate, infoDB, remoteDicts, queryDBs, localDict, importCSV, cleanupDB } from "./dbs/pouch"
+import { getCfg, replicate, infoDB, remoteDicts, queryDBs, localDict, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -114,10 +114,21 @@ app.on("ready", () => {
   })
 
   ipcMain.on('importcsv', (event, csvname) => {
-    importCSV(csvname)
+    // importCSV(csvname)
       // .then(function(res) {
       //   // event.sender.send('XXX', res)
       // })
+  })
+
+  ipcMain.on('export-to-csv', (event, csvname) => {
+    exportCSV(csvname)
+      .then(function (res) {
+        if (res)        log('DOCS', res)
+        event.sender.send('csvReply', true)
+      }).catch(function (err) {
+        console.log('ERR', err);
+        event.sender.send('csvReply', false)
+      });
   })
 
   ipcMain.on('queryLocalDict', (event, datapath) => {
@@ -142,10 +153,9 @@ app.on("ready", () => {
     let localpath = path.resolve(upath, 'pouch', dbname)
     replicate(upath, dbname)
       .then(function (res) {
-        getCfg()
-        event.sender.send('replicateOK', res)
+        event.sender.send('replicateReplay', true)
       }).catch(function (err) {
-        // event.sender.send('replicateERR')
+        event.sender.send('replicateReplay', false)
       });
   })
 

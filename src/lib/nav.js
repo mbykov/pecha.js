@@ -87,17 +87,6 @@ Mousetrap.bind(['ctrl+u'], function(ev) {
   signup(upath)
 })
 
-function hideAll () {
-  const sections = document.querySelectorAll('.section.is-shown')
-  Array.prototype.forEach.call(sections, (section) => {
-    section.classList.remove('is-shown')
-  })
-  let otrans = q('#transcript')
-  otrans.classList.add('is-hidden')
-  let oambi = q('#ambi')
-  oambi.classList.add('is-hidden')
-}
-
 function goLeft() {
   if (hstate <= 0) return
   else hstate--
@@ -138,7 +127,7 @@ export function navigate(state) {
   else if (section == 'activedicts') showActiveDicts()
 
   let progress = q('#progress')
-  progress.classList.remove('is-shown')
+  progress.classList.add('is-hidden')
 
   // state = {section: 'home'}
   settings.set('state', state)
@@ -147,5 +136,17 @@ export function navigate(state) {
 function showSection(section) {
   hideAll()
   const sectionId = ['#', section].join('')
-  q(sectionId).classList.add('is-shown')
+  log('S', sectionId)
+  q(sectionId).classList.remove('is-hidden')
+}
+
+function hideAll () {
+  const sections = document.querySelectorAll('.section')
+  Array.prototype.forEach.call(sections, (section) => {
+    section.classList.add('is-hidden')
+  })
+  let otrans = q('#transcript')
+  otrans.classList.add('is-hidden')
+  let oambi = q('#ambi')
+  oambi.classList.add('is-hidden')
 }

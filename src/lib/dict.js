@@ -11,19 +11,20 @@ const settings = require('electron-settings')
 ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
   let cloneErr = q('#cloneERR')
   let progress = q('#progress')
-  progress.classList.remove('is-shown')
+  progress.classList.add('is-hidden')
   if (rdbs) showRemoteDicts(rdbs)
   else cloneErr.classList.remove('is-hidden')
 })
 
-ipcRenderer.on('replicateOK', function (event, res) {
+ipcRenderer.on('replicateReply', function (event, res) {
+  let cloneErr = q('#cloneERR')
   let progress = q('#progress')
-  progress.classList.remove('is-shown')
-  let state = {section: 'activedicts'}
-  navigate(state)
-})
 
-ipcRenderer.on('replicateERR', function (event, res) {
+  if (res) progress.classList.add('is-hidden')
+  else cloneErr.classList.remove('is-hidden')
+
+  // let state = {section: 'activedicts'}
+  // navigate(state)
 })
 
 function showRemoteDicts(rdbs) {
@@ -119,5 +120,5 @@ function checkmark() {
 }
 
 export function parseCSV() {
-  log('PARSE STAR CSV')
+  log('PARSE START CSV')
 }
