@@ -10,7 +10,7 @@ import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from 
 import { navigate } from './lib/nav';
 // import sband from "./lib/sband"; <<<=== убрать из lib
 import sband from "../../../sband";
-import { showCholok, showResults, showPopup, askDBs } from "./lib/parsedata";
+import { showCholok, showResults, showPopup, queryDBs } from "./lib/parsedata";
 import { moveDictFirst, activateDict } from "./lib/dict";
 
 const settings = require('electron').remote.require('electron-settings')
@@ -97,7 +97,7 @@ document.addEventListener('click', (ev) => {
   } else if (ev.target.id == 'importcsv') {
     dialog.showOpenDialog({properties: ['openDir'], filters: [{name: 'CSV', extensions: ['csv'] }]}, importCSV)
   } else if (data.docs) {
-    askDBs(ev.target , true)
+    queryDBs(ev.target , true)
   }
 })
 
@@ -111,7 +111,7 @@ document.addEventListener("mouseover", function(ev) {
     if (ev.shiftKey == true) {
       // showCholok(ev.target)
     } else {
-      askDBs(ev.target)
+      queryDBs(ev.target)
     }
   } else if (ev.target.classList.contains('tibwf')) {
     showResults(ev.target)

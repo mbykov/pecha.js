@@ -190,7 +190,7 @@ let xxx = function(n,o,u) {
 
 // ======================= DBS ==============================
 
-export function askDBs(el, compound) {
+export function queryDBs(el, compound) {
   let progress = q('#progress')
   progress.classList.remove('is-hidden')
   let text = el.textContent.trim()
@@ -204,7 +204,7 @@ export function askDBs(el, compound) {
 
 ipcRenderer.on('replayDBs', function (event, query) {
   let progress = q('#progress')
-  progress.classList.remove('is-hidden')
+  progress.classList.add('is-hidden')
   let chain = query.chain
   let el = getInnermostHovered()
   if (!chain) {

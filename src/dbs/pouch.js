@@ -58,20 +58,29 @@ export function replicate(upath, dbname) {
   let localDB = new PouchDB(localpath)
   let remotepath = ['http://diglossa.org/dump-', dbname].join('')
   log('REPLICATE START', localpath, remotepath)
-  return localDB.info()
-    .then(function(info) {
-      log('REPL-BEFORE-INFO', info)
-      // let api = 'http://localhost:5984/verbs/_all_docs'
-      localDB.load(remotepath)
-        .then(function(res) {
-          log('REPL OK, getting CFG')
-          return getCfg
-        })
+
+  // return localDB.info()
+  //   .then(function(info) {
+  //     log('REPL-BEFORE-INFO', info)
+  //     localDB.load(remotepath)
+  //       .then(function(res) {
+  //         let cfg = getCfg()
+  //         log('REPL OK, getting CFG', cfg)
+  //         return cfg
+  //       })
+  //   })
+
+  return localDB.load(remotepath)
+    .then(function(res) {
+      let cfg = getCfg()
+      log('REPL OK, getting CFG', cfg)
+      return cfg
     })
-    .catch(function(err) {
-      localDB.destroy()
-      throw new Error(err)
-    })
+
+  // .catch(function(err) {
+    //   localDB.destroy()
+    //   throw new Error(err)
+    // })
 }
 
 function setDBs(upath, cfg) {
@@ -110,6 +119,7 @@ export function getCfg() {
   cfg.forEach((dict, idx)=> { dict.idx = idx })
   settings.set('cfg', cfg)
   setDBs(upath, cfg)
+  log('===CFG===', cfg)
   return cfg
 }
 
@@ -405,7 +415,6 @@ export function importCSV(csvname) {
       .on('data', console.log)
 }
 
-let key =  "ཀལ"
 let startkey =  'ཀ'
 let endkey = '\ufff0'
 

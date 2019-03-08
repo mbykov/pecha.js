@@ -9,23 +9,32 @@ const log = console.log
 const settings = require('electron-settings')
 
 ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
-  let cloneErr = q('#cloneERR')
-  let progress = q('#progress')
-  progress.classList.add('is-hidden')
-  if (rdbs) showRemoteDicts(rdbs)
-  else cloneErr.classList.remove('is-hidden')
+  // let cloneErr = q('#cloneERR')
+  // let progress = q('#progress')
+  // progress.classList.add('is-hidden')
+  // if (rdbs) showRemoteDicts(rdbs)
+  // else cloneErr.classList.remove('is-hidden')
+  hideProgress(rdbs)
+  showRemoteDicts(rdbs)
 })
 
 ipcRenderer.on('replicateReply', function (event, res) {
+  hideProgress(res)
+  let state = {section: 'activedicts'}
+  navigate(state)
+})
+
+ipcRenderer.on('csvReply', function (event, res) {
+  hideProgress(res)
+})
+
+function hideProgress(res) {
   let cloneErr = q('#cloneERR')
   let progress = q('#progress')
-
   if (res) progress.classList.add('is-hidden')
   else cloneErr.classList.remove('is-hidden')
+}
 
-  // let state = {section: 'activedicts'}
-  // navigate(state)
-})
 
 function showRemoteDicts(rdbs) {
   // let upath = settings.get('upath')

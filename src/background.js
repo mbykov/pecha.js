@@ -153,9 +153,10 @@ app.on("ready", () => {
     let localpath = path.resolve(upath, 'pouch', dbname)
     replicate(upath, dbname)
       .then(function (res) {
-        event.sender.send('replicateReplay', true)
+        log('B: replicate done', res)
+        event.sender.send('replicateReply', true)
       }).catch(function (err) {
-        event.sender.send('replicateReplay', false)
+        event.sender.send('replicateReply', false)
       });
   })
 

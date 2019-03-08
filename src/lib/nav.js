@@ -136,7 +136,6 @@ export function navigate(state) {
 function showSection(section) {
   hideAll()
   const sectionId = ['#', section].join('')
-  log('S', sectionId)
   q(sectionId).classList.remove('is-hidden')
 }
 
