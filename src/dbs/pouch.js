@@ -72,16 +72,31 @@ export function replicate(upath, dbname) {
 
   return localDB.load(remotepath)
     .then(function(res) {
+      let opts = { live: true, retry: true };
+      localDB.sync(remotepath, opts)
+        .on('change', onSyncChange)
+        .on('paused', onSyncPaused)
+        .on('error', onSyncError);
+
       let cfg = getCfg()
       log('REPL OK, getting CFG', cfg)
       return cfg
     })
 
-  // .catch(function(err) {
-    //   localDB.destroy()
-    //   throw new Error(err)
-    // })
+  localDB.replicate.from(remotepath).on('complete', function(info) {
+    // then two-way, continuous, retriable sync
+    let opts = { live: true, retry: true };
+    localDB.sync(remotepath, opts)
+      .on('change', onSyncChange)
+      .on('paused', onSyncPaused)
+      .on('error', onSyncError);
+  }).on('error', onSyncError);
+
 }
+
+function onSyncChange() { log('onSyncChange') }
+function onSyncPaused() { log('onSyncPaused') }
+function onSyncError() { log('onSyncError') }
 
 function setDBs(upath, cfg) {
   dbs = []
