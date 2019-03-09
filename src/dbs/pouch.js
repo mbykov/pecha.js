@@ -53,94 +53,91 @@ export function remoteDicts() {
     })
 }
 
-export function replicate(upath, dbname) {
-  let localpath = path.resolve(upath, 'pouch', dbname)
+export function replicate(upath, dname) {
+  let localpath = path.resolve(upath, 'pouch', dname)
   let localDB = new PouchDB(localpath)
-  let remotepath = ['http://diglossa.org/dump-', dbname].join('')
+  let dumppath = ['http://diglossa.org/dump-', dname].join('')
+  let remotepath = ['http://diglossa.org:5984/', dname].join('')
   log('REPLICATE START', localpath, remotepath)
 
-  // return localDB.info()
-  //   .then(function(info) {
-  //     log('REPL-BEFORE-INFO', info)
-  //     localDB.load(remotepath)
-  //       .then(function(res) {
-  //         let cfg = getCfg()
-  //         log('REPL OK, getting CFG', cfg)
-  //         return cfg
-  //       })
-  //   })
-
-  return localDB.load(remotepath)
-    .then(function(res) {
-      let opts = { live: true, retry: true };
+  return localDB.load(dumppath)
+    .then(function() {
+      let opts = { live: true, retry: true }
+      log('P: REPL DONE before sync')
       localDB.sync(remotepath, opts)
         .on('change', onSyncChange)
-        .on('paused', onSyncPaused)
-        .on('error', onSyncError);
-
-      let cfg = getCfg()
-      log('REPL OK, getting CFG', cfg)
-      return cfg
+        .on('error', onSyncError)
+      localDB.dname = dname
+      dbs.push(localDB)
+      let cfg = setCfg(upath, dname, remotepath)
+      log('P: REPL __COMPLETE__, new cfg', cfg)
     })
-
-  localDB.replicate.from(remotepath).on('complete', function(info) {
-    // then two-way, continuous, retriable sync
-    let opts = { live: true, retry: true };
-    localDB.sync(remotepath, opts)
-      .on('change', onSyncChange)
-      .on('paused', onSyncPaused)
-      .on('error', onSyncError);
-  }).on('error', onSyncError);
-
 }
 
-function onSyncChange() { log('onSyncChange') }
-function onSyncPaused() { log('onSyncPaused') }
+function onSyncChange(data) { log('onSyncChange', data) }
 function onSyncError() { log('onSyncError') }
 
-function setDBs(upath, cfg) {
-  dbs = []
-  let dbnames = _.compact(cfg.map(dict => { return (dict.active) ? dict.name : null }))
-  // log('setDBNS', dbnames)
-  dbnames.forEach((dn, idx) => {
-    let dpath = path.resolve(upath, 'pouch', dn)
-    let pouch = new PouchDB(dpath)
-    pouch.dname = dn
-    pouch.weight = idx
-    dbs.push(pouch)
-  })
-  return dbnames
-}
-
-export function getCfg() {
-  let upath = settings.get('upath')
+export function setDBs(upath) {
   let pouchpath = path.resolve(upath, 'pouch')
   fse.ensureDirSync(pouchpath)
-  let fns = fse.readdirSync(pouchpath)
-  // log('FNS', fns)
-  let oldcfg = settings.get('cfg') || []
-  // log('OLDCFG', oldcfg)
-  let cfg = []
-  fns.forEach((dn, idx) => {
-    let old = _.find(oldcfg, dict=> {return dict.name == dn })
-    // log('OLD', old)
-    if (old) cfg.push(old)
-    else {
-      let newdict = {name: dn, active: true, idx: 100+idx}
-      cfg.push(newdict)
-    }
+  let cfg = settings.get('cfg')
+  // log('setting dbs, cfg', cfg)
+  dbs = []
+  // let dbnames = _.compact(cfg.map(dict => { return (dict.active) ? dict.name : null }))
+  // log('setDBNS', dbnames)
+  // let opts = { live: true, retry: true }
+  cfg.forEach((dict, idx) => {
+    if (!dict.active) return
+    let dpath = path.resolve(upath, 'pouch', dict.dname)
+    let pouch = new PouchDB(dpath)
+    pouch.dname = dict.dname
+    pouch.weight = idx
+    // pouch.sync(dict.remotepath, opts) // cannot read preperty once of undefined
+    dbs.push(pouch)
   })
-  cfg = _.sortBy(cfg, 'idx')
-  cfg.forEach((dict, idx)=> { dict.idx = idx })
+  log('DBS ok')
+  // return dbnames
+}
+
+function setCfg(upath, dname, remotepath) {
+  let cfg = settings.get('cfg') || []
+  if (!dname) return cfg
+  let newdict = {dname: dname, sync: remotepath, active: true, idx: cfg.length}
+  cfg.push(newdict)
   settings.set('cfg', cfg)
-  setDBs(upath, cfg)
-  log('===CFG===', cfg)
+  log('== setCFG ==', cfg)
   return cfg
 }
 
-// adduser --system --home /opt/couchdb --no-create-home --shell /bin/bash -g couchdb couchdb
-// useradd --system -b /opt/couchdb --shell /bin/bash -g couchdb couchdb
-// sudo -i -u couchdb bin/couchdb
+// function setCfg_(upath) {
+//   log('P: setCfg start')
+//   let pouchpath = path.resolve(upath, 'pouch')
+//   fse.ensureDirSync(pouchpath)
+//   let fns = fse.readdirSync(pouchpath)
+//   // log('FNS', fns)
+//   let oldcfg = settings.get('cfg') || []
+//   // log('OLDCFG', oldcfg)
+//   let cfg = []
+//   fns.forEach((dn, idx) => {
+//     let old = _.find(oldcfg, dict=> {return dict.name == dn })
+//     // log('OLD', old)
+//     if (old) cfg.push(old)
+//     else {
+//       let newdict = {name: dn, active: true, idx: 100+idx}
+//       cfg.push(newdict)
+//     }
+//   })
+//   cfg = _.sortBy(cfg, 'idx')
+//   cfg.forEach((dict, idx)=> { dict.idx = idx })
+//   settings.set('cfg', cfg)
+//   log('== setCFG ==', cfg)
+//   return cfg
+// }
+
+// export function initDBs(upath) {
+//   let cfg = settings.get('cfg')
+//   setDBs(upath, cfg)
+// }
 
 export function infoDB(localpath) {
   let localDB = new PouchDB(localpath)
@@ -148,11 +145,12 @@ export function infoDB(localpath) {
 }
 
 export function cleanupDB(upath) {
-  let destpath = path.resolve(upath, 'pouch')
-  log('CLEAN UP', destpath)
+  let pouchpath = path.resolve(upath, 'pouch')
+  log('CLEAN UP', pouchpath)
   try {
-    fse.removeSync(destpath)
-    getCfg()
+    fse.removeSync(pouchpath)
+    fse.ensureDirSync(pouchpath)
+    settings.set('cfg', [])
   } catch (err) {
     log('ERR re-creating DBs', err)
     // app.quit()
@@ -169,6 +167,7 @@ export function queryDBs (query) {
   if (query.compound) keys = _.filter(keyres.main, key=> { return key != query.str})
   else keys =  _.uniq(keyres.main.concat(keyres.added))
   // log('KEYS->', keys.length)
+  let dnames = dbs.map(db=> { return db.dname })
 
   return Promise.all(dbs.map(function (db) {
     return db.allDocs({

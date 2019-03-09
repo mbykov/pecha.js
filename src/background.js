@@ -12,7 +12,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { getCfg, replicate, infoDB, remoteDicts, queryDBs, localDict, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
+import { setDBs, replicate, infoDB, remoteDicts, queryDBs, localDict, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -104,7 +104,7 @@ app.on("ready", () => {
   settings.set('apath', apath)
   settings.set('upath', upath)
 
-  getCfg()
+  setDBs(upath)
 
   ipcMain.on('queryDBs', (event, query) => {
     queryDBs(query)
@@ -148,10 +148,10 @@ app.on("ready", () => {
       });
   })
 
-  ipcMain.on('replicate', (event, dbname) => {
-    console.log('B:REPLICATE', dbname)
-    let localpath = path.resolve(upath, 'pouch', dbname)
-    replicate(upath, dbname)
+  ipcMain.on('replicate', (event, dname) => {
+    console.log('B:REPLICATE', dname)
+    let localpath = path.resolve(upath, 'pouch', dname)
+    replicate(upath, dname)
       .then(function (res) {
         log('B: replicate done', res)
         event.sender.send('replicateReply', true)

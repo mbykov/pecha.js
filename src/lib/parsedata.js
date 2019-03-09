@@ -139,15 +139,16 @@ export function showResults(el) {
   try {
     docs = JSON.parse(el.dataset.docs)
   } catch(err) {
-    log('ERR: JSON docs')
+    log('ERR: JSON docs', err)
     return
   }
 
   let cfg = settings.get('cfg')
   let str = JSON.parse(JSON.stringify(cfg))
-  // log('CFG', str)
+  log('SHOW RESULTS: cfg', str)
+  log('SHOW RESULTS: docs', docs)
 
-  docs.forEach(doc=> { doc.weight = _.find(cfg, dict=> { return doc.dname == dict.name }).idx })
+  docs.forEach(doc=> { doc.weight = _.find(cfg, dict=> { return doc.dname == dict.dname }).idx })
   docs = _.sortBy(docs, 'weight')
   // log('RESULT docs', wf, docs)
 
