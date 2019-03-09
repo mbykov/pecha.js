@@ -426,13 +426,52 @@ function flush (cb) {
 
 // =============== CSV
 
-export function importCSV(csvname) {
-  log('IMPORT CSV', csvname)
 
+export function importCSV(csvpath) {
+  log('P: IMPORT CSV', csvpath)
   // добавить обработку # сомментариев
-  fse.createReadStream(csvname)
+  csvpath = path.resolve(csvpath)
+  let upath = settings.get('upath')
+  let rows = []
+  let rs = fse.createReadStream(csvpath)
       .pipe(csv2())
-      .on('data', console.log)
+      .on('data', function(data) {
+        rows.push(data)
+      })
+      .on('error', function(err) {
+        return
+      })
+      .on('end', function(res) {
+        let langs = rows.shift()
+        log('ROWS-0', langs)
+        log('ROWS', rows)
+        rows = _.filter(rows, row=> { return row[0][0] != '#' })
+        let docs = []
+        rows.forEach(row=> {
+          let doc = {_id: row[0], docs: []}
+          let trns = row.shift()
+          let mdoc = {dict: row[0], trns: trns.split(';')}
+          doc.docs.push(mdoc)
+          docs.push(doc)
+        })
+        log('BULK', docs)
+        let csvname = path.parse(csvpath).name
+        let upath = settings.get('upath')
+        let localpath = path.resolve(upath, 'pouch', csvname)
+        let localDB = new PouchDB(localpath)
+        localDB.bulkDocs(docs)
+          .then(function (result) {
+            log('BULK-RES', result)
+            // dbs.push(localDB)
+            // let cfg = setCfg(upath, csvname, localpath)
+            localDB.info()
+              .then(function(info) {
+                log('INFO', info)
+              })
+          }).catch(function (err) {
+            console.log('CSV', err);
+          })
+      })
 }
 
 let startkey =  'ཀ'

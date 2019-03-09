@@ -114,9 +114,10 @@ app.on("ready", () => {
   })
 
   ipcMain.on('importcsv', (event, csvname) => {
-    // importCSV(csvname)
+    importCSV(csvname)
       // .then(function(res) {
       //   // event.sender.send('XXX', res)
+      //   log('B: IMPORT', res)
       // })
   })
 

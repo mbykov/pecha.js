@@ -179,7 +179,7 @@ function scanDir(fns) {
 }
 
 function importCSV(fns) {
-  log('FNS', fns)
+  // log('FNS', fns)
   if (!fns) return
   let csvname = fns[0]
   if (!csvname) return

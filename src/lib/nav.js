@@ -75,10 +75,10 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   ipcRenderer.send('queryLocalDict', datapath)
 })
 
-// Mousetrap.bind(['ctrl+f'], function(ev) {
-//   let datapath = '/home/michael/diglossa.texts/Tibetan'
-//   readDir(datapath)
-// })
+Mousetrap.bind(['ctrl+i'], function(ev) {
+  let csvname = '/home/michael/tibetan/utils/csv/csvdict.csv'
+  ipcRenderer.send('importcsv', csvname)
+})
 
 
 
