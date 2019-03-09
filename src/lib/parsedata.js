@@ -144,9 +144,8 @@ export function showResults(el) {
   }
 
   let cfg = settings.get('cfg')
-  let str = JSON.parse(JSON.stringify(cfg))
-  log('SHOW RESULTS: cfg', str)
-  log('SHOW RESULTS: docs', docs)
+  // let str = JSON.parse(JSON.stringify(cfg))
+  // log('SHOW RESULTS: cfg', str)
 
   docs.forEach(doc=> { doc.weight = _.find(cfg, dict=> { return doc.dname == dict.dname }).idx })
   docs = _.sortBy(docs, 'weight')

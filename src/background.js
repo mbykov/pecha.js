@@ -143,7 +143,7 @@ app.on("ready", () => {
         rdbs = _.filter(rdbs, dname=> { return dname[0] != '_' })
         event.sender.send('remoteDictsReply', rdbs)
       }).catch(function (err) {
-        // log('B: REMOTE DICTS ERR')
+        log('B: REMOTE DICTS ERR')
         event.sender.send('remoteDictsReply', false)
       });
   })

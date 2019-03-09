@@ -47,9 +47,15 @@ const diglossa = new NodeCouchDb({
 
 export function remoteDicts() {
   return diglossa.listDatabases()
-    .catch(function(err) {
-      log('REMOTE DICTS ERR', err)
-      throw new Error(err)
+    .then(function(dnames) {
+      return Promise.all(dnames.map(function(dname) {
+        let remotepath = ['http://diglossa.org:5984/', dname].join('')
+        let remoteDB = new PouchDB(remotepath)
+        return remoteDB.info()
+      })).then(function(res) {
+        let dbinfo = res.map(info=> { return {dname: info.db_name, size: info.doc_count} })
+        return dbinfo
+      })
     })
 }
 
@@ -342,7 +348,7 @@ function fullChains(chains) {
   return fulls
 }
 
-// =====================
+// ===================== generate Local Dict
 
 let dicts = []
 let tmpdicts = []

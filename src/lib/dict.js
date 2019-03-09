@@ -46,21 +46,24 @@ function showRemoteDicts(rdbs) {
 
   let otable = q('#server-dicts-table tbody')
   empty(otable)
-  rdbs.forEach(dbname=> {
-    if (defaults.includes(dbname)) return
+  rdbs.forEach(rdb=> {
+    if (defaults.includes(rdb.dname)) return
     let otr = create('tr')
     otable.appendChild(otr)
     let odt = create('td')
     otr.appendChild(odt)
-    odt.textContent = _.capitalize(dbname)
+    odt.textContent = _.capitalize(rdb.dname)
+    let osize = create('td', 'dsize')
+    osize.textContent = _.capitalize(rdb.size)
+    otr.appendChild(osize)
     let oink = create('td', 'link')
-    if (installed.includes(dbname)) {
+    if (installed.includes(rdb.dname)) {
       let check = checkmark()
       oink.appendChild(check)
     } else {
       oink.textContent = 'sync'
     }
-    oink.dataset.clone = dbname
+    oink.dataset.clone = rdb.dname
     otr.appendChild(oink)
   })
 }
