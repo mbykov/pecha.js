@@ -106,6 +106,10 @@ app.on("ready", () => {
 
   setDBs(upath)
 
+  ipcMain.on('infoDB', (event, dname) => {
+    infoDB(upath, dname)
+  })
+
   ipcMain.on('queryDBs', (event, query) => {
     queryDBs(query)
       .then(function(query) {
@@ -113,12 +117,11 @@ app.on("ready", () => {
       })
   })
 
-  ipcMain.on('importcsv', (event, csvname) => {
-    importCSV(csvname)
-      // .then(function(res) {
-      //   // event.sender.send('XXX', res)
-      //   log('B: IMPORT', res)
-      // })
+  ipcMain.on('import-from-csv', (event, csvpath) => {
+    importCSV(csvpath, function(res) {
+      log('import-from-csv', res)
+      event.sender.send('csvReply', res)
+    })
   })
 
   ipcMain.on('export-to-csv', (event, csvname) => {
@@ -162,7 +165,9 @@ app.on("ready", () => {
   })
 
   ipcMain.on('cleanupDB', (event, datapath) => {
-    cleanupDB(upath)
+    cleanupDB(upath, function(res) {
+      event.sender.send('cleanupReply', res)
+    })
   })
 
 

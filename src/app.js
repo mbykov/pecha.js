@@ -49,13 +49,6 @@ ipcRenderer.on('section', function (event, section) {
   navigate({section: section})
 })
 
-// ipcRenderer.on('action', function (event, action) {
-//   if (action == 'clonedicts') navigate({section: 'clone'})
-//   else if (action == 'arrangeDicts') navigate({section: 'activedicts'})
-//   else if (action == 'csv') dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'CSV', extensions: ['csv'] }]}, parseCSV)
-//   else if (action == 'cleanupdb') navigate({section: 'clone'})
-// })
-
 // ctrl-R
 ipcRenderer.on('reread', function (event) {
   let state = settings.get('state')
@@ -95,7 +88,7 @@ document.addEventListener('click', (ev) => {
   } else if (ev.target.id == 'scandir') {
     dialog.showOpenDialog( {properties: ['openDirectory'] }, scanDir)
   } else if (ev.target.id == 'importcsv') {
-    dialog.showOpenDialog({properties: ['openDir'], filters: [{name: 'CSV', extensions: ['csv'] }]}, importCSV)
+    dialog.showOpenDialog({properties: ['openFile'], filters: [{name: 'JSON', extensions: ['json'] }]}, importCSV)
   } else if (data.docs) {
     queryDBs(ev.target , true)
   }
@@ -179,9 +172,8 @@ function scanDir(fns) {
 }
 
 function importCSV(fns) {
-  // log('FNS', fns)
   if (!fns) return
-  let csvname = fns[0]
-  if (!csvname) return
-  ipcRenderer.send('importcsv', csvname)
+  let csvpath = fns[0]
+  if (!csvpath) return
+  ipcRenderer.send('import-from-csv', csvpath)
 }

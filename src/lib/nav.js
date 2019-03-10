@@ -75,9 +75,14 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   ipcRenderer.send('queryLocalDict', datapath)
 })
 
+Mousetrap.bind(['ctrl+j'], function(ev) {
+  let csvpath = '/home/michael/tibetan/utils/csv/csvdict.json'
+  log('IMPORT', csvpath)
+  ipcRenderer.send('importcsv', csvpath)
+})
+
 Mousetrap.bind(['ctrl+i'], function(ev) {
-  let csvname = '/home/michael/tibetan/utils/csv/csvdict.csv'
-  ipcRenderer.send('importcsv', csvname)
+  ipcRenderer.send('infoDB', 'csvdict')
 })
 
 

@@ -26,6 +26,14 @@ ipcRenderer.on('replicateReply', function (event, res) {
 
 ipcRenderer.on('csvReply', function (event, res) {
   hideProgress(res)
+  let state = {section: 'activedicts'}
+  navigate(state)
+})
+
+ipcRenderer.on('cleanupReply', function (event, res) {
+  hideProgress(res)
+  let state = {section: 'clonedicts'}
+  navigate(state)
 })
 
 function hideProgress(res) {
