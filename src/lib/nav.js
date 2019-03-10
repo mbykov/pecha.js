@@ -85,6 +85,10 @@ Mousetrap.bind(['ctrl+i'], function(ev) {
   ipcRenderer.send('infoDB', 'csvdict')
 })
 
+Mousetrap.bind(['ctrl+v'], function(ev) {
+  ipcRenderer.send('infoDB', 'vasilyev')
+})
+
 
 
 Mousetrap.bind(['ctrl+u'], function(ev) {

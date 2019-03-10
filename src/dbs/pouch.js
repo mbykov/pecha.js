@@ -123,6 +123,7 @@ function setCfg(upath, dname) {
 }
 
 export function infoDB(upath, dname) {
+  log('INFO', upath, dname)
   let localpath = path.resolve(upath, 'pouch', dname)
   let localDB = new PouchDB(localpath)
   localDB.allDocs({
@@ -130,11 +131,16 @@ export function infoDB(upath, dname) {
     startkey: startkey,
     endkey: endkey
   }).then(function (res) {
+    // log('RES', res)
     // let docs = res.rows.map(row=> { return row.doc})
+    if (!res.rows.length) return
     let doc = res.rows[0].doc
     log('INFO-doc', doc)
     log('INFO-docs', doc.docs)
   })
+    .catch(function(err) {
+      log('INFO ERR', err)
+    })
   // localDB.info()
   //   .then(function(info) {
   //     log('INFO', info)
@@ -470,9 +476,12 @@ function getCSV(csvpath, cb) {
         rows = _.filter(rows, row=> { return row[0][0] != '#' })
         let docs = []
         rows.forEach(row=> {
-          let doc = {_id: row[0], docs: []}
-          let trns = row.shift()
-          let mdoc = {dict: row[0], trns: trns.split(';')}
+          let dict = row.shift().trim().replace(retsek, '')
+          let doc = {_id: dict, docs: []}
+          log('_____dict, row', dict, row)
+          let trns = row.map(lang=> { return lang.split(';')})
+          let mdoc = {dict: dict, trns: _.flatten(trns)}
+          log('_____mdoc', mdoc)
           doc.docs.push(mdoc)
           docs.push(doc)
         })
@@ -482,6 +491,7 @@ function getCSV(csvpath, cb) {
         let localDB = new PouchDB(localpath)
         localDB.bulkDocs(docs)
           .then(function (result) {
+            localDB.dname = csvname
             dbs.push(localDB)
             let cfg = setCfg(upath, csvname, localpath)
             log('BULK-RES, dbs:', dbs.length)
