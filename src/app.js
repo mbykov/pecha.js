@@ -45,6 +45,22 @@ imports.forEach(link=> {
   container.appendChild(section.cloneNode(true))
 })
 
+ipcRenderer.on('version', function (event, oldver) {
+  axios.get('https://api.github.com/repos/mbykov/pecha.js/releases/latest')
+    .then(function (response) {
+      if (!response || !response.data) return
+      let newver = response.data.name
+      if (oldver && newver && newver > oldver) {
+        let over = q("#new-version")
+        let verTxt = ['new version available:', newver].join(' ')
+        over.textContent = verTxt
+      }
+    })
+    .catch(function (error) {
+      console.log('API ERR', error)
+    })
+})
+
 ipcRenderer.on('section', function (event, section) {
   navigate({section: section})
 })

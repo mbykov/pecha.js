@@ -33,8 +33,6 @@ let code = 'tib'
 let startkey =  'ཀ'
 let endkey = '\ufff0'
 
-let rekuku = /༈/
-
 const NodeCouchDb = require('node-couchdb');
 const couch = new NodeCouchDb()
 
@@ -123,7 +121,6 @@ function setCfg(upath, dname) {
 }
 
 export function infoDB(upath, dname) {
-  log('INFO', upath, dname)
   let localpath = path.resolve(upath, 'pouch', dname)
   let localDB = new PouchDB(localpath)
   localDB.allDocs({
@@ -131,8 +128,6 @@ export function infoDB(upath, dname) {
     startkey: startkey,
     endkey: endkey
   }).then(function (res) {
-    // log('RES', res)
-    // let docs = res.rows.map(row=> { return row.doc})
     if (!res.rows.length) return
     let doc = res.rows[0].doc
     log('INFO-doc', doc)
@@ -141,10 +136,6 @@ export function infoDB(upath, dname) {
     .catch(function(err) {
       log('INFO ERR', err)
     })
-  // localDB.info()
-  //   .then(function(info) {
-  //     log('INFO', info)
-  //   })
 }
 
 export function cleanupDB(upath, cb) {
@@ -164,15 +155,11 @@ export function cleanupDB(upath, cb) {
 }
 
 export function queryDBs (query) {
-  // log('QUERY->', query.str)
-  let clean = query.str.replace(rekuku, '')
-
   let pdchs = segmenter(query.str)
   let keys
   let keyres = totalKeys(pdchs)
   if (query.compound) keys = _.filter(keyres.main, key=> { return key != query.str})
   else keys =  _.uniq(keyres.main.concat(keyres.added))
-  // log('KEYS->', keys.length)
   let dnames = dbs.map(db=> { return db.dname })
 
   return Promise.all(dbs.map(function (db) {
@@ -185,7 +172,6 @@ export function queryDBs (query) {
         let rdocs = _.compact(res.rows.map(row => { return row.doc }))
         let docs = _.flatten(_.compact(rdocs.map(rdoc => { return rdoc.docs })))
         docs.forEach(doc => { doc.dname = db.dname, doc.weight = db.weight })
-        // log('DOCS->', docs.length)
         return docs
       })
       .catch(function (err) {
@@ -193,14 +179,10 @@ export function queryDBs (query) {
       })
   }))
     .then(function (res) {
-      // log('======RES', res.length)
       let docs =_.flatten(res)
-      // log('======DOCS', docs.length)
       let chain = compactDocs(docs, pdchs)
-      // log('======CHAIN', chain)
       query.chain = chain
       return query
-      // return chain
     })
 }
 
