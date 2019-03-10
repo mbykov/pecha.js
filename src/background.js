@@ -124,7 +124,7 @@ app.on("ready", () => {
   ipcMain.on('export-to-csv', (event, csvname) => {
     exportCSV(csvname)
       .then(function (res) {
-        if (res)        log('DOCS', res)
+        if (res) log('DOCS', res)
         event.sender.send('csvReply', true)
       }).catch(function (err) {
         console.log('ERR', err);

@@ -70,8 +70,9 @@ function showRemoteDicts(rdbs) {
 
 export function showActiveDicts() {
   let cfg = settings.get('cfg')
-  log('dicts: ACTIVE DICTS', cfg)
-  let dbnames = cfg.map(cf=> { return cf.name })
+  let dnames = cfg.map(cf=> { return cf.name })
+  let mess = q('#adictmessage')
+  if (dnames.length) mess.textContent = 'click dict\'s name to move it first'
   let otable = q('#local-dicts-table tbody')
   empty(otable)
   cfg.forEach(dict=> {

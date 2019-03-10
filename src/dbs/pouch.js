@@ -64,7 +64,7 @@ export function replicate(upath, dname) {
   let localDB = new PouchDB(localpath)
   let dumppath = ['http://diglossa.org/dump-', dname].join('')
   let remotepath = ['http://diglossa.org:5984/', dname].join('')
-  log('REPLICATE START', localpath, remotepath)
+  // log('REPLICATE START', localpath, remotepath)
 
   return localDB.load(dumppath)
     .then(function() {
@@ -75,8 +75,10 @@ export function replicate(upath, dname) {
         .on('error', onSyncError)
       localDB.dname = dname
       dbs.push(localDB)
-      let cfg = setCfg(upath, dname, remotepath)
-      log('P: REPL __COMPLETE__, new cfg', cfg)
+      let dnames = dbs.map(db=>{ return db.dname })
+      // log('P: repl-DNAMES:', dnames)
+      let cfg = setCfg(upath, dname)
+      // log('P: repl - new cfg:', cfg)
     })
 }
 
@@ -101,49 +103,21 @@ export function setDBs(upath) {
     // pouch.sync(dict.remotepath, opts) // cannot read preperty once of undefined
     dbs.push(pouch)
   })
-  log('DBS ok')
-  // return dbnames
+  let dnames = dbs.map(db=>{ return db.dname })
+  log('P: DBS ok:', dnames)
+  log('P: DBS ok:', cfg)
+  return dnames
 }
 
-function setCfg(upath, dname, remotepath) {
+function setCfg(upath, dname) {
   let cfg = settings.get('cfg') || []
   if (!dname) return cfg
-  let newdict = {dname: dname, sync: remotepath, active: true, idx: cfg.length}
+  let newdict = {dname: dname, active: true, idx: cfg.length} // sync: remotepath,
   cfg.push(newdict)
   settings.set('cfg', cfg)
   log('== setCFG ==', cfg)
   return cfg
 }
-
-// function setCfg_(upath) {
-//   log('P: setCfg start')
-//   let pouchpath = path.resolve(upath, 'pouch')
-//   fse.ensureDirSync(pouchpath)
-//   let fns = fse.readdirSync(pouchpath)
-//   // log('FNS', fns)
-//   let oldcfg = settings.get('cfg') || []
-//   // log('OLDCFG', oldcfg)
-//   let cfg = []
-//   fns.forEach((dn, idx) => {
-//     let old = _.find(oldcfg, dict=> {return dict.name == dn })
-//     // log('OLD', old)
-//     if (old) cfg.push(old)
-//     else {
-//       let newdict = {name: dn, active: true, idx: 100+idx}
-//       cfg.push(newdict)
-//     }
-//   })
-//   cfg = _.sortBy(cfg, 'idx')
-//   cfg.forEach((dict, idx)=> { dict.idx = idx })
-//   settings.set('cfg', cfg)
-//   log('== setCFG ==', cfg)
-//   return cfg
-// }
-
-// export function initDBs(upath) {
-//   let cfg = settings.get('cfg')
-//   setDBs(upath, cfg)
-// }
 
 export function infoDB(localpath) {
   let localDB = new PouchDB(localpath)
@@ -154,6 +128,7 @@ export function cleanupDB(upath) {
   let pouchpath = path.resolve(upath, 'pouch')
   log('CLEAN UP', pouchpath)
   try {
+    dbs = []
     fse.removeSync(pouchpath)
     fse.ensureDirSync(pouchpath)
     settings.set('cfg', [])
@@ -426,7 +401,6 @@ function flush (cb) {
 
 // =============== CSV
 
-
 export function importCSV(csvpath) {
   log('P: IMPORT CSV', csvpath)
   // добавить обработку # сомментариев
@@ -461,9 +435,10 @@ export function importCSV(csvpath) {
         let localDB = new PouchDB(localpath)
         localDB.bulkDocs(docs)
           .then(function (result) {
-            log('BULK-RES', result)
-            // dbs.push(localDB)
-            // let cfg = setCfg(upath, csvname, localpath)
+            dbs.push(localDB)
+            let cfg = setCfg(upath, csvname, localpath)
+            log('BULK-RES, dbs:', dbs.length)
+            log('BULK-RES, cfg:', cfg)
             localDB.info()
               .then(function(info) {
                 log('INFO', info)
@@ -478,7 +453,7 @@ let startkey =  'ཀ'
 let endkey = '\ufff0'
 
 export function exportCSV(csvname) {
-  log('export to CSV', csvname)
+  // log('export to CSV', csvname)
   let db = _.find(dbs, db=> { return db.dname == csvname })
   log('export DB', db.dname)
   return db.allDocs({
@@ -486,8 +461,9 @@ export function exportCSV(csvname) {
     startkey: startkey,
     endkey: endkey
   }).then(function (res) {
-    let upath = settings.get('upath')
+    log('RES', res)
     let docs = res.rows.map(row=> { return row.doc })
+    log('DOCS', docs.length)
     let csv = ''
     docs.forEach(doc=> {
       let head = doc._id
@@ -499,11 +475,26 @@ export function exportCSV(csvname) {
       str = [str, '\n'].join('')
       csv += str
     })
+    let upath = settings.get('upath')
     let filename = [csvname, 'csv'].join('.')
+    let manifest = [csvname, 'json'].join('.')
     let filepath = path.resolve(upath, filename)
+    let manipath = path.resolve(upath, manifest)
     fse.writeFile(filepath, csv, function(err) {
-      console.log("The file was saved!");
-      return true
+      if (err) return false
+      log('CSV', csv.length)
+      db.get('description')
+        .then(function(doc) {
+          log('DESCR', doc)
+          fse.writeJson(manipath, doc)
+            .then(() => {
+              console.log('json success!', manipath)
+            })
+            .catch(err => {
+              console.error(err)
+              return false
+            })
+        })
     })
   })
 }
