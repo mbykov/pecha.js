@@ -7,11 +7,11 @@ import { shell } from 'electron'
 import { ipcRenderer } from "electron";
 
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
-import { navigate } from './lib/nav';
+import { navigate } from './lib/nav'
 // import sband from "./lib/sband"; <<<=== убрать из lib
-import sband from "../../../sband";
-import { showCholok, showResults, showPopup, queryDBs } from "./lib/parsedata";
-import { moveDictFirst, activateDict } from "./lib/dict";
+import sband from "../../../sband"
+import { showCholok, showResults, showPopup, queryDBs } from "./lib/parsedata"
+import { moveDictFirst, activateDict } from "./lib/dict"
 
 const settings = require('electron').remote.require('electron-settings')
 // const Mousetrap = require('mousetrap')
@@ -31,9 +31,6 @@ const isDev = require('electron-is-dev')
 // const isDev = false
 // const isDev = true
 // const app = remote.app;
-// const apath = app.getAppPath()
-// const upath = app.getPath("userData")
-
 
 let over = q("#new-version")
 
@@ -54,10 +51,11 @@ ipcRenderer.on('version', function (event, oldver) {
         let over = q("#new-version")
         let verTxt = ['new version available:', newver].join(' ')
         over.textContent = verTxt
+        over.classList.remove('is-hidden')
       }
     })
     .catch(function (error) {
-      console.log('API ERR', error)
+      console.log('API ERR')
     })
 })
 
@@ -98,7 +96,7 @@ document.addEventListener('click', (ev) => {
     ipcRenderer.send('export-to-csv', data.csv)
   } else if (parent && parent.dataset && parent.dataset.activedict) {
     // activateDict(parent)
-    log('activateDict(parent)_______')
+    // log('activateDict(parent)_______')
   } else if (ev.target.id == 'cleanupdb') {
     ipcRenderer.send('cleanupDB')
   } else if (ev.target.id == 'scandir') {
@@ -151,6 +149,9 @@ document.addEventListener("keydown", function(ev) {
   let ohover = getInnermostHovered()
   if (!ohover) return
   if (ohover.id == 'source') ohover = q('.tibpar')
+  let text = ohover.textContent
+  let pars = sband(text, 'tib')
+  if (!pars) return
   showCholok(ohover)
   if (ev.ctrlKey == true) showCholok(ohover, true)
 }, false)

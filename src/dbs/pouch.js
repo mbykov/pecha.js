@@ -260,7 +260,6 @@ function commonParts(chains) {
     let chain = chains[0]
     ambi.seg = chain.map(seg=>{ return seg.seg}).join(tsek)
   })
-  // log('___AMBIS___', ambis)
   return clean
 }
 
@@ -395,7 +394,7 @@ function flush (cb) {
     let queries = qs.map(qs=> { return {str: qs}})
     recQuery(queries)
   } else {
-    log('____THE END____')
+    // log('____THE END____')
   }
 }
 
@@ -412,14 +411,6 @@ export function importCSV(jsonpath, cb) {
   log('P: IMPORT CSV', jsonpath)
   jsonpath = path.resolve(jsonpath)
 
-  // let manifest
-  // try {
-  //   let json5path = ['json5-loader!', jsonpath].join('')
-  //   manifest = require(jsonpath)
-  // } catch(err) {
-  //   log('ERR', err)
-  // }
-
   fse.readJson(jsonpath)
     .then((manifest) => {
       log('MANIFEST', manifest)
@@ -435,9 +426,7 @@ export function importCSV(jsonpath, cb) {
       console.error('IMPORTCSVERR', err)
       cb(false)
     })
-
   return
-
 }
 
 function getCSV(csvpath, cb) {
@@ -460,10 +449,8 @@ function getCSV(csvpath, cb) {
         rows.forEach(row=> {
           let dict = row.shift().trim().replace(retsek, '')
           let doc = {_id: dict, docs: []}
-          log('_____dict, row', dict, row)
           let trns = row.map(lang=> { return lang.split(';')})
           let mdoc = {dict: dict, trns: _.flatten(trns)}
-          log('_____mdoc', mdoc)
           doc.docs.push(mdoc)
           docs.push(doc)
         })
@@ -476,17 +463,15 @@ function getCSV(csvpath, cb) {
             localDB.dname = csvname
             dbs.push(localDB)
             let cfg = setCfg(upath, csvname, localpath)
-            log('BULK-RES, dbs:', dbs.length)
-            log('BULK-RES, cfg:', cfg)
+            // log('BULK-RES, dbs:', dbs.length)
+            // log('BULK-RES, cfg:', cfg)
             cb(true)
           }).catch(function (err) {
             console.log('CSVERR', err);
             cb(false)
           })
       })
-
 }
-
 
 export function exportCSV(csvname) {
   let db = _.find(dbs, db=> { return db.dname == csvname })
