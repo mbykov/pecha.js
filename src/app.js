@@ -181,6 +181,7 @@ export function scrollPane(ev, state) {
   if (ev.shiftKey == true) return;
   let delta = (ev.deltaY > 0) ? 24 : -24
   let opane = q('.section.is-shown')
+  if (!opane) return
   opane.scrollTop += delta
 }
 

@@ -146,12 +146,15 @@ function showSection(section) {
   hideAll()
   const sectionId = ['#', section].join('')
   q(sectionId).classList.remove('is-hidden')
+  q(sectionId).classList.add('is-shown')
 }
 
 function hideAll () {
-  const sections = document.querySelectorAll('.section')
+  // const sections = document.querySelectorAll('.section')
+  const sections = qs('.section')
   Array.prototype.forEach.call(sections, (section) => {
     section.classList.add('is-hidden')
+    section.classList.remove('is-shown')
   })
   let otrans = q('#transcript')
   otrans.classList.add('is-hidden')
