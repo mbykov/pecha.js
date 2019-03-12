@@ -13,7 +13,9 @@ let retsek = new RegExp(tsek+'$')
 const request = require('request')
 const path = require('path')
 const fse = require('fs-extra')
-let glob = require('glob-fs')({ gitignore: true })
+// let glob = require('glob-fs')({ gitignore: true })
+// let Glob = require("glob").Glob
+let glob = require("glob")
 
 const isDev = require('electron-is-dev')
 const settings = require('electron-settings')
@@ -189,8 +191,9 @@ export function queryDBs (query) {
 function selectTib(datapath, files) {
   let tibs = []
   let tibkey = {}
-  files.forEach(file => {
-    let fpath = path.resolve(datapath, file)
+  files.forEach(fname => {
+    let fpath = path.resolve(datapath, fname)
+    if (fname == 'localDict.csv' || fname == 'unprocessed.csv') return
     let text = fse.readFileSync(fpath,'utf8').trim()
     let rows = text.split('\n')
     rows = _.compact(rows)
@@ -198,6 +201,7 @@ function selectTib(datapath, files) {
       let clean = cleanStr(row)
       // if (idx > 0) return
       let gpars = sband(clean, code)
+      if (!gpars) return
       gpars.forEach(gpar=> {
         gpar.forEach(span=> {
           if (span.lang != code) return
@@ -331,39 +335,30 @@ function fullChains(chains) {
 
 // ===================== generate Local Dict
 
-// let dicts = []
-// let tmpdicts = []
-// let qs = []
-// let dictpath
 let localDictPath
-
 let dicts = []
 export function scanLocalDict(datapath) {
   let dictpath = path.resolve(__dirname, datapath)
-  let files = glob.readdirSync('**/*\.tib*', {cwd: dictpath})
-  files = _.uniq(files)
+  let files = []
+  // let pattern = '**/*\.tib*'
+  let pattern = '**/*'
+  let options = {cwd: dictpath, nodir: true}
+  glob(pattern, options, function(err, files) {
+    let wfs = selectTib(dictpath, files)
+    let queries = wfs.map(wf=> { return {str: wf}})
+    // queries = queries.slice(0, 10)
 
-  // log('FILES', files)
-  let wfs = selectTib(datapath, files)
-  // log('WFS', wfs.length)
-  let queries = wfs.map(wf=> { return {str: wf}})
-  // queries = queries.slice(0, 3)
+    let csvname = 'localDict.csv'
+    localDictPath = path.resolve(dictpath, csvname)
+    fse.removeSync(localDictPath)
 
-  let filename = 'localDict.csv'
-  localDictPath = path.resolve(dictpath, filename)
-  fse.removeSync(localDictPath)
-
-  return queries.forEach(query=> {
-    recQuery(query)
-      // .then(function(res) {
-      //   log('Q', dicts)
-      // })
-      .catch(function(err) {
-        log('Q-ERR', err)
-      })
+    return queries.forEach(query=> {
+      recQuery(query)
+        .catch(function(err) {
+          log('Q-ERR', err)
+        })
+    })
   })
-  // log('=DICTS=', dicts)
-
 }
 
 function recQuery(query) {
@@ -386,7 +381,6 @@ function saveChunk(seg) {
   let csv = [seg, ', -\n'].join('')
   fse.appendFile(localDictPath, csv, function(err) {
     if (err) log('CSVERR', err)
-    log('saved', seg)
   })
 }
 

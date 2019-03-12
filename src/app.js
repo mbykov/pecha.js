@@ -202,6 +202,8 @@ function importCSV(fns) {
   ipcRenderer.send('import-from-csv', csvpath)
 }
 
-ipcRenderer.on('scanLocalReply', function (event, res) {
-  log('SCANNED!')
+ipcRenderer.on('scanLocalReply', function (event, datapath) {
+  progress.classList.add('is-hidden')
+  let state = {section: 'publish', datapath: datapath}
+  navigate(state)
 })

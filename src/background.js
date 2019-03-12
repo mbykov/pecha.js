@@ -136,7 +136,9 @@ app.on("ready", () => {
 
   ipcMain.on('scanLocalDict', (event, datapath) => {
     scanLocalDict(datapath)
-    event.sender.send('scanLocalReply')
+    event.sender.send('scanLocalReply', datapath)
+      // .then(function(res) {
+      // })
   })
 
   ipcMain.on('remoteDicts', (event, query) => {
