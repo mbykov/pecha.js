@@ -335,6 +335,7 @@ function fullChains(chains) {
 // let tmpdicts = []
 // let qs = []
 // let dictpath
+let localDictPath
 
 let dicts = []
 export function scanLocalDict(datapath) {
@@ -347,6 +348,10 @@ export function scanLocalDict(datapath) {
   // log('WFS', wfs.length)
   let queries = wfs.map(wf=> { return {str: wf}})
   // queries = queries.slice(0, 3)
+
+  let filename = 'localDict.csv'
+  localDictPath = path.resolve(dictpath, filename)
+  fse.removeSync(localDictPath)
 
   return queries.forEach(query=> {
     recQuery(query)
@@ -378,11 +383,8 @@ function recQuery(query) {
 }
 
 function saveChunk(seg) {
-  let filename = 'kuku.csv'
-  let upath = settings.get('upath')
-  let filepath = path.resolve(upath, filename)
   let csv = [seg, ', -\n'].join('')
-  fse.appendFile(filepath, csv, function(err) {
+  fse.appendFile(localDictPath, csv, function(err) {
     if (err) log('CSVERR', err)
     log('saved', seg)
   })
