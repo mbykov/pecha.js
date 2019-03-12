@@ -33,6 +33,7 @@ const isDev = require('electron-is-dev')
 // const app = remote.app;
 
 let over = q("#new-version")
+let progress = q('#progress')
 
 let container = q('#container')
 let imports = qs('link[rel="import"]')
@@ -75,7 +76,7 @@ if (!state) state = {section: 'home'}
 navigate(state)
 
 document.addEventListener('click', (ev) => {
-  let progress = q('#progress')
+  // let progress = q('#progress')
   let data = ev.target.dataset
   if (!data) return
   let parent = ev.target.parentElement
@@ -186,12 +187,21 @@ export function scrollPane(ev, state) {
 }
 
 function scanDir(fns) {
-  log('FNS', fns)
+  if (!fns) return
+  let datapath = fns[0]
+  if (!datapath) return
+  progress.classList.remove('is-hidden')
+  ipcRenderer.send('scanLocalDict', datapath)
 }
 
 function importCSV(fns) {
   if (!fns) return
   let csvpath = fns[0]
   if (!csvpath) return
+  progress.classList.remove('is-hidden')
   ipcRenderer.send('import-from-csv', csvpath)
 }
+
+ipcRenderer.on('scanLocalReply', function (event, res) {
+  log('SCANNED!')
+})

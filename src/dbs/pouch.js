@@ -331,79 +331,63 @@ function fullChains(chains) {
 
 // ===================== generate Local Dict
 
+// let dicts = []
+// let tmpdicts = []
+// let qs = []
+// let dictpath
+
 let dicts = []
-let tmpdicts = []
-let qs = []
-
-export function localDict(datapath) {
-  log('LOCAL', datapath)
-  datapath = path.resolve(__dirname, datapath)
-  let files = glob.readdirSync('**/*\.tib*', {cwd: datapath})
+export function scanLocalDict(datapath) {
+  let dictpath = path.resolve(__dirname, datapath)
+  let files = glob.readdirSync('**/*\.tib*', {cwd: dictpath})
   files = _.uniq(files)
-  // log('LOCAL DICT', datapath)
-  // log('F', files)
+
+  // log('FILES', files)
   let wfs = selectTib(datapath, files)
-  log('WFS', wfs.length)
+  // log('WFS', wfs.length)
   let queries = wfs.map(wf=> { return {str: wf}})
-  queries = queries.slice(0, 3)
-  log('QS2', queries)
+  // queries = queries.slice(0, 3)
 
-  recQuery(queries)
-}
-
-function recQuery(queries) {
-  let rs = miss.from.obj(queries)
-  let ws = miss.to.obj(write, flush)
-  let  streamDB = miss.through.obj( // TODO parallel
-    function (chunk, enc, cb) {
-      queryDBs(chunk)
-        .then(function(query) {
-          cb(null, query)
-        })
-    },
-    // function (cb) {
-    //   cb(null, 'ONE LAST BIT OF UPPERCASE')
-    // }
-  )
-
-  miss.pipe(rs, streamDB, ws, function (err) {
-    if (err) return console.error('Copy error!', err)
-    console.log('Copied successfully')
+  return queries.forEach(query=> {
+    recQuery(query)
+      // .then(function(res) {
+      //   log('Q', dicts)
+      // })
+      .catch(function(err) {
+        log('Q-ERR', err)
+      })
   })
+  // log('=DICTS=', dicts)
+
 }
 
-function write (data, enc, cb) {
-  // log('writing', JSON.stringify(data))
-  log('_dbres_:', data)
-  if (!data.chain) return cb()
-  data.chain.forEach(seg=> {
-    if (seg.docs.length) dicts.push(seg.seg)
-    else qs.push(seg.seg)
-  })
-  cb()
-}
-
-function flush (cb) {
-  // i am called before finish is emitted
-  qs = _.uniq(qs)
-  dicts = _.uniq(dicts)
-  if (tmpdicts.length == dicts.length)  return log('__VERY END__', dicts)
-  else tmpdicts.length = dicts.length
-  log('FLUSH: DICTS', dicts.length, 'QS', qs)
-  if (qs.length) {
-    let queries = qs.map(qs=> { return {str: qs}})
-    recQuery(queries)
-  } else {
-    // log('____THE END____')
+function recQuery(query) {
+  function decide(aquery) {
+    // log('__aq__', aquery)
+    if (!aquery.chain) return dicts
+    aquery.chain.forEach(sec=> {
+      if (sec.docs.length) saveChunk(sec.seg) //dicts.push(sec.seg)
+      else {
+        // if (query.str == sec.seg) return dicts
+        if (query.str != sec.seg) return recQuery({ str: sec.seg })
+      }
+    })
+    // log('__d__', dicts)
   }
+  return queryDBs(query).then(decide);
 }
 
-// потом в рекурсию
-// function localQueries(queries) {
-//   queries.forEach(query=> {
-//     queryDBs (query)
-//   })
-// }
+function saveChunk(seg) {
+  let filename = 'kuku.csv'
+  let upath = settings.get('upath')
+  let filepath = path.resolve(upath, filename)
+  let csv = [seg, ', -\n'].join('')
+  fse.appendFile(filepath, csv, function(err) {
+    if (err) log('CSVERR', err)
+    log('saved', seg)
+  })
+}
+
 
 // =============== CSV
 

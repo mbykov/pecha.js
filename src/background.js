@@ -12,7 +12,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { setDBs, replicate, infoDB, remoteDicts, queryDBs, localDict, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
+import { setDBs, replicate, infoDB, remoteDicts, queryDBs, scanLocalDict, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -134,8 +134,9 @@ app.on("ready", () => {
       });
   })
 
-  ipcMain.on('queryLocalDict', (event, datapath) => {
-    localDict(datapath)
+  ipcMain.on('scanLocalDict', (event, datapath) => {
+    scanLocalDict(datapath)
+    event.sender.send('scanLocalReply')
   })
 
   ipcMain.on('remoteDicts', (event, query) => {

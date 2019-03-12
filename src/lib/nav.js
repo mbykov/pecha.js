@@ -72,7 +72,7 @@ Mousetrap.bind(['esc'], function(ev) {
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
   let datapath = '/home/michael/diglossa.texts/Tibetan'
-  ipcRenderer.send('queryLocalDict', datapath)
+  ipcRenderer.send('scanLocalDict', datapath)
 })
 
 Mousetrap.bind(['ctrl+j'], function(ev) {
