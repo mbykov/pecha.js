@@ -79,7 +79,7 @@ export function replicate(upath, dname) {
     })
 }
 
-function onSyncChange(data) { log('onSyncChange', data) }
+function onSyncChange(data) {  } // log('onSyncChange', data)
 function onSyncError() { log('onSyncError') }
 
 // export function setDBs(upath) {
