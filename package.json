@@ -1,6 +1,6 @@
 {
   "name": "pecha.js",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "productName": "Pecha.js",
   "description": "Simple practical tibetan text analyzer",
   "author": "Michael  Bykov <m.bykov@gmail.com>",
@@ -13,6 +13,7 @@
     "files": [
       "app/**/*",
       "src/**/*",
+      "resources/**/*",
       "node_modules/**/*",
       "package.json"
     ],
