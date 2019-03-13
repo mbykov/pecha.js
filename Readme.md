@@ -1,7 +1,7 @@
 # Pecha.js, a.k.a. Morpheus for Tibetan
 
 
-Simple practical tibetan text analyzer on a top of [Electron.js](https://github.com/electron/electron) and [CouchDB](http://couchdb.apache.org/)
+Simple practical Tibetan text analyzer on a top of [Electron.js](https://github.com/electron/electron) and [CouchDB](http://couchdb.apache.org/)
 
 Homepage: http://diglossa.org/
 
