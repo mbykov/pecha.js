@@ -61,7 +61,6 @@ app.on("ready", () => {
 
   let winBounds = settings.get('winBounds') || win.getBounds()
   winBounds.y -= 21
-  log('winBounds', winBounds)
 
   win.setBounds(winBounds)
 

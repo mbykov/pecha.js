@@ -1,6 +1,6 @@
 {
   "name": "pecha.js",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "productName": "Pecha.js",
   "description": "Simple practical tibetan text analyzer",
   "author": "Michael  Bykov <m.bykov@gmail.com>",
@@ -12,6 +12,7 @@
     "appId": "com.example.electron-boilerplate",
     "files": [
       "app/**/*",
+      "src/**/*",
       "node_modules/**/*",
       "package.json"
     ],
