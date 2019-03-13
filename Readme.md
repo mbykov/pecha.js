@@ -1,4 +1,4 @@
-# Morpheus for Ancient Greek
+# Pecha.js, a.k.a. Morpheus for Tibetan
 
 
 Simple practical tibetan text analyzer on a top of [electron.js](https://github.com/electron/electron)
@@ -13,7 +13,7 @@ Or Shift-mouse to view the phonetic transcription (look https://github.com/mbyko
 
 Pecha.js:
 
-- works offline
+- works offline, has packages for Windows, MacOS, Ubuntu, Fedora
 - recursively analyzes tibetan phrases up to one-syllable words
 - has a phonetic transliteration system Cholok, see https://github.com/mbykov/cholok
 - has dictionaries cloned from the server and synchronized with it
@@ -29,9 +29,15 @@ next versions:
 - server authentication
 - editing dictionaries
 - publishing dictionaries on the web
-- publication of the text version in the version control system, by default on https://github.com
+- publication dictionary's text version in the version control system, by default on https://github.com
 
+## similar pachages:
 
+- Diglossa - https://github.com/mbykov/diglossa.js - Bilingual Reader
+-
+- Morpheus for Ancient Greek - https://github.com/mbykov/morpheus-greek
+- Morpheus for Chinese - https://github.com/mbykov/morpheus (will be renamed)
+- Morpheus for Sanskrit - https://github.com/mbykov/morpheus-sanskrit (deprecated)
 
 
 ## License
