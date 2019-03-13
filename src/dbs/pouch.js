@@ -112,6 +112,8 @@ export function ensureCfg(upath) {
 
 function setCfg(upath, dname) {
   let cfg = settings.get('cfg')
+  let check = _.find(cfg, dict=> { return dict.dname == dname })
+  if (check) return cfg
   let newdict = {dname: dname, active: true, idx: cfg.length} // sync: remotepath,
   cfg.push(newdict)
   settings.set('cfg', cfg)
