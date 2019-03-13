@@ -1,8 +1,8 @@
 {
   "name": "pecha.js",
+  "version": "0.8.1",
   "productName": "Pecha.js",
   "description": "Simple practical tibetan text analyzer",
-  "version": "0.8.0",
   "author": "Michael  Bykov <m.bykov@gmail.com>",
   "copyright": "© 2018, Michael Bykov",
   "license": "GPL-3.0",
@@ -76,6 +76,7 @@
     "electron-settings": "^3.2.0",
     "file-loader": "^2.0.0",
     "fs-extra": "^7.0.1",
+    "fs-jetpack": "^2.2.2",
     "git-clone": "^0.1.0",
     "glob": "^7.1.3",
     "json5": "^2.1.0",
@@ -114,7 +115,7 @@
     "webpack-cli": "^3.1.2",
     "webpack-merge": "^4.1.4",
     "webpack-node-externals": "^1.7.2"
-  }  ,
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mbykov/pecha.js.git"
@@ -122,5 +123,4 @@
   "bugs": {
     "url": "https://github.com/mbykov/pecha.js/issues"
   }
-
 }
