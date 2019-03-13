@@ -78,6 +78,7 @@ function showRemoteDicts(rdbs) {
 
 export function showActiveDicts() {
   let cfg = settings.get('cfg')
+  if (!cfg) return
   let dnames = cfg.map(cf=> { return cf.name })
   let mess = q('#adictmessage')
   if (dnames.length) mess.textContent = 'click dict\'s name to move it first'

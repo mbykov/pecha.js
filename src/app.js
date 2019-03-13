@@ -57,7 +57,7 @@ ipcRenderer.on('version', function (event, oldver) {
       }
     })
     .catch(function (error) {
-      console.log('API ERR')
+      console.log('API.GITHUB ERR')
     })
 })
 

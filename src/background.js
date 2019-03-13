@@ -117,7 +117,7 @@ app.on("ready", () => {
 
   ipcMain.on('import-from-csv', (event, csvpath) => {
     importCSV(csvpath, function(res) {
-      log('import-from-csv', res)
+      // log('import-from-csv', res)
       event.sender.send('csvReply', res)
     })
   })
@@ -125,7 +125,7 @@ app.on("ready", () => {
   ipcMain.on('export-to-csv', (event, csvname) => {
     exportCSV(csvname)
       .then(function (res) {
-        if (res) log('DOCS', res)
+        // if (res) log('DOCS', res)
         event.sender.send('csvReply', true)
       }).catch(function (err) {
         console.log('ERR', err);
@@ -141,7 +141,7 @@ app.on("ready", () => {
   })
 
   ipcMain.on('remoteDicts', (event, query) => {
-    // log('B: REMOTE DICTS START')
+    log('B: REMOTE DICTS START')
     remoteDicts()
       .then(function(rdbs) {
         log('B: REMOTE DICTS:', rdbs)

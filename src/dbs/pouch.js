@@ -47,8 +47,10 @@ const diglossa = new NodeCouchDb({
 })
 
 export function remoteDicts() {
+  log('REMOTE')
   return diglossa.listDatabases()
     .then(function(dnames) {
+      log('DNAMES', dnames)
       return Promise.all(dnames.map(function(dname) {
         let remotepath = ['http://diglossa.org:5984/', dname].join('')
         let remoteDB = new PouchDB(remotepath)
