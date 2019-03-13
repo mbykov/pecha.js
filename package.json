@@ -1,6 +1,6 @@
 {
   "name": "pecha.js",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "productName": "Pecha.js",
   "description": "Simple practical tibetan text analyzer",
   "author": "Michael  Bykov <m.bykov@gmail.com>",
@@ -64,7 +64,8 @@
     "e2e": "mocha temp/e2e.js --require source-map-support/register",
     "test": "npm run unit && npm run e2e",
     "start": "node build/start.js",
-    "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder"
+    "release": "webpack --config=build/webpack.app.config.js --env=production && electron-builder"
+    "release_": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "dependencies": {
     "axios": "^0.18.0",
