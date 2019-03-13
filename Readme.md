@@ -11,7 +11,7 @@ Or Shift-mouse to view the phonetic transcription (look https://github.com/mbyko
 
 ![Pecha.js](resources/pecha.js.png?raw=true "pecha.js")
 
-Morpheus family of analyzers, in particular Pecha.js, a.k.a. Morpheus-for-Tibetan are not linguistic programs. Their goal is to help in reading and understanding the ancient text. In order not to introduce a modern way of thinking (that is, what we think and how we used to think in our days), Pecha.js is being developed taking into account the views of the ancient grammarians, starting with T. Sambhota, and not in accordance with modern linguistic theories.
+Morpheus family of analyzers, in particular Pecha.js are <b>not</b> the linguistic programs. Their goal is to help in reading and understanding the ancient text. In order not to introduce a modern way of thinking (that is, what we think and how we used to think in our days), Pecha.js is being developed taking into account the views of the ancient grammarians, starting with T. Sambhota, and not in accordance with modern linguistic theories.
 
 Pecha.js:
 
