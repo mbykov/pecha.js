@@ -8,8 +8,8 @@ import { ipcRenderer } from "electron";
 
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { navigate } from './lib/nav'
-// import sband from "./lib/sband"; <<<=== убрать из lib
-import sband from "../../../sband"
+// import sband from "../../../sband"
+import sband from "speckled-band"
 import { showCholok, showResults, showPopup, queryDBs } from "./lib/parsedata"
 import { moveDictFirst, activateDict } from "./lib/dict"
 
@@ -31,6 +31,7 @@ const isDev = require('electron-is-dev')
 // const isDev = false
 // const isDev = true
 // const app = remote.app;
+const code = 'tib'
 
 let over = q("#new-version")
 let progress = q('#progress')
@@ -151,10 +152,11 @@ document.addEventListener("keydown", function(ev) {
   if (!ohover) return
   if (ohover.id == 'source') ohover = q('.tibpar')
   let text = ohover.textContent
-  let pars = sband(text, 'tib')
+  let pars = sband(text, code)
   if (!pars) return
-  showCholok(ohover)
-  if (ev.ctrlKey == true) showCholok(ohover, true)
+  let cumulative = (ev.ctrlKey == true) ? true: false
+  showCholok(ohover, cumulative)
+  // if (ev.ctrlKey == true) showCholok(ohover, true)
 }, false)
 
 document.addEventListener("wheel", function(ev) {
@@ -165,7 +167,7 @@ document.addEventListener("wheel", function(ev) {
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    let pars = sband(txt, 'tib')
+    let pars = sband(txt, code)
     if (!pars || !pars.length) return
     let state = {section: 'main', pars: pars}
     navigate(state)

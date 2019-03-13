@@ -1,7 +1,8 @@
 //
 
 import _ from 'lodash'
-import sband from '../../../../sband'
+// import sband from '../../../../sband'
+import sband from "speckled-band"
 import { segmenter, totalKeys } from "./segmenter";
 import { tibsyms, tibsuff } from "../lib/tibetan_data";
 const tsek = tibsyms.tsek
@@ -13,8 +14,6 @@ let retsek = new RegExp(tsek+'$')
 const request = require('request')
 const path = require('path')
 const fse = require('fs-extra')
-// let glob = require('glob-fs')({ gitignore: true })
-// let Glob = require("glob").Glob
 let glob = require("glob")
 
 const isDev = require('electron-is-dev')
@@ -26,8 +25,7 @@ const log = console.log
 let debug = require('debug')
 // let log = debug('app')
 // let d = debug('app')
-let H = require('highland');
-let miss = require('mississippi');
+// let miss = require('mississippi');
 let csv2 = require('csv2');
 
 let dbs = []
