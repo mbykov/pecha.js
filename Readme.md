@@ -34,7 +34,7 @@ next versions:
 - publishing dictionaries on the web
 - publication dictionary's text version in the version control system, by default on https://github.com
 
-## similar pachages:
+## similar packages:
 
 - Diglossa - https://github.com/mbykov/diglossa.js - Bilingual Reader
 -
