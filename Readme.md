@@ -18,7 +18,8 @@ Pecha.js:
 - works offline, has packages for Windows, MacOS, Ubuntu, Fedora
 - recursively analyzes tibetan phrases up to one-syllable words
 - has a phonetic transliteration system Cholok, see https://github.com/mbykov/cholok
-- has dictionaries cloned from the server and synchronized with it
+- has dictionaries cloned from the server and synchronized with it, see
+- http://diglossa.org:5984/_utils/, login: guest, password: guest
 - reader can install dictionaries from CSV file also
 - Pecha.js integrated with Diglossa.js, https://github.com/mbykov/diglossa.js, so
 - the reader can create his own vocabulary for a text or group of texts (this may take some time)
