@@ -1,7 +1,8 @@
 //
 import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getInnermostHovered } from './utils'
-import cholok from '../../../cholok'
+// import cholok from '../../../cholok'
+import cholok from 'cholok'
 import { tibsyms, tibsyls } from "./tibetan_data";
 import { ipcRenderer } from "electron";
 const settings = require('electron').remote.require('electron-settings')
