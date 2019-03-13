@@ -12,7 +12,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { setDBs, replicate, infoDB, remoteDicts, queryDBs, scanLocalDict, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
+import { ensureCfg, replicate, infoDB, remoteDicts, queryDBs, scanLocalDict, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -102,7 +102,7 @@ app.on("ready", () => {
   settings.set('apath', apath)
   settings.set('upath', upath)
 
-  setDBs(upath)
+  ensureCfg(upath)
 
   ipcMain.on('infoDB', (event, dname) => {
     infoDB(upath, dname)
@@ -141,24 +141,19 @@ app.on("ready", () => {
   })
 
   ipcMain.on('remoteDicts', (event, query) => {
-    log('B: REMOTE DICTS START')
     remoteDicts()
       .then(function(rdbs) {
-        log('B: REMOTE DICTS:', rdbs)
         rdbs = _.filter(rdbs, dname=> { return dname[0] != '_' })
         event.sender.send('remoteDictsReply', rdbs)
       }).catch(function (err) {
-        log('B: REMOTE DICTS ERR')
         event.sender.send('remoteDictsReply', false)
       });
   })
 
   ipcMain.on('replicate', (event, dname) => {
-    console.log('B:REPLICATE', dname)
     let localpath = path.resolve(upath, 'pouch', dname)
     replicate(upath, dname)
       .then(function (res) {
-        log('B: replicate done', res)
         event.sender.send('replicateReply', true)
       }).catch(function (err) {
         event.sender.send('replicateReply', false)

@@ -47,10 +47,8 @@ const diglossa = new NodeCouchDb({
 })
 
 export function remoteDicts() {
-  log('REMOTE')
   return diglossa.listDatabases()
     .then(function(dnames) {
-      log('DNAMES', dnames)
       return Promise.all(dnames.map(function(dname) {
         let remotepath = ['http://diglossa.org:5984/', dname].join('')
         let remoteDB = new PouchDB(remotepath)
@@ -67,58 +65,56 @@ export function replicate(upath, dname) {
   let localDB = new PouchDB(localpath)
   let dumppath = ['http://diglossa.org/dump-', dname].join('')
   let remotepath = ['http://diglossa.org:5984/', dname].join('')
-  // log('REPLICATE START', localpath, remotepath)
 
   return localDB.load(dumppath)
     .then(function() {
       let opts = { live: true, retry: true }
-      log('P: REPL DONE before sync')
       localDB.sync(remotepath, opts)
         .on('change', onSyncChange)
         .on('error', onSyncError)
       localDB.dname = dname
       dbs.push(localDB)
       let dnames = dbs.map(db=>{ return db.dname })
-      // log('P: repl-DNAMES:', dnames)
       let cfg = setCfg(upath, dname)
-      // log('P: repl - new cfg:', cfg)
     })
 }
 
 function onSyncChange(data) { log('onSyncChange', data) }
 function onSyncError() { log('onSyncError') }
 
-export function setDBs(upath) {
+// export function setDBs(upath) {
+//   let pouchpath = path.resolve(upath, 'pouch')
+//   fse.ensureDirSync(pouchpath)
+//   let cfg = settings.get('cfg') || []
+//   if (!cfg) settings.set('cfg', [])
+//   dbs = []
+//   cfg.forEach((dict, idx) => {
+//     if (!dict.active) return
+//     let dpath = path.resolve(upath, 'pouch', dict.dname)
+//     let pouch = new PouchDB(dpath)
+//     pouch.dname = dict.dname
+//     pouch.weight = idx
+//     // pouch.sync(dict.remotepath, opts) // cannot read preperty once of undefined
+//     dbs.push(pouch)
+//   })
+//   let dnames = dbs.map(db=>{ return db.dname })
+//   return dnames
+// }
+
+export function ensureCfg(upath) {
+  let cfg = settings.get('cfg')
+  if (cfg) return
+  cfg = []
+  settings.set('cfg', cfg)
   let pouchpath = path.resolve(upath, 'pouch')
   fse.ensureDirSync(pouchpath)
-  let cfg = settings.get('cfg')
-  // log('setting dbs, cfg', cfg)
-  dbs = []
-  // let dbnames = _.compact(cfg.map(dict => { return (dict.active) ? dict.name : null }))
-  // log('setDBNS', dbnames)
-  // let opts = { live: true, retry: true }
-  cfg.forEach((dict, idx) => {
-    if (!dict.active) return
-    let dpath = path.resolve(upath, 'pouch', dict.dname)
-    let pouch = new PouchDB(dpath)
-    pouch.dname = dict.dname
-    pouch.weight = idx
-    // pouch.sync(dict.remotepath, opts) // cannot read preperty once of undefined
-    dbs.push(pouch)
-  })
-  let dnames = dbs.map(db=>{ return db.dname })
-  // log('P: DBS ok:', dnames)
-  // log('P: DBS ok:', cfg)
-  return dnames
 }
 
 function setCfg(upath, dname) {
-  let cfg = settings.get('cfg') || []
-  if (!dname) return cfg
+  let cfg = settings.get('cfg')
   let newdict = {dname: dname, active: true, idx: cfg.length} // sync: remotepath,
   cfg.push(newdict)
   settings.set('cfg', cfg)
-  log('== setCFG ==', cfg)
   return cfg
 }
 
@@ -132,17 +128,16 @@ export function infoDB(upath, dname) {
   }).then(function (res) {
     if (!res.rows.length) return
     let doc = res.rows[0].doc
-    log('INFO-doc', doc)
-    log('INFO-docs', doc.docs)
+    // console.log('INFO-doc', doc)
+    // console.log('INFO-docs', doc.docs)
   })
     .catch(function(err) {
-      log('INFO ERR', err)
+      console.log('INFO ERR', err)
     })
 }
 
 export function cleanupDB(upath, cb) {
   let pouchpath = path.resolve(upath, 'pouch')
-  log('CLEAN UP', pouchpath)
   try {
     dbs = []
     fse.removeSync(pouchpath)
@@ -150,7 +145,7 @@ export function cleanupDB(upath, cb) {
     settings.set('cfg', [])
     cb(true)
   } catch (err) {
-    log('ERR re-creating DBs', err)
+    console.log('ERR re-creating DBs', err)
     cb(false)
     // app.quit()
   }
@@ -293,25 +288,13 @@ function makeChains(pdchs, docs) {
 
 function selectBests(chains) {
   let max = _.max(chains.map(chain => {  return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length } ) )
-  // log('MAX', max)
   let longests = _.filter(chains, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length >= max - 1 })
-  // longests = _.sortBy(longests, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? segment.seg.length : 0 }))/chain.length }).reverse()
-  // log('LNGST', longests)
-  // return longests
-
-  // // квадраты - выберет более равномерное деление, да, но отбросит тоже хорошие
   // let max = _.max(chains.map(chain => {  return _.sum(chain.map(segment => { return segment.docs.length ? Math.pow(segment.seg.length, 2) : 0 }))/chain.length } ) )
-  // // log('MAX', max)
   // let longests = _.filter(chains, chain => { return _.sum(chain.map(segment => { return segment.docs.length ? Math.pow(segment.seg.length, 2) : 0 }))/chain.length >= max - 10 })
 
   let min = _.min(longests.map(chain => {  return chain.length } ) )
-  // log('MIN', min)
   let shortests  = _.filter(longests, chain => { return chain.length == min })
   return shortests
-  // let maxlong = _.max(longests.map(chain => {  return chain.length } ) )
-  // // log('maxlong', maxlong)
-  // longests  = _.filter(longests, chain => { return chain.length == maxlong })
-  // return longests
 }
 
 function startWith(str, head) {
@@ -355,7 +338,7 @@ export function scanLocalDict(datapath) {
     return queries.forEach(query=> {
       recQuery(query)
         .catch(function(err) {
-          log('Q-ERR', err)
+          console.log('Q-ERR', err)
         })
     })
   })
@@ -363,16 +346,13 @@ export function scanLocalDict(datapath) {
 
 function recQuery(query) {
   function decide(aquery) {
-    // log('__aq__', aquery)
     if (!aquery.chain) return dicts
     aquery.chain.forEach(sec=> {
       if (sec.docs.length) saveChunk(sec.seg) //dicts.push(sec.seg)
       else {
-        // if (query.str == sec.seg) return dicts
         if (query.str != sec.seg) return recQuery({ str: sec.seg })
       }
     })
-    // log('__d__', dicts)
   }
   return queryDBs(query).then(decide);
 }
@@ -380,7 +360,7 @@ function recQuery(query) {
 function saveChunk(seg) {
   let csv = [seg, ', -\n'].join('')
   fse.appendFile(localDictPath, csv, function(err) {
-    if (err) log('CSVERR', err)
+    if (err) console.log('CSVERR', err)
   })
 }
 
@@ -388,16 +368,13 @@ function saveChunk(seg) {
 // =============== CSV
 
 export function importCSV(jsonpath, cb) {
-  log('P: IMPORT CSV', jsonpath)
   jsonpath = path.resolve(jsonpath)
 
   fse.readJson(jsonpath)
     .then((manifest) => {
-      log('MANIFEST', manifest)
       let mpath = path.parse(jsonpath).dir
       let mname = [path.parse(jsonpath).name, 'csv'].join('.')
       let csvpath = path.resolve(mpath, mname)
-      log('CSVPATH', csvpath)
       getCSV(csvpath, function(res) {
         cb(true)
       })
@@ -422,8 +399,6 @@ function getCSV(csvpath, cb) {
       })
       .on('end', function(res) {
         let langs = rows.shift()
-        log('ROWS-0', langs)
-        log('ROWS', rows)
         rows = _.filter(rows, row=> { return row[0][0] != '#' })
         let docs = []
         rows.forEach(row=> {
@@ -434,7 +409,6 @@ function getCSV(csvpath, cb) {
           doc.docs.push(mdoc)
           docs.push(doc)
         })
-        log('BULK', docs)
         let csvname = path.parse(csvpath).name
         let localpath = path.resolve(upath, 'pouch', csvname)
         let localDB = new PouchDB(localpath)
@@ -442,9 +416,7 @@ function getCSV(csvpath, cb) {
           .then(function (result) {
             localDB.dname = csvname
             dbs.push(localDB)
-            let cfg = setCfg(upath, csvname, localpath)
-            // log('BULK-RES, dbs:', dbs.length)
-            // log('BULK-RES, cfg:', cfg)
+            let cfg = setCfg(upath, csvname)
             cb(true)
           }).catch(function (err) {
             console.log('CSVERR', err);
