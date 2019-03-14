@@ -11,11 +11,13 @@ addons:
   apt:
     packages:
       - rpm
+      - g++-4.8
 
 env:
   global:
     - ELECTRON_CACHE=$HOME/.cache/electron
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+    - CXX=g++-4.8
 
 install:
   - npm install
