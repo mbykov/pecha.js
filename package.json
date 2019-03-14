@@ -1,15 +1,15 @@
 {
   "name": "pecha.js",
-  "version": "0.8.9",
+  "version": "0.8.10",
   "productName": "Pecha.js",
-  "description": "Simple practical tibetan text analyzer",
+  "description": "Simple practical Tibetan text analyzer",
   "author": "Michael  Bykov <m.bykov@gmail.com>",
   "copyright": "© 2018, Michael Bykov",
   "license": "GPL-3.0",
-  "homepage": "http://example.com",
+  "homepage": "http://diglossa.org/tibetan",
   "main": "app/background.js",
   "build": {
-    "appId": "com.example.electron-boilerplate",
+    "appId": "org.diglossa.tibetan",
     "files": [
       "app/**/*",
       "src/**/*",

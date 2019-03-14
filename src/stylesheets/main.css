@@ -73,7 +73,7 @@ h4 {
 
 #source {
     font-family: "Helvetica Neue", Helvetica, Arial;
-    /* font-size: 14px; */
+    font-size: 18px;
     padding-left: 15px;
     padding-top: 25px;
     padding-bottom: 25px;
@@ -454,4 +454,12 @@ div.qtext > p.hidden {
 
 .active-dict {
   width: 100px;
+}
+
+#pechatxt {
+  font-family: "Helvetica Neue", Helvetica, Arial;
+  font-size: 18px;
+  padding-left: 15px;
+  padding-top: 25px;
+  padding-bottom: 25px;
 }

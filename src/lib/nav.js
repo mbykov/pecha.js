@@ -61,40 +61,54 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
   else if (ev.which == 39) goRight()
 })
 
-Mousetrap.bind(['alt+1', 'alt+2'], function(ev) {
-  // if (ev.which == 49) log('----1')
-  // else if (ev.which == 50) log('----2')
+// Mousetrap.bind(['alt+1', 'alt+2'], function(ev) {
+//   // if (ev.which == 49) log('----1')
+//   // else if (ev.which == 50) log('----2')
+// })
+
+// Mousetrap.bind(['esc'], function(ev) {
+//   // похоже, общий метод не получится
+// })
+
+// Mousetrap.bind(['ctrl+d'], function(ev) {
+//   let datapath = '/home/michael/diglossa.texts/Tibetan'
+//   ipcRenderer.send('scanLocalDict', datapath)
+// })
+
+// Mousetrap.bind(['ctrl+j'], function(ev) {
+//   let csvpath = '/home/michael/tibetan/utils/csv/csvdict.json'
+//   log('IMPORT', csvpath)
+//   ipcRenderer.send('importcsv', csvpath)
+// })
+
+// Mousetrap.bind(['ctrl+i'], function(ev) {
+//   ipcRenderer.send('infoDB', 'csvdict')
+// })
+
+// Mousetrap.bind(['ctrl+v'], function(ev) {
+//   ipcRenderer.send('infoDB', 'vasilyev')
+// })
+
+// Mousetrap.bind(['ctrl+u'], function(ev) {
+//   log('CLICK SIGNUP')
+//   signup(upath)
+// })
+
+Mousetrap.bind(['ctrl+='], function(ev) {
+  let osource = q('#source')
+  osource.style.fontSize = 'larger'
 })
 
-Mousetrap.bind(['esc'], function(ev) {
-  // похоже, общий метод не получится
+Mousetrap.bind(['ctrl+-'], function(ev) {
+  let osource = q('#source')
+  osource.style.fontSize = 'smaller'
 })
 
-Mousetrap.bind(['ctrl+d'], function(ev) {
-  let datapath = '/home/michael/diglossa.texts/Tibetan'
-  ipcRenderer.send('scanLocalDict', datapath)
+Mousetrap.bind(['ctrl+0'], function(ev) {
+  let osource = q('#source')
+  osource.style.fontSize = 'medium'
 })
 
-Mousetrap.bind(['ctrl+j'], function(ev) {
-  let csvpath = '/home/michael/tibetan/utils/csv/csvdict.json'
-  log('IMPORT', csvpath)
-  ipcRenderer.send('importcsv', csvpath)
-})
-
-Mousetrap.bind(['ctrl+i'], function(ev) {
-  ipcRenderer.send('infoDB', 'csvdict')
-})
-
-Mousetrap.bind(['ctrl+v'], function(ev) {
-  ipcRenderer.send('infoDB', 'vasilyev')
-})
-
-
-
-Mousetrap.bind(['ctrl+u'], function(ev) {
-  log('CLICK SIGNUP')
-  signup(upath)
-})
 
 function goLeft() {
   if (hstate <= 0) return
