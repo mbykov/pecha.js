@@ -1,10 +1,10 @@
 {
   "name": "pecha.js",
-  "version": "0.8.11",
+  "version": "0.8.12",
   "productName": "Pecha.js",
   "description": "Simple practical Tibetan text analyzer",
-  "author": "Michael  Bykov <m.bykov@gmail.com>",
-  "copyright": "© 2018, Michael Bykov",
+  "author": "Michael Bykov <m.bykov@gmail.com>",
+  "copyright": "© 2018-2019, Michael Bykov",
   "license": "GPL-3.0",
   "homepage": "http://diglossa.org/tibetan",
   "main": "app/background.js",
