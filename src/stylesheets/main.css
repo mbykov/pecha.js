@@ -364,9 +364,10 @@ div.qtext > p.hidden {
   top: 250px;
   left: 300px;
   /* font-family: 'DejaVu Sans'; */
-  font-size: 16px;
   padding: 3px;
   background-color: white;
+  font-family: 'YagpoUni';
+  font-size: 1.5em;
 }
 
 .upper {
@@ -381,9 +382,10 @@ div.qtext > p.hidden {
   top: 250px;
   left: 300px;
   /* font-family: 'DejaVu Sans'; */
-  font-size: 16px;
   padding: 3px;
   background-color: white;
+  font-family: 'YagpoUni';
+  font-size: 1.5em;
 }
 
 .danger {
@@ -457,7 +459,6 @@ div.qtext > p.hidden {
 }
 
 #pechatxt {
-  font-size: 18px;
   padding-left: 15px;
   padding-top: 25px;
   padding-bottom: 25px;
