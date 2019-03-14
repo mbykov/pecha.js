@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('YagpoUni'), local('SourceCodePro'), url(fonts/YagpoUni.ttf) format('truetype');
+}
+
 html,
 body {
   height: 100%;
@@ -43,6 +50,11 @@ p {
   margin-inline-start: 0;
   margin-inline-end: 0;
   padding-inline-start: 0;
+}
+
+p.tibpar {
+  font-family: 'YagpoUni';
+  font-size: 1.5em;
 }
 
 ul.about li:before {

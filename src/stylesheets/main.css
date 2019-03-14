@@ -457,9 +457,10 @@ div.qtext > p.hidden {
 }
 
 #pechatxt {
-  font-family: "Helvetica Neue", Helvetica, Arial;
   font-size: 18px;
   padding-left: 15px;
   padding-top: 25px;
   padding-bottom: 25px;
+  font-family: 'YagpoUni';
+  font-size: 1.5em;
 }
