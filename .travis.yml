@@ -3,7 +3,7 @@ os:
   - osx
 language: node_js
 node_js:
-  - "11"
+  - "10"
 dist: trusty
 sudo: false
 
@@ -11,6 +11,7 @@ addons:
   apt:
     packages:
       - rpm
+      - node-gyp
 
 env:
   global:
