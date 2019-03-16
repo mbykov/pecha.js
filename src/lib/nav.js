@@ -139,12 +139,22 @@ export function navigate(state) {
   if (!section) state.section = 'home'
   showSection(state.section)
 
+  let osource = q('#source')
+  if (!osource) {
+    log('NO SOURCE')
+    // let over = q("#new-version")
+    // over.textContent = 'something goes wrong.Please remove DBs and reinstall dicts again'
+    // over.textContent = ''
+  }
+
+
   if (!state.old) {
     state.old = false
     delete state.old
     history.push(state)
     hstate = history.length-1
   }
+
   if (section == 'main') twoPanes(state), showText(state)
   else if (section == 'clonedicts') ipcRenderer.send('remoteDicts', '') // serverDicts()
   else if (section == 'activedicts') showActiveDicts()

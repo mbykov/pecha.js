@@ -179,8 +179,9 @@ export function showResults(el) {
 
 export function noResult(el) {
   // log('NO RESULT')
-  // let oresult = q('#result')
-  // empty(oresult)
+  let oresult = q('#result')
+  empty(oresult)
+  oresult.textContent = 'no result'
 }
 
 let xxx = function(n,o,u) {
@@ -203,7 +204,7 @@ export function queryDBs(el, compound) {
   ipcRenderer.send('queryDBs', query)
 }
 
-ipcRenderer.on('replayDBs', function (event, query) {
+ipcRenderer.on('replyDBs', function (event, query) {
   let progress = q('#progress')
   progress.classList.add('is-hidden')
   let chain = query.chain

@@ -94,8 +94,8 @@ app.on("ready", () => {
 
   // globalShortcut.register('CommandOrControl+R', () => win.webContents.send('reread'))
   // globalShortcut.register('CommandOrControl+R', () => win.reload())
-  globalShortcut.register('CommandOrControl+Shift+R', () => win.reload())
-  // globalShortcut.register('CommandOrControl+R', () => win.reload())
+  // globalShortcut.register('CommandOrControl+Shift+R', () => win.reload())
+  globalShortcut.register('CommandOrControl+R', () => win.reload())
 
   const apath = app.getAppPath()
   const upath = app.getPath("userData")
@@ -111,7 +111,7 @@ app.on("ready", () => {
   ipcMain.on('queryDBs', (event, query) => {
     queryDBs(query)
       .then(function(query) {
-        event.sender.send('replayDBs', query)
+        event.sender.send('replyDBs', query)
       })
   })
 

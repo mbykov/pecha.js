@@ -82,32 +82,31 @@ export function replicate(upath, dname) {
 function onSyncChange(data) {  } // log('onSyncChange', data)
 function onSyncError() { log('onSyncError') }
 
-// export function setDBs(upath) {
-//   let pouchpath = path.resolve(upath, 'pouch')
-//   fse.ensureDirSync(pouchpath)
-//   let cfg = settings.get('cfg') || []
-//   if (!cfg) settings.set('cfg', [])
-//   dbs = []
-//   cfg.forEach((dict, idx) => {
-//     if (!dict.active) return
-//     let dpath = path.resolve(upath, 'pouch', dict.dname)
-//     let pouch = new PouchDB(dpath)
-//     pouch.dname = dict.dname
-//     pouch.weight = idx
-//     // pouch.sync(dict.remotepath, opts) // cannot read preperty once of undefined
-//     dbs.push(pouch)
-//   })
-//   let dnames = dbs.map(db=>{ return db.dname })
-//   return dnames
-// }
+function setDBs(cfg) {
+  let upath = settings.get('upath')
+  cfg.forEach((dict, idx) => {
+    if (!dict.active) return
+    let dpath = path.resolve(upath, 'pouch', dict.dname)
+    let pouch = new PouchDB(dpath)
+    pouch.dname = dict.dname
+    pouch.weight = idx
+    // pouch.sync(dict.remotepath, opts) // cannot read preperty once of undefined
+    dbs.push(pouch)
+  })
+  let dnames = dbs.map(db=>{ return db.dname })
+  return dnames
+}
 
 export function ensureCfg(upath) {
   let cfg = settings.get('cfg')
-  if (cfg) return
-  cfg = []
-  settings.set('cfg', cfg)
-  let pouchpath = path.resolve(upath, 'pouch')
-  fse.ensureDirSync(pouchpath)
+  if (cfg) {
+    setDBs(cfg)
+  } else {
+    cfg = []
+    settings.set('cfg', cfg)
+    let pouchpath = path.resolve(upath, 'pouch')
+    fse.ensureDirSync(pouchpath)
+  }
 }
 
 function setCfg(upath, dname) {

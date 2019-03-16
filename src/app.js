@@ -50,7 +50,7 @@ ipcRenderer.on('version', function (event, oldver) {
       if (!response || !response.data) return
       let newver = response.data.name
       if (oldver && newver && newver > oldver) {
-        let over = q("#new-version")
+        // let over = q("#new-version")
         let verTxt = ['new version available:', newver].join(' ')
         over.textContent = verTxt
         over.classList.remove('is-hidden')
@@ -71,6 +71,9 @@ ipcRenderer.on('reread', function (event) {
   getCurrentWindow().reload()
   navigate(state)
 })
+
+// over.textContent = 'something goes wrong.Please remove DBs and reinstall dicts again'
+// over.classList.remove('is-hidden')
 
 let state = settings.get('state')
 if (!state) state = {section: 'home'}
