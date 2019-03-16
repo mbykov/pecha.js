@@ -5,7 +5,7 @@ import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
 import { serverDicts, showActiveDicts, parseCSV } from "./dict";
-import { signup } from "./auth";
+// import { signup } from "./auth";
 
 import { remote } from "electron";
 const app = remote.app;

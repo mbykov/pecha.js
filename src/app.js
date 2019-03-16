@@ -16,7 +16,7 @@ import { moveDictFirst, activateDict } from "./lib/dict"
 const settings = require('electron').remote.require('electron-settings')
 // const Mousetrap = require('mousetrap')
 
-const JSON = require('json5')
+// const JSON = require('json5')
 const axios = require('axios')
 // let fse = require('fs-extra')
 const slash = require('slash')
