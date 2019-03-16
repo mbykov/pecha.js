@@ -11,7 +11,6 @@ addons:
   apt:
     packages:
       - rpm
-      - node-gyp
 
 env:
   global:
@@ -19,11 +18,12 @@ env:
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
 install:
-  - npm install
+  # - npm install
+  - yarn install
 
 script:
   # - npm run rebuild
-  - npm run release
+  - yarn run release
 
 cache:
   directories:

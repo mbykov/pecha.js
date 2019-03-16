@@ -11,7 +11,7 @@ let retsek = new RegExp(tsek+'$')
 // const JSON = require('json5')
 // require('json5/lib/register')
 
-const request = require('request')
+// const request = require('request')
 const path = require('path')
 const fse = require('fs-extra')
 let glob = require("glob")
