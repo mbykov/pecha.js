@@ -205,6 +205,7 @@ function scanDir(fns) {
 }
 
 function importCSV(fns) {
+  if (!fns) return
   let csvpath = fns[0]
   if (!csvpath) return
   progress.classList.remove('is-hidden')

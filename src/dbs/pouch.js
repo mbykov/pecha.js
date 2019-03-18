@@ -389,6 +389,8 @@ export function importCSV(jsonpath, cb) {
       dpath = path.resolve(upath, 'pouch', dname)
       fse.emptyDirSync(dpath)
       if (csvdb) {
+        dbs = _.filter(dbs, db=> { return db.dname != dname })
+        delCfg(dname)
         return csvdb.destroy()
       } else {
         return Promise.resolve()
@@ -399,10 +401,10 @@ export function importCSV(jsonpath, cb) {
       csv2pouch(jsonpath, csvdb)
         .on('finish', function (err) {
           log('THE END')
-          csvdb.get('འགོ')
-          // csvdb.info()
+          // csvdb.get('འགོ')
+          csvdb.info()
             .then(function(res) {
-              log('D', res)
+              log('CSV-RES:', res)
             })
 
           csvdb.dname = dname
@@ -411,7 +413,9 @@ export function importCSV(jsonpath, cb) {
           cb(true)
         })
         .on('error', function (err) {
-          log('IMPORT ON ERR', err)
+          log('IMPORT .ON ERR', err)
+          log('IMPORT .ON DNAME', dname)
+          dbs = _.filter(dbs, db=> { return db.dname != dname })
           delCfg(dname)
           cb(false)
         })
