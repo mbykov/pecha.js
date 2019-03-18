@@ -9,7 +9,7 @@ const settings = require('electron-settings')
 
 ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
   hideProgress(rdbs)
-  showRemoteDicts(rdbs)
+  if (rdbs) showRemoteDicts(rdbs)
 })
 
 ipcRenderer.on('replicateReply', function (event, res) {
@@ -19,7 +19,6 @@ ipcRenderer.on('replicateReply', function (event, res) {
 })
 
 ipcRenderer.on('csvImportReply', function (event, res) {
-  log('IMP RES', res)
   hideProgress(res)
   let state = {section: 'activedicts'}
   navigate(state)
@@ -35,8 +34,10 @@ function hideProgress(res) {
   let errmess = q('#err-message')
   let progress = q('#progress')
   if (res) progress.classList.add('is-hidden')
-  else errmess.classList.remove('is-hidden')
-  errmess.textContent = 'something went wrong'
+  else {
+    errmess.classList.remove('is-hidden')
+    errmess.textContent = 'something went wrong'
+  }
 }
 
 

@@ -117,6 +117,7 @@ app.on("ready", () => {
 
   ipcMain.on('importCSV', (event, jsonpath) => {
     importCSV(jsonpath, function(res) {
+      log('====IMPORT', res)
       event.sender.send('csvImportReply', res)
     })
   })

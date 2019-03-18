@@ -22,6 +22,7 @@ const isDev = require('electron-is-dev')
 const settings = require('electron-settings')
 const PouchDB = require('pouchdb')
 PouchDB.plugin(require('pouchdb-load'));
+PouchDB.plugin(require('pouch-stream'));
 
 const log = console.log
 let debug = require('debug')
@@ -34,6 +35,7 @@ let dbs = []
 let code = 'tib'
 let startkey =  'ཀ'
 let endkey = '\ufff0'
+let csvdb
 
 const NodeCouchDb = require('node-couchdb');
 const couch = new NodeCouchDb()
@@ -76,8 +78,8 @@ export function replicate(upath, dname) {
         .on('error', onSyncError)
       localDB.dname = dname
       dbs.push(localDB)
-      let dnames = dbs.map(db=>{ return db.dname })
-      let cfg = setCfg(upath, dname)
+      // let dnames = dbs.map(db=>{ return db.dname })
+      setCfg(dname)
     })
 }
 
@@ -92,7 +94,6 @@ function setDBs(cfg) {
     let pouch = new PouchDB(dpath)
     pouch.dname = dict.dname
     pouch.weight = idx
-    // pouch.sync(dict.remotepath, opts) // cannot read preperty once of undefined
     dbs.push(pouch)
   })
   let dnames = dbs.map(db=>{ return db.dname })
@@ -111,12 +112,21 @@ export function ensureCfg(upath) {
   }
 }
 
-function setCfg(upath, dname) {
+function setCfg(dname) {
+  let upath = settings.get('upath')
   let cfg = settings.get('cfg')
   let check = _.find(cfg, dict=> { return dict.dname == dname })
   if (check) return cfg
   let newdict = {dname: dname, active: true, idx: cfg.length} // sync: remotepath,
   cfg.push(newdict)
+  settings.set('cfg', cfg)
+  return cfg
+}
+
+function delCfg(dname) {
+  let upath = settings.get('upath')
+  let cfg = settings.get('cfg')
+  cfg = _.filter(cfg, dict=> { return dict.dname != dname})
   settings.set('cfg', cfg)
   return cfg
 }
@@ -371,38 +381,71 @@ function saveChunk(seg) {
 // =============== CSV
 
 export function importCSV(jsonpath, cb) {
-  jsonpath = path.resolve(jsonpath)
-  let dbpath
+  let dname, dpath
   fse.readJson(jsonpath)
     .then((manifest) => {
-      let dirpath = path.parse(jsonpath).dir
-      let name = path.parse(jsonpath).name
-      let csvname = [path.parse(jsonpath).name, 'csv'].join('.')
-      let csvpath = path.resolve(dirpath, csvname)
       let upath = settings.get('upath')
-      dbpath = path.resolve(upath, 'pouch', name)
-      // fse.emptyDirSync(dbpath)
-      csv2pouch(jsonpath, dbpath)
+      dname = path.parse(jsonpath).name
+      dpath = path.resolve(upath, 'pouch', dname)
+      fse.emptyDirSync(dpath)
+      if (csvdb) {
+        return csvdb.destroy()
+      } else {
+        return Promise.resolve()
+      }
+    })
+    .then(function() {
+      csvdb = new PouchDB(dpath)
+      csv2pouch(jsonpath, csvdb)
         .on('finish', function (err) {
-          console.log('importCSV DONE');
-          let cfg = setCfg(upath, name)
+          log('THE END')
+          csvdb.get('འགོ')
+          // csvdb.info()
+            .then(function(res) {
+              log('D', res)
+            })
+
+          csvdb.dname = dname
+          dbs.push(csvdb)
+          setCfg(dname)
           cb(true)
         })
         .on('error', function (err) {
-          console.log('IMPORT CSV ERR', err);
-          fse.emptyDirSync(dbpath)
+          log('IMPORT ON ERR', err)
+          delCfg(dname)
           cb(false)
-         })
+        })
 
-      // cb(true)
-    })
-    .catch(function(err) {
-      fse.emptyDirSync(dbpath)
-      cb(false)
     })
 }
 
 export function exportCSV(csvname) {
+  csvdb.get('འགོ')
+  csvdb.info()
+    .then(function(res) {
+      log('D', res)
+    })
+
+
+  // csv2pouch(jsonpath, db)
+  //   .then(function(res) {
+  //     res
+  //       .on('finish', function (err) {
+  //         console.log('importCSV DONE');
+  //         // let csvDB = new PouchDB(dpath)
+  //         // csvDB.dname = name
+  //         // dbs.push(csvDB)
+  //         setCfg(name)
+  //         cb(true)
+  //       })
+  //       .on('error', function (err) {
+  //         console.log('IMPORT CSV ERR', err);
+  //         delCfg(name)
+  //         fse.emptyDirSync(dpath)
+  //         cb(false)
+  //       })
+  //   })
+
 }
 
 // export function exportCSV(csvname) {
