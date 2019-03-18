@@ -3,17 +3,11 @@ import _ from 'lodash'
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
 import { navigate } from './nav'
-// import { setCfg } from "../dbs/pouch";
 
 const log = console.log
 const settings = require('electron-settings')
 
 ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
-  // let cloneErr = q('#cloneERR')
-  // let progress = q('#progress')
-  // progress.classList.add('is-hidden')
-  // if (rdbs) showRemoteDicts(rdbs)
-  // else cloneErr.classList.remove('is-hidden')
   hideProgress(rdbs)
   showRemoteDicts(rdbs)
 })
@@ -24,7 +18,8 @@ ipcRenderer.on('replicateReply', function (event, res) {
   navigate(state)
 })
 
-ipcRenderer.on('csvReply', function (event, res) {
+ipcRenderer.on('csvImportReply', function (event, res) {
+  log('csvImportReply')
   hideProgress(res)
   let state = {section: 'activedicts'}
   navigate(state)
@@ -45,9 +40,7 @@ function hideProgress(res) {
 
 
 function showRemoteDicts(rdbs) {
-  // let upath = settings.get('upath')
   let cfg = settings.get('cfg')
-  // log('CLONE DICTS: CFG:', cfg)
   let defaults = ['_users']
   let locals = cfg.map(dict=> { return dict.dname })
   let installed = _.uniq(defaults.concat(locals))
@@ -116,7 +109,6 @@ export function moveDictFirst(dname) {
   cfg = rest
   cfg.forEach((dict, idx)=> { dict.idx = idx })
   settings.set('cfg', cfg)
-  // setCfg()
   showActiveDicts()
 }
 

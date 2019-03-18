@@ -75,11 +75,11 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
 //   ipcRenderer.send('scanLocalDict', datapath)
 // })
 
-// Mousetrap.bind(['ctrl+j'], function(ev) {
-//   let csvpath = '/home/michael/tibetan/utils/csv/csvdict.json'
-//   log('IMPORT', csvpath)
-//   ipcRenderer.send('importcsv', csvpath)
-// })
+Mousetrap.bind(['ctrl+j'], function(ev) {
+  let jsonpath = '/home/michael/tibetan/utils/csv/csvdict.json'
+  log('IMPORT', jsonpath)
+  ipcRenderer.send('importCSV', jsonpath)
+})
 
 // Mousetrap.bind(['ctrl+i'], function(ev) {
 //   ipcRenderer.send('infoDB', 'csvdict')

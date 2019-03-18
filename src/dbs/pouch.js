@@ -5,6 +5,8 @@ import _ from 'lodash'
 import sband from "speckled-band"
 import { segmenter, totalKeys } from "./segmenter";
 import { tibsyms, tibsuff } from "../lib/tibetan_data";
+import { csv2pouch } from '../../../../csv/csv2pouch'
+
 const tsek = tibsyms.tsek
 let retsek = new RegExp(tsek+'$')
 
@@ -373,19 +375,24 @@ export function importCSV(jsonpath, cb) {
 
   fse.readJson(jsonpath)
     .then((manifest) => {
-      let mpath = path.parse(jsonpath).dir
-      let mname = [path.parse(jsonpath).name, 'csv'].join('.')
-      let csvpath = path.resolve(mpath, mname)
-      getCSV(csvpath, function(res) {
-        cb(true)
-      })
+      let dirpath = path.parse(jsonpath).dir
+      let name = path.parse(jsonpath).name
+      let csvname = [path.parse(jsonpath).name, 'csv'].join('.')
+      let csvpath = path.resolve(dirpath, csvname)
+      log('__BEFORE CSV')
+      let upath = settings.get('upath')
+      let dbpath = path.resolve(upath, 'pouch', csvname)
+      cb(csv2pouch(jsonpath, dbpath))
     })
-    .catch(err => {
-      console.error('IMPORTCSVERR', err)
-      cb(false)
-    })
-  return
 }
+
+//   getCSV(csvpath, function(res) {
+//     cb(true)
+//   })
+// })
+// .catch(err => {
+//   console.error('IMPORTCSVERR', err)
+//   cb(false)
 
 function getCSV(csvpath, cb) {
   let upath = settings.get('upath')

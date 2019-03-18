@@ -115,21 +115,25 @@ app.on("ready", () => {
       })
   })
 
-  ipcMain.on('import-from-csv', (event, csvpath) => {
-    importCSV(csvpath, function(res) {
-      // log('import-from-csv', res)
-      event.sender.send('csvReply', res)
+  ipcMain.on('importCSV', (event, jsonpath) => {
+    importCSV(jsonpath, function(res) {
+      res
+        .on('finish', function (err) {
+          event.sender.send('csvImportReply', true)
+        })
+        .on('error', function (err) {
+          event.sender.send('csvImportReply', false)
+        })
     })
   })
 
   ipcMain.on('export-to-csv', (event, csvname) => {
     exportCSV(csvname)
       .then(function (res) {
-        // if (res) log('DOCS', res)
-        event.sender.send('csvReply', true)
+        event.sender.send('csvExportReply', true)
       }).catch(function (err) {
         console.log('ERR', err);
-        event.sender.send('csvReply', false)
+        event.sender.send('csvExportReply', false)
       });
   })
 
