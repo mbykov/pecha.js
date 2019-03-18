@@ -19,7 +19,7 @@ ipcRenderer.on('replicateReply', function (event, res) {
 })
 
 ipcRenderer.on('csvImportReply', function (event, res) {
-  log('csvImportReply')
+  log('IMP RES', res)
   hideProgress(res)
   let state = {section: 'activedicts'}
   navigate(state)
@@ -32,10 +32,11 @@ ipcRenderer.on('cleanupReply', function (event, res) {
 })
 
 function hideProgress(res) {
-  let cloneErr = q('#cloneERR')
+  let errmess = q('#err-message')
   let progress = q('#progress')
   if (res) progress.classList.add('is-hidden')
-  else cloneErr.classList.remove('is-hidden')
+  else errmess.classList.remove('is-hidden')
+  errmess.textContent = 'something went wrong'
 }
 
 

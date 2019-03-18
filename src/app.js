@@ -111,6 +111,11 @@ document.addEventListener('click', (ev) => {
   } else if (data.docs) {
     queryDBs(ev.target , true)
   }
+  let errmess = q('#err-message')
+  let progress = q('#progress')
+  progress.classList.add('is-hidden')
+  errmess.classList.add('is-hidden')
+  errmess.textContent = ''
 })
 
 document.addEventListener("mouseover", function(ev) {
@@ -200,11 +205,10 @@ function scanDir(fns) {
 }
 
 function importCSV(fns) {
-  if (!fns) return
   let csvpath = fns[0]
   if (!csvpath) return
   progress.classList.remove('is-hidden')
-  ipcRenderer.send('import-from-csv', csvpath)
+  ipcRenderer.send('importCSV', csvpath)
 }
 
 ipcRenderer.on('scanLocalReply', function (event, datapath) {

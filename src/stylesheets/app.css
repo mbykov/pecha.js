@@ -74,12 +74,11 @@ a {
 }
 
 
-#new-version {
+.message {
     position: absolute;
     left: 0;
     right: 0;
     padding-left: 10px;
-    color: green;
     cursor: pointer;
 }
 

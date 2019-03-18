@@ -372,104 +372,76 @@ function saveChunk(seg) {
 
 export function importCSV(jsonpath, cb) {
   jsonpath = path.resolve(jsonpath)
-
+  let dbpath
   fse.readJson(jsonpath)
     .then((manifest) => {
       let dirpath = path.parse(jsonpath).dir
       let name = path.parse(jsonpath).name
       let csvname = [path.parse(jsonpath).name, 'csv'].join('.')
       let csvpath = path.resolve(dirpath, csvname)
-      log('__BEFORE CSV')
       let upath = settings.get('upath')
-      let dbpath = path.resolve(upath, 'pouch', csvname)
-      cb(csv2pouch(jsonpath, dbpath))
-    })
-}
-
-//   getCSV(csvpath, function(res) {
-//     cb(true)
-//   })
-// })
-// .catch(err => {
-//   console.error('IMPORTCSVERR', err)
-//   cb(false)
-
-function getCSV(csvpath, cb) {
-  let upath = settings.get('upath')
-  let rows = []
-  let rs = fse.createReadStream(csvpath)
-      .pipe(csv2())
-      .on('data', function(data) {
-        rows.push(data)
-      })
-      .on('error', function(err) {
-        return
-      })
-      .on('end', function(res) {
-        let langs = rows.shift()
-        rows = _.filter(rows, row=> { return row[0][0] != '#' })
-        let docs = []
-        rows.forEach(row=> {
-          let dict = row.shift().trim().replace(retsek, '')
-          let doc = {_id: dict, docs: []}
-          let trns = row.map(lang=> { return lang.split(';')})
-          let mdoc = {dict: dict, trns: _.flatten(trns)}
-          doc.docs.push(mdoc)
-          docs.push(doc)
+      dbpath = path.resolve(upath, 'pouch', name)
+      // fse.emptyDirSync(dbpath)
+      csv2pouch(jsonpath, dbpath)
+        .on('finish', function (err) {
+          console.log('importCSV DONE');
+          let cfg = setCfg(upath, name)
+          cb(true)
         })
-        let csvname = path.parse(csvpath).name
-        let localpath = path.resolve(upath, 'pouch', csvname)
-        let localDB = new PouchDB(localpath)
-        localDB.bulkDocs(docs)
-          .then(function (result) {
-            localDB.dname = csvname
-            dbs.push(localDB)
-            let cfg = setCfg(upath, csvname)
-            cb(true)
-          }).catch(function (err) {
-            console.log('CSVERR', err);
-            cb(false)
-          })
-      })
+        .on('error', function (err) {
+          console.log('IMPORT CSV ERR', err);
+          fse.emptyDirSync(dbpath)
+          cb(false)
+         })
+
+      // cb(true)
+    })
+    .catch(function(err) {
+      fse.emptyDirSync(dbpath)
+      cb(false)
+    })
 }
 
 export function exportCSV(csvname) {
-  let db = _.find(dbs, db=> { return db.dname == csvname })
-  return db.allDocs({
-    include_docs: true,
-    startkey: startkey,
-    endkey: endkey
-  }).then(function (res) {
-    let docs = res.rows.map(row=> { return row.doc })
-    let csv = ''
-    docs.forEach(doc=> {
-      let head = doc._id
-      let trns = doc.docs.map(rdoc=> { return rdoc.trns })
-      let trn = _.flatten(trns).join(';')
-      let commas = trn.split(',')
-      let value = (commas.length > 1) ? JSON.stringify(trn) : trn
-      let str = [head, value].join(',')
-      str = [str, '\n'].join('')
-      csv += str
-    })
-    let upath = settings.get('upath')
-    let filename = [csvname, 'csv'].join('.')
-    let manifest = [csvname, 'json'].join('.')
-    let filepath = path.resolve(upath, filename)
-    let manipath = path.resolve(upath, manifest)
-    fse.writeFile(filepath, csv, function(err) {
-      if (err) return false
-      db.get('description')
-        .then(function(doc) {
-          fse.writeJson(manipath, doc)
-            .then(() => {
-              return true
-            })
-            .catch(err => {
-              console.error(err)
-              return false
-            })
-        })
-    })
-  })
 }
+
+// export function exportCSV(csvname) {
+//   let db = _.find(dbs, db=> { return db.dname == csvname })
+//   return db.allDocs({
+//     include_docs: true,
+//     startkey: startkey,
+//     endkey: endkey
+//   }).then(function (res) {
+//     let docs = res.rows.map(row=> { return row.doc })
+//     let csv = ''
+//     docs.forEach(doc=> {
+//       let head = doc._id
+//       let trns = doc.docs.map(rdoc=> { return rdoc.trns })
+//       let trn = _.flatten(trns).join(';')
+//       let commas = trn.split(',')
+//       let value = (commas.length > 1) ? JSON.stringify(trn) : trn
+//       let str = [head, value].join(',')
+//       str = [str, '\n'].join('')
+//       csv += str
+//     })
+//     let upath = settings.get('upath')
+//     let filename = [csvname, 'csv'].join('.')
+//     let manifest = [csvname, 'json'].join('.')
+//     let filepath = path.resolve(upath, filename)
+//     let manipath = path.resolve(upath, manifest)
+//     fse.writeFile(filepath, csv, function(err) {
+//       if (err) return false
+//       db.get('description')
+//         .then(function(doc) {
+//           fse.writeJson(manipath, doc)
+//             .then(() => {
+//               return true
+//             })
+//             .catch(err => {
+//               console.error(err)
+//               return false
+//             })
+//         })
+//     })
+//   })
+// }
