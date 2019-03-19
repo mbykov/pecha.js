@@ -16,18 +16,13 @@ import { ensureCfg, replicate, infoDB, remoteDicts, queryDBs, scanLocalDict, imp
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
-// import createWindow from "./helpers/window"
 const settings = require('electron-settings')
-// const windowStateKeeper = require('electron-window-state')
 const log = console.log
 
-// Special module holding environment variables which you declared
-// in config/env_xxx.json file.
 import env from "env"
 
 const setApplicationMenu = () => {
   // const menus = [libMenuTemplate, fileMenuTemplate, aboutMenuTemplate, authMenuTemplate, helpMenuTemplate]
-  // const menus = [libMenuTemplate, aboutMenuTemplate, helpMenuTemplate]
   const menus = [libMenuTemplate, dictMenuTemplate, aboutMenuTemplate, helpMenuTemplate]
   if (env.name !== "production") {
     // menus.push(devMenuTemplate)
@@ -46,16 +41,9 @@ if (env.name !== "production") {
 app.on("ready", () => {
   setApplicationMenu()
 
-  // let mainWindowState = windowStateKeeper({
-  //   defaultWidth: 1000,
-  //   defaultHeight: 800
-  // })
-
   let opts = {webPreferences: {
     nodeIntegration: true
   }}
-
-  // Object.assign(opts, winBounds)
 
   const win = new BrowserWindow(opts)
 
@@ -93,7 +81,6 @@ app.on("ready", () => {
   })
 
   // globalShortcut.register('CommandOrControl+R', () => win.webContents.send('reread'))
-  // globalShortcut.register('CommandOrControl+R', () => win.reload())
   // globalShortcut.register('CommandOrControl+Shift+R', () => win.reload())
   globalShortcut.register('CommandOrControl+R', () => win.reload())
 
@@ -117,19 +104,14 @@ app.on("ready", () => {
 
   ipcMain.on('importCSV', (event, jsonpath) => {
     importCSV(jsonpath, function(res) {
-      log('====IMPORT', res)
       event.sender.send('csvImportReply', res)
     })
   })
 
-  ipcMain.on('export-to-csv', (event, csvname) => {
-    exportCSV(csvname)
-      .then(function (res) {
-        event.sender.send('csvExportReply', true)
-      }).catch(function (err) {
-        console.log('ERR', err);
-        event.sender.send('csvExportReply', false)
-      });
+  ipcMain.on('exportCSV', (event, csvname) => {
+    exportCSV(csvname, function(res) {
+      event.sender.send('csvExportReply', res)
+    })
   })
 
   ipcMain.on('scanLocalDict', (event, datapath) => {
@@ -150,7 +132,6 @@ app.on("ready", () => {
   })
 
   ipcMain.on('replicate', (event, dname) => {
-    let localpath = path.resolve(upath, 'pouch', dname)
     replicate(upath, dname)
       .then(function (res) {
         event.sender.send('replicateReply', true)
@@ -164,8 +145,6 @@ app.on("ready", () => {
       event.sender.send('cleanupReply', res)
     })
   })
-
-
 
 })
 

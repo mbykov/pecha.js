@@ -465,3 +465,8 @@ div.qtext > p.hidden {
   font-family: 'YagpoUni';
   font-size: 1.5em;
 }
+
+.dictcsv {
+  color: maroon;
+  cursor: pointer;
+}

@@ -35,6 +35,7 @@ const code = 'tib'
 
 let over = q("#new-version")
 let progress = q('#progress')
+// let errmess = q('#err-message')
 
 let container = q('#container')
 let imports = qs('link[rel="import"]')
@@ -98,7 +99,7 @@ document.addEventListener('click', (ev) => {
     activateDict(ev.target)
   } else if (data.csv) {
     progress.classList.remove('is-hidden')
-    ipcRenderer.send('export-to-csv', data.csv)
+    ipcRenderer.send('exportCSV', data.csv)
   } else if (parent && parent.dataset && parent.dataset.activedict) {
     // activateDict(parent)
     // log('activateDict(parent)_______')
@@ -111,11 +112,11 @@ document.addEventListener('click', (ev) => {
   } else if (data.docs) {
     queryDBs(ev.target , true)
   }
-  let errmess = q('#err-message')
-  let progress = q('#progress')
-  progress.classList.add('is-hidden')
-  errmess.classList.add('is-hidden')
-  errmess.textContent = ''
+
+  // let errmess = q('#err-message')
+  // progress.classList.add('is-hidden')
+  // errmess.classList.add('is-hidden')
+  // errmess.textContent = ''
 })
 
 document.addEventListener("mouseover", function(ev) {

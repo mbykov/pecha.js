@@ -5,7 +5,9 @@ import _ from 'lodash'
 import sband from "speckled-band"
 import { segmenter, totalKeys } from "./segmenter";
 import { tibsyms, tibsuff } from "../lib/tibetan_data";
-import { csv2pouch } from '../../../../csv/csv2pouch'
+// import { csv2pouch } from '../../../../csv/csv2pouch'
+import { csv2pouch } from './csv2pouch'
+import { pouch2csv } from './pouch2csv'
 
 const tsek = tibsyms.tsek
 let retsek = new RegExp(tsek+'$')
@@ -20,13 +22,19 @@ let glob = require("glob")
 
 const isDev = require('electron-is-dev')
 const settings = require('electron-settings')
-const PouchDB = require('pouchdb')
+var PouchDB = require('pouchdb')
+var load = require('pouchdb-load');
 PouchDB.plugin(require('pouchdb-load'));
+// PouchDB.plugin({
+  // loadIt: load.load
+// })
 PouchDB.plugin(require('pouch-stream'));
+// let replicationStream = require('pouchdb-replication-stream');
+// PouchDB.plugin(replicationStream.plugin);
+// PouchDB.adapter('writableStream', replicationStream.adapters.writableStream);
 
 const log = console.log
 let debug = require('debug')
-// let log = debug('app')
 // let d = debug('app')
 // let miss = require('mississippi');
 let csv2 = require('csv2');
@@ -400,95 +408,71 @@ export function importCSV(jsonpath, cb) {
       csvdb = new PouchDB(dpath)
       csv2pouch(jsonpath, csvdb)
         .on('finish', function (err) {
-          log('THE END')
-          // csvdb.get('འགོ')
-          csvdb.info()
-            .then(function(res) {
-              log('CSV-RES:', res)
-            })
-
           csvdb.dname = dname
           dbs.push(csvdb)
           setCfg(dname)
           cb(true)
         })
         .on('error', function (err) {
-          log('IMPORT .ON ERR', err)
-          log('IMPORT .ON DNAME', dname)
+          console.log('IMPORT .ON ERR', err)
           dbs = _.filter(dbs, db=> { return db.dname != dname })
           delCfg(dname)
           cb(false)
         })
-
     })
 }
 
-export function exportCSV(csvname) {
-  csvdb.get('འགོ')
-  csvdb.info()
-    .then(function(res) {
-      log('D', res)
+export function exportCSV_(csvname) {
+  let csvpath = '/home/michael/tibetan/utils/csv/new.csv'
+  let db = _.find(dbs, db=> { return db.dname == 'vasilyev' })
+  pouch2csv(db, csvpath)
+    .on('finish', function() {
+	    log('END')
     })
-
-
-  // csv2pouch(jsonpath, db)
-  //   .then(function(res) {
-  //     res
-  //       .on('finish', function (err) {
-  //         console.log('importCSV DONE');
-  //         // let csvDB = new PouchDB(dpath)
-  //         // csvDB.dname = name
-  //         // dbs.push(csvDB)
-  //         setCfg(name)
-  //         cb(true)
-  //       })
-  //       .on('error', function (err) {
-  //         console.log('IMPORT CSV ERR', err);
-  //         delCfg(name)
-  //         fse.emptyDirSync(dpath)
-  //         cb(false)
-  //       })
-  //   })
-
 }
 
-// export function exportCSV(csvname) {
-//   let db = _.find(dbs, db=> { return db.dname == csvname })
-//   return db.allDocs({
-//     include_docs: true,
-//     startkey: startkey,
-//     endkey: endkey
-//   }).then(function (res) {
-//     let docs = res.rows.map(row=> { return row.doc })
-//     let csv = ''
-//     docs.forEach(doc=> {
-//       let head = doc._id
-//       let trns = doc.docs.map(rdoc=> { return rdoc.trns })
-//       let trn = _.flatten(trns).join(';')
-//       let commas = trn.split(',')
-//       let value = (commas.length > 1) ? JSON.stringify(trn) : trn
-//       let str = [head, value].join(',')
-//       str = [str, '\n'].join('')
-//       csv += str
-//     })
-//     let upath = settings.get('upath')
-//     let filename = [csvname, 'csv'].join('.')
-//     let manifest = [csvname, 'json'].join('.')
-//     let filepath = path.resolve(upath, filename)
-//     let manipath = path.resolve(upath, manifest)
-//     fse.writeFile(filepath, csv, function(err) {
-//       if (err) return false
-//       db.get('description')
-//         .then(function(doc) {
-//           fse.writeJson(manipath, doc)
-//             .then(() => {
-//               return true
-//             })
-//             .catch(err => {
-//               console.error(err)
-//               return false
-//             })
-//         })
-//     })
-//   })
-// }
+export function exportCSV(csvname, cb) {
+  let db = _.find(dbs, db=> { return db.dname == csvname })
+  log('DBNAME', db.dname)
+  db.allDocs({
+    include_docs: true,
+    startkey: startkey,
+    endkey: endkey
+  }).then(function (res) {
+    let docs = res.rows.map(row=> { return row.doc })
+    let csv = ''
+    docs.forEach(doc=> {
+      let head = doc._id
+      let trns = doc.docs.map(rdoc=> { return rdoc.trns })
+      let trn = _.flatten(trns).join(';')
+      let commas = trn.split(',')
+      let value = (commas.length > 1) ? JSON.stringify(trn) : trn
+      let str = [head, value].join(',')
+      str = [str, '\n'].join('')
+      csv += str
+    })
+    let upath = settings.get('upath')
+    let filename = [csvname, 'csv'].join('.')
+    let manifest = [csvname, 'json'].join('.')
+    let filepath = path.resolve(upath, filename)
+    let manipath = path.resolve(upath, manifest)
+    log('MANIPAYH', manipath)
+    fse.writeFile(filepath, csv, function(err) {
+      if (err) log('ERRR', err)
+      if (err) return cb(false)
+      db.get('description')
+        .then(function(doc) {
+          fse.writeJson(manipath, doc)
+            .then(() => {
+              cb(true)
+              // return true
+            })
+            .catch(err => {
+              console.error('JSONERR', err)
+              cb(false)
+              // return false
+            })
+        })
+    })
+  })
+}

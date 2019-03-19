@@ -24,6 +24,12 @@ ipcRenderer.on('csvImportReply', function (event, res) {
   navigate(state)
 })
 
+ipcRenderer.on('csvExportReply', function (event, res) {
+  hideProgress(res)
+  // let state = {section: 'activedicts'}
+  // navigate(state)
+})
+
 ipcRenderer.on('cleanupReply', function (event, res) {
   hideProgress(res)
   let state = {section: 'clonedicts'}
