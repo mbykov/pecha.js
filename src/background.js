@@ -92,7 +92,7 @@ app.on("ready", () => {
   ensureCfg(upath)
 
   ipcMain.on('infoDB', (event, dname) => {
-    infoDB(upath, dname)
+    infoDB(dname)
   })
 
   ipcMain.on('queryDBs', (event, query) => {
@@ -103,9 +103,10 @@ app.on("ready", () => {
   })
 
   ipcMain.on('importCSV', (event, jsonpath) => {
-    importCSV(jsonpath, function(res) {
-      event.sender.send('csvImportReply', res)
-    })
+    event.sender.send('csvImportReply', false)
+    // importCSV(jsonpath, function(res) {
+    //   event.sender.send('csvImportReply', res)
+    // })
   })
 
   ipcMain.on('exportCSV', (event, csvname) => {

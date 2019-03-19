@@ -1435,13 +1435,13 @@ browserslist@^1.3.6, browserslist@^1.5.2, browserslist@^1.7.6:
     electron-to-chromium "^1.2.7"
 
 browserslist@^4.3.4:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.5.0.tgz#b26d80ac95b3b592b05ec9cdd8a142d924189ba7"
-  integrity sha512-92IS3knByY3wF7DDozdKwLxkvp23Ydn2O5L0qVwR1p/ioN7oIDl7d/eyPMc11rTVofT/6IbcdwP9eTId7orGZQ==
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.5.1.tgz#2226cada1947b33f4cfcf7b608dcb519b6128106"
+  integrity sha512-/pPw5IAUyqaQXGuD5vS8tcbudyPZ241jk1W5pQBsGDfcjNQt7p8qxZhgMNuygDShte1PibLFexecWUPgmVLfrg==
   dependencies:
-    caniuse-lite "^1.0.30000948"
+    caniuse-lite "^1.0.30000949"
     electron-to-chromium "^1.3.116"
-    node-releases "^1.1.10"
+    node-releases "^1.1.11"
 
 buffer-alloc-unsafe@^1.1.0:
   version "1.1.0"
@@ -1620,14 +1620,14 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000949"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000949.tgz#48d30ddb6621a295e9daead6d74f893edebdf7db"
-  integrity sha512-sFhcVvqtSu/+yThLu0lfpOA2XEd8cCx1j87FIDXg0Vjhh4/VJ4875MlaL69S5F1zdb7mM8Q3s/WANxPaC8cUEQ==
+  version "1.0.30000950"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000950.tgz#d8356a082b28bc22975f010fc7668fcb77e1339f"
+  integrity sha512-mS/KbErOeYOVF8W4GdMmHAyNm9p4XGXLP4Nde75b1uadwzUr+dFd0RCVheQIB8+yKs1PGW73Bnejch0G1s0FvQ==
 
-caniuse-lite@^1.0.30000948:
-  version "1.0.30000949"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000949.tgz#8cbc6d2f141bc32362f7467b45a2dcae8e64c84b"
-  integrity sha512-jIF/jphmuJ7oAWmfYO0qAxRAvCa0zNquALO6Ykfe6qo8qwh882Cgcs+OWmm21L3x6nu4TVLFeEZ9/q6VuKCfSg==
+caniuse-lite@^1.0.30000949:
+  version "1.0.30000950"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000950.tgz#8c559d66e332b34e919d1086cc6d29c1948856ae"
+  integrity sha512-Cs+4U9T0okW2ftBsCIHuEYXXkki7mjXmjCh4c6PzYShk04qDEr76/iC7KwhLoWoY65wcra1XOsRD+S7BptEb5A==
 
 capture-stack-trace@^1.0.0:
   version "1.0.1"
@@ -4417,7 +4417,7 @@ json-stable-stringify@^1.0.1:
   dependencies:
     jsonify "~0.0.0"
 
-json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
+json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
@@ -4793,13 +4793,6 @@ lie@3.0.4:
     inline-process-browser "^1.0.0"
     unreachable-branch-transform "^0.3.0"
 
-lie@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
-  integrity sha1-mkNrLMd0bKWd56QfpGmz77dr2H4=
-  dependencies:
-    immediate "~3.0.5"
-
 lie@^2.6.0:
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/lie/-/lie-2.9.1.tgz#397ef149accd496f6c7f21095326cf40e9b93bdb"
@@ -4897,11 +4890,6 @@ lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
   integrity sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4=
-
-lodash.pick@^4.0.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
-  integrity sha1-UvBWEP/53tQiYRRB7R/BI6AwAbM=
 
 lodash.union@~4.6.0:
   version "4.6.0"
@@ -5326,16 +5314,6 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-ndjson@^1.4.3:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/ndjson/-/ndjson-1.5.0.tgz#ae603b36b134bcec347b452422b0bf98d5832ec8"
-  integrity sha1-rmA7NrE0vOw0e0UkIrC/mNWDLsg=
-  dependencies:
-    json-stringify-safe "^5.0.1"
-    minimist "^1.2.0"
-    split2 "^2.1.0"
-    through2 "^2.0.3"
-
 needle@^2.2.1:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/needle/-/needle-2.2.4.tgz#51931bff82533b1928b7d1d69e01f1b00ffd2a4e"
@@ -5446,7 +5424,7 @@ node-pre-gyp@^0.10.0:
     semver "^5.3.0"
     tar "^4"
 
-node-releases@^1.1.10:
+node-releases@^1.1.11:
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.11.tgz#9a0841a4b0d92b7d5141ed179e764f42ad22724a"
   integrity sha512-8v1j5KfP+s5WOTa1spNUAOfreajQPN12JXbRR0oDE+YrJBQCXBnNqUDj27EKpPLOoSiU3tKi3xGPB+JaOdUEQQ==
@@ -5963,9 +5941,9 @@ p-try@^1.0.0:
   integrity sha1-y8ec26+P1CKOE/Yh8rGiN8GyB7M=
 
 p-try@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.0.0.tgz#85080bb87c64688fa47996fe8f7dfbe8211760b1"
-  integrity sha512-hMp0onDKIajHfIkdRk3P4CdCmErkYAxxDtP3Wx/4nZ3aGlau2VKh3mZpcuFkH27WQkL/3WBCPOktzA9ZOAnMQQ==
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.1.0.tgz#c1a0f1030e97de018bb2c718929d2af59463e505"
+  integrity sha512-H2RyIJ7+A3rjkwKC2l5GGtU4H1vkxKCAGsWasNVd0Set+6i4znxbWy6/j16YDPJDWxhsgZiKAstMEP8wCdSpjA==
 
 package-json@^4.0.0:
   version "4.0.1"
@@ -6464,14 +6442,6 @@ postcss@^6.0.1:
     source-map "^0.6.1"
     supports-color "^5.4.0"
 
-pouch-stream@^0.4.0, pouch-stream@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/pouch-stream/-/pouch-stream-0.4.1.tgz#0c6d8475c9307677627991a2f079b301c3b89bdd"
-  integrity sha1-DG2EdckwdndieZGi8HmzAcO4m90=
-  dependencies:
-    inherits "^2.0.1"
-    readable-stream "^1.0.27-1"
-
 pouchdb-ajax@5.4.5:
   version "5.4.5"
   resolved "https://registry.yarnpkg.com/pouchdb-ajax/-/pouchdb-ajax-5.4.5.tgz#4091bc83a44706ef6537ba62ce3b39ca58c76d8e"
@@ -6644,13 +6614,6 @@ pouchdb-promise@5.4.5:
   dependencies:
     lie "3.0.4"
 
-pouchdb-promise@^6.0.4:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/pouchdb-promise/-/pouchdb-promise-6.4.3.tgz#74516f4acf74957b54debd0fb2c0e5b5a68ca7b3"
-  integrity sha512-ruJaSFXwzsxRHQfwNHjQfsj58LBOY1RzGzde4PM5CWINZwFjCQAhZwfMrch2o/0oZT6d+Xtt0HTWhq35p3b0qw==
-  dependencies:
-    lie "3.1.1"
-
 pouchdb-quick-search@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/pouchdb-quick-search/-/pouchdb-quick-search-1.3.0.tgz#4b1ab3b830ed188d960362afd26b490f2dd78cec"
@@ -6667,19 +6630,6 @@ pouchdb-quick-search@^1.3.0:
     pouchdb-mapreduce-no-ddocs "^2.3.2"
     pouchdb-promise "5.4.4"
     uniq "^1.0.1"
-
-pouchdb-replication-stream@^1.2.9:
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/pouchdb-replication-stream/-/pouchdb-replication-stream-1.2.9.tgz#aa4fa5d8f52df4825392f18e07c7e11acffc650a"
-  integrity sha1-qk+l2PUt9IJTkvGOB8fhGs/8ZQo=
-  dependencies:
-    argsarray "0.0.1"
-    inherits "^2.0.3"
-    lodash.pick "^4.0.0"
-    ndjson "^1.4.3"
-    pouch-stream "^0.4.0"
-    pouchdb-promise "^6.0.4"
-    through2 "^2.0.0"
 
 pouchdb-utils@5.4.4:
   version "5.4.4"
@@ -7130,16 +7080,6 @@ readable-stream@1.0.33:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@^1.0.27-1, readable-stream@~1.1.10, readable-stream@~1.1.9:
-  version "1.1.14"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.1.14.tgz#7cf4c54ef648e3813084c636dd2079e166c081d9"
-  integrity sha1-fPTFTvZI44EwhMY23SB54WbAgdk=
-  dependencies:
-    core-util-is "~1.0.0"
-    inherits "~2.0.1"
-    isarray "0.0.1"
-    string_decoder "~0.10.x"
-
 readable-stream@^3.1.1:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.2.0.tgz#de17f229864c120a9f56945756e4f32c4045245d"
@@ -7153,6 +7093,16 @@ readable-stream@~0.0.2:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-0.0.4.tgz#f32d76e3fb863344a548d79923007173665b3b8d"
   integrity sha1-8y124/uGM0SlSNeZIwBxc2ZbO40=
+
+readable-stream@~1.1.10, readable-stream@~1.1.9:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.1.14.tgz#7cf4c54ef648e3813084c636dd2079e166c081d9"
+  integrity sha1-fPTFTvZI44EwhMY23SB54WbAgdk=
+  dependencies:
+    core-util-is "~1.0.0"
+    inherits "~2.0.1"
+    isarray "0.0.1"
+    string_decoder "~0.10.x"
 
 readable-stream@~2.0.5:
   version "2.0.6"
@@ -7889,13 +7839,6 @@ split.js@^1.4.0:
   resolved "https://registry.yarnpkg.com/split.js/-/split.js-1.5.10.tgz#11f63a7ea21780a6022e6dffe8f8eaa18c9c819e"
   integrity sha512-/J52X5c4ZypVwu4WAhD8E1T9uXQtNokvG6mIBHauzyA1aKH6bmETVSv3RPjBXEz6Gcc4mIThgmjGQL39LD16jQ==
 
-split2@^2.1.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/split2/-/split2-2.2.0.tgz#186b2575bcf83e85b7d18465756238ee4ee42493"
-  integrity sha512-RAb22TG39LhI31MbreBgIuKiIKhVsawfTgEGqKHTK87aG+ul/PB8Sqoi3I7kVdRWiCfrKxK3uo4/YUkpNvhPbw==
-  dependencies:
-    through2 "^2.0.2"
-
 split@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/split/-/split-1.0.1.tgz#605bd9be303aa59fb35f9229fbea0ddec9ea07d9"
@@ -8078,9 +8021,9 @@ strip-ansi@^4.0.0:
     ansi-regex "^3.0.0"
 
 strip-ansi@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-5.1.0.tgz#55aaa54e33b4c0649a7338a43437b1887d153ec4"
-  integrity sha512-TjxrkPONqO2Z8QDCpeE2j6n0M6EwxzyDgzEeGp+FbdvaJAt//ClYi6W5my+3ROlC/hZX2KACUwDfK49Ka5eDvg==
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-5.2.0.tgz#8c9a536feb6afc962bdfa5b104a5091c1ad9c0ae"
+  integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
   dependencies:
     ansi-regex "^4.1.0"
 
@@ -8284,7 +8227,7 @@ through2@^0.6.2, through2@^0.6.5:
     readable-stream ">=1.0.33-1 <1.1.0-0"
     xtend ">=4.0.0 <4.1.0-0"
 
-through2@^2.0.0, through2@^2.0.2, through2@^2.0.3:
+through2@^2.0.0:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.5.tgz#01c1e39eb31d07cb7d03a96a70823260b23132cd"
   integrity sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==
@@ -8727,9 +8670,9 @@ wdio-dot-reporter@~0.0.8:
   integrity sha512-A0TCk2JdZEn3M1DSG9YYbNRcGdx/YRw19lTiRpgwzH4qqWkO/oRDZRmi3Snn4L2j54KKTfPalBhlOtc8fojVgg==
 
 webdriverio@^4.12.0:
-  version "4.14.3"
-  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-4.14.3.tgz#15088f8c2edf80e2fcaced080a13c7013c02a5dd"
-  integrity sha512-CBp069g7b0oGvcdChYx2qyDm9WfGCAclK6J+PSK8Efj9Q059we7knBgeHZfwNwgvdQFitXwlLUGX3+Z9WHcpGA==
+  version "4.14.4"
+  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-4.14.4.tgz#f7a94e9a6530819796088f42b009833d83de0386"
+  integrity sha512-Knp2vzuzP5c5ybgLu+zTwy/l1Gh0bRP4zAr8NWcrStbuomm9Krn9oRF0rZucT6AyORpXinETzmeowFwIoo7mNA==
   dependencies:
     archiver "~2.1.0"
     babel-runtime "^6.26.0"

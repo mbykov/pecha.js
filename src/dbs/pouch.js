@@ -6,8 +6,6 @@ import sband from "speckled-band"
 import { segmenter, totalKeys } from "./segmenter";
 import { tibsyms, tibsuff } from "../lib/tibetan_data";
 // import { csv2pouch } from '../../../../csv/csv2pouch'
-import { csv2pouch } from './csv2pouch'
-import { pouch2csv } from './pouch2csv'
 
 const tsek = tibsyms.tsek
 let retsek = new RegExp(tsek+'$')
@@ -28,7 +26,8 @@ PouchDB.plugin(require('pouchdb-load'));
 // PouchDB.plugin({
   // loadIt: load.load
 // })
-PouchDB.plugin(require('pouch-stream'));
+
+// PouchDB.plugin(require('pouch-stream'));
 // let replicationStream = require('pouchdb-replication-stream');
 // PouchDB.plugin(replicationStream.plugin);
 // PouchDB.adapter('writableStream', replicationStream.adapters.writableStream);
@@ -139,22 +138,15 @@ function delCfg(dname) {
   return cfg
 }
 
-export function infoDB(upath, dname) {
+export function infoDB(dname) {
+  let upath = settings.get('upath')
   let localpath = path.resolve(upath, 'pouch', dname)
-  let localDB = new PouchDB(localpath)
-  localDB.allDocs({
-    include_docs: true,
-    startkey: startkey,
-    endkey: endkey
-  }).then(function (res) {
-    if (!res.rows.length) return
-    let doc = res.rows[0].doc
-    // console.log('INFO-doc', doc)
-    // console.log('INFO-docs', doc.docs)
-  })
-    .catch(function(err) {
-      console.log('INFO ERR', err)
+  let db = _.find(dbs, db=> { return db.dname == dname })
+  db.info()
+    .then(function(info) {
+      log('INFO', info)
     })
+
 }
 
 export function cleanupDB(upath, cb) {
@@ -389,6 +381,8 @@ function saveChunk(seg) {
 // =============== CSV
 
 export function importCSV(jsonpath, cb) {
+  return cb(false)
+
   let dname, dpath
   fse.readJson(jsonpath)
     .then((manifest) => {
@@ -422,18 +416,8 @@ export function importCSV(jsonpath, cb) {
     })
 }
 
-export function exportCSV_(csvname) {
-  let csvpath = '/home/michael/tibetan/utils/csv/new.csv'
-  let db = _.find(dbs, db=> { return db.dname == 'vasilyev' })
-  pouch2csv(db, csvpath)
-    .on('finish', function() {
-	    log('END')
-    })
-}
-
 export function exportCSV(csvname, cb) {
   let db = _.find(dbs, db=> { return db.dname == csvname })
-  log('DBNAME', db.dname)
   db.allDocs({
     include_docs: true,
     startkey: startkey,
@@ -456,7 +440,6 @@ export function exportCSV(csvname, cb) {
     let manifest = [csvname, 'json'].join('.')
     let filepath = path.resolve(upath, filename)
     let manipath = path.resolve(upath, manifest)
-    log('MANIPAYH', manipath)
     fse.writeFile(filepath, csv, function(err) {
       if (err) log('ERRR', err)
       if (err) return cb(false)

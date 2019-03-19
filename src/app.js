@@ -35,7 +35,7 @@ const code = 'tib'
 
 let over = q("#new-version")
 let progress = q('#progress')
-// let errmess = q('#err-message')
+let errmess = q('#err-message')
 
 let container = q('#container')
 let imports = qs('link[rel="import"]')
@@ -115,8 +115,8 @@ document.addEventListener('click', (ev) => {
 
   // let errmess = q('#err-message')
   // progress.classList.add('is-hidden')
-  // errmess.classList.add('is-hidden')
-  // errmess.textContent = ''
+  errmess.classList.add('is-hidden')
+  errmess.textContent = ''
 })
 
 document.addEventListener("mouseover", function(ev) {

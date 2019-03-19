@@ -14,7 +14,8 @@ ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
 
 ipcRenderer.on('replicateReply', function (event, res) {
   hideProgress(res)
-  let state = {section: 'activedicts'}
+  // let state = {section: 'activedicts'}
+  let state = {section: 'clonedicts'}
   navigate(state)
 })
 
