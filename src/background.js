@@ -103,10 +103,25 @@ app.on("ready", () => {
   })
 
   ipcMain.on('importCSV', (event, jsonpath) => {
-    event.sender.send('csvImportReply', false)
-    // importCSV(jsonpath, function(res) {
-    //   event.sender.send('csvImportReply', res)
-    // })
+    // log('CSVIMPORT', importCSV(jsonpath))
+    importCSV(jsonpath, function(res) {
+      event.sender.send('csvImportReply', res)
+    })
+      // .then(function(rdbs) {
+      //   log('__true')
+      //   event.sender.send('csvImportReply', true)
+      // })
+      // .catch(function (err) {
+      //   log('__false')
+      //   event.sender.send('csvImportReply', false)
+      // });
+
+      // .on('finish', function (err) {
+      //   event.sender.send('csvImportReply', true)
+      // })
+      // .on('error', function (err) {
+      //   event.sender.send('csvImportReply', false)
+      // })
   })
 
   ipcMain.on('exportCSV', (event, csvname) => {
@@ -127,7 +142,8 @@ app.on("ready", () => {
       .then(function(rdbs) {
         rdbs = _.filter(rdbs, dname=> { return dname[0] != '_' })
         event.sender.send('remoteDictsReply', rdbs)
-      }).catch(function (err) {
+      })
+      .catch(function (err) {
         event.sender.send('remoteDictsReply', false)
       });
   })

@@ -5,26 +5,30 @@ const fse = require('fs-extra')
 const miss = require('mississippi')
 const csv = require("fast-csv");
 const path = require('path')
+const PouchDB = require('pouchdb')
+const stream = require("stream")
+
 let tsek = '་'
 let retsek = new RegExp(tsek+'$')
 
-export function csv2pouch(jsonpath, db) {
+export function csv2pouch(jsonpath, dbpath) {
   let descr = fse.readJsonSync(jsonpath)
   descr._id = 'description'
   let dirpath = path.parse(jsonpath).dir
   // let name = path.parse(jsonpath).name
-  let csvname = [path.parse(jsonpath).name, 'csv'].join('.')
-  let csvpath = path.resolve(dirpath, csvname)
+  // let csvname = [path.parse(jsonpath).name, 'csv'].join('.')
+  let csvpath = path.resolve(dirpath, descr.path)
   let rs = fse.createReadStream(csvpath);
 
-  let options = {
+  let csvopts = {
     comment: '#',
     trim: true,
     ignoreEmpty: true
   }
-  let csvStream = csv(options)
+
+  let csvStream = csv(csvopts)
       .on("end", function(){
-        // log("done");
+        // log("CSV end");
       });
 
   const row2doc = miss.through.obj(
@@ -36,20 +40,57 @@ export function csv2pouch(jsonpath, db) {
     }
   )
 
-  return rs.pipe(csvStream).pipe(row2doc).pipe(db.createWriteStream())
+  // let dbpath = path.resolve(dirpath, 'db-stream')
+  // let ws = fse.createWriteStream(dbpath)
 
-  // return db
-  //   .put(descr)
-  //   .then(function() {
-  //     return rs.pipe(csvStream).pipe(row2doc).pipe(db.createWriteStream())
-  //     // rs.pipe(csvStream).pipe(row2doc).pipe(db.createWriteStream())
-  //     //   .on('finish', function (err) {
-  //     //     log('THE END')
-  //     //     db.get('འགོ')
-  //     //     // db.info()
-  //     //       .then(function(res) {
-  //     //         log('D', res)
-  //     //       })
-  //     //   })
-  //   })
+  fse.emptyDirSync(dbpath)
+  let db = new PouchDB(dbpath)
+
+  let streamopts = {
+    objectMode: true,
+    highWaterMark: 3
+  }
+
+  let buff = []
+
+  class myWritable extends stream.Writable {
+    constructor(options){
+      super(options)
+      this.buff = []
+    }
+
+    _write(chunk, encoding, next){
+      if (buff.length < 2) {
+        buff.push(chunk)
+        next()
+      } else {
+        buff.push(chunk)
+        db.bulkDocs(buff)
+          .then(function(res) {
+            buff = []
+            next()
+          })
+          .catch(function (err) {
+            next(err, null)
+          });
+      }
+    }
+  }
+
+  let pouchPushStream = new myWritable(streamopts)
+
+  return rs.pipe(csvStream).pipe(row2doc).pipe(pouchPushStream)
+    .on('finish', function (err) {
+      return db.bulkDocs(buff)
+        .then(function() {
+          db.put(descr)
+        })
+        .catch(function (err) {
+          log('PUT DESCR ERR', err)
+        });
+
+    })
+    .on('error', function(err) {
+      log('__stream final_err', err)
+    })
 }

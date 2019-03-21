@@ -80,6 +80,7 @@ function showRemoteDicts(rdbs) {
 
 export function showActiveDicts() {
   let cfg = settings.get('cfg')
+  log('SHOW ACTIVE', cfg)
   if (!cfg) return
   let dnames = cfg.map(cf=> { return cf.name })
   let mess = q('#adictmessage')

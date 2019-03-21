@@ -75,23 +75,19 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
 //   ipcRenderer.send('scanLocalDict', datapath)
 // })
 
-// Mousetrap.bind(['ctrl+j'], function(ev) {
-//   let jsonpath = '/home/michael/tibetan/utils/csv/csvdict.json'
-//   ipcRenderer.send('importCSV', jsonpath)
-// })
+Mousetrap.bind(['ctrl+j'], function(ev) {
+  let jsonpath = '/home/michael/tibetan/utils/csv/csvdict.json'
+  ipcRenderer.send('importCSV', jsonpath)
+})
 
 // Mousetrap.bind(['ctrl+i'], function(ev) {
 //   ipcRenderer.send('infoDB', 'csvdict')
 // })
 
-// Mousetrap.bind(['ctrl+v'], function(ev) {
-//   log('vasilyev')
-//   ipcRenderer.send('infoDB', 'vasilyev')
-// })
-
-// Mousetrap.bind(['ctrl+b'], function(ev) {
-//   ipcRenderer.send('infoDB', 'lobsang')
-// })
+Mousetrap.bind(['ctrl+v'], function(ev) {
+  log('vasilyev')
+  ipcRenderer.send('infoDB', 'vasilyev')
+})
 
 Mousetrap.bind(['ctrl+='], function(ev) {
   let osource = q('#source')

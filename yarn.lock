@@ -4783,6 +4783,16 @@ libnpx@^10.2.0:
     y18n "^4.0.0"
     yargs "^11.0.0"
 
+lie@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.0.0.tgz#bb10f0a04319c4cfa5cc76ee4dbec018419a785e"
+  integrity sha1-uxDwoEMZxM+lzHbuTb7AGEGaeF4=
+  dependencies:
+    es3ify "^0.1.3"
+    immediate "~3.0.0"
+    inline-process-browser "^1.0.0"
+    unreachable-branch-transform "^0.2.3"
+
 lie@3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.0.4.tgz#bc7ae1ebe7f1c8de39afdcd4f789076b47b0f634"
@@ -5819,7 +5829,7 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-once@^1.3.0, once@^1.3.1, once@^1.4.0, once@~1.4.0:
+once@^1.3.0, once@^1.3.1, once@^1.3.2, once@^1.4.0, once@~1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
   integrity sha1-WDsap3WWHUsROsF9nFC6753Xa9E=
@@ -6441,6 +6451,18 @@ postcss@^6.0.1:
     chalk "^2.4.1"
     source-map "^0.6.1"
     supports-color "^5.4.0"
+
+pouch-remote-stream@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/pouch-remote-stream/-/pouch-remote-stream-0.3.0.tgz#f6446a9d72a5f53452ef0c8d4bc3e6a6e8f694b5"
+  integrity sha1-9kRqnXKl9TRS7wyNS8Pmpuj2lLU=
+  dependencies:
+    argsarray "0.0.1"
+    debug "^2.2.0"
+    duplexify "^3.4.2"
+    lie "3.0.0"
+    once "^1.3.2"
+    xtend "^4.0.0"
 
 pouchdb-ajax@5.4.5:
   version "5.4.5"

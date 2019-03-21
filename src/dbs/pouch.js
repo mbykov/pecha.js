@@ -5,7 +5,7 @@ import _ from 'lodash'
 import sband from "speckled-band"
 import { segmenter, totalKeys } from "./segmenter";
 import { tibsyms, tibsuff } from "../lib/tibetan_data";
-// import { csv2pouch } from '../../../../csv/csv2pouch'
+import { csv2pouch } from './csv2pouch'
 
 const tsek = tibsyms.tsek
 let retsek = new RegExp(tsek+'$')
@@ -20,17 +20,12 @@ let glob = require("glob")
 
 const isDev = require('electron-is-dev')
 const settings = require('electron-settings')
-var PouchDB = require('pouchdb')
-var load = require('pouchdb-load');
+let PouchDB = require('pouchdb')
+let load = require('pouchdb-load');
 PouchDB.plugin(require('pouchdb-load'));
-// PouchDB.plugin({
-  // loadIt: load.load
-// })
 
-// PouchDB.plugin(require('pouch-stream'));
-// let replicationStream = require('pouchdb-replication-stream');
-// PouchDB.plugin(replicationStream.plugin);
-// PouchDB.adapter('writableStream', replicationStream.adapters.writableStream);
+let Remote = require('pouch-remote-stream');
+PouchDB.adapter('remote', Remote.adapter);
 
 const log = console.log
 let debug = require('debug')
@@ -42,7 +37,7 @@ let dbs = []
 let code = 'tib'
 let startkey =  'ཀ'
 let endkey = '\ufff0'
-let csvdb
+// let csvDB
 
 const NodeCouchDb = require('node-couchdb');
 const couch = new NodeCouchDb()
@@ -381,30 +376,40 @@ function saveChunk(seg) {
 // =============== CSV
 
 export function importCSV(jsonpath, cb) {
-  return cb(false)
-
   let dname, dpath
   fse.readJson(jsonpath)
-    .then((manifest) => {
+    // .then((manifest) => {
+    //   let upath = settings.get('upath')
+    //   dname = manifest.name
+    //   dpath = path.resolve(upath, 'pouch', dname)
+    //   let csvDB
+    //   if (csvDB) {
+    //     let cfg = settings.get('cfg')
+    //     log('HERE CFG', cfg)
+    //     log('HERE CSV_DB', dname)
+    //     dbs = _.filter(dbs, db=> { return db.dname != dname })
+    //     let dnames = dbs.map(db=> { return db.dname })
+    //     log('HERE DNAMES', dnames)
+    //     delCfg(dname)
+    //     return csvDB.destroy()
+    //   } else {
+    //     log('NO CSVDB')
+    //     return Promise.resolve()
+    //   }
+    // })
+    .then(function(manifest) {
       let upath = settings.get('upath')
-      dname = path.parse(jsonpath).name
+      dname = manifest.name
       dpath = path.resolve(upath, 'pouch', dname)
-      fse.emptyDirSync(dpath)
-      if (csvdb) {
-        dbs = _.filter(dbs, db=> { return db.dname != dname })
-        delCfg(dname)
-        return csvdb.destroy()
-      } else {
-        return Promise.resolve()
-      }
-    })
-    .then(function() {
-      csvdb = new PouchDB(dpath)
-      csv2pouch(jsonpath, csvdb)
+      return csv2pouch(jsonpath, dpath)
         .on('finish', function (err) {
-          csvdb.dname = dname
-          dbs.push(csvdb)
+          let csvDB = new PouchDB(dpath)
+          csvDB.dname = dname
+          log('CSV DB NAME =>', csvDB.dname)
+          dbs.push(csvDB)
           setCfg(dname)
+          let cfg = settings.get('cfg')
+          log('IM CFG', cfg)
           cb(true)
         })
         .on('error', function (err) {
@@ -413,6 +418,9 @@ export function importCSV(jsonpath, cb) {
           delCfg(dname)
           cb(false)
         })
+    })
+    .catch(function(err) {
+      log('csvDB ERR', err)
     })
 }
 
