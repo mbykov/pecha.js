@@ -24,8 +24,8 @@ let PouchDB = require('pouchdb')
 let load = require('pouchdb-load');
 PouchDB.plugin(require('pouchdb-load'));
 
-let Remote = require('pouch-remote-stream');
-PouchDB.adapter('remote', Remote.adapter);
+// let Remote = require('pouch-remote-stream');
+// PouchDB.adapter('remote', Remote.adapter);
 
 const log = console.log
 let debug = require('debug')

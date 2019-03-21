@@ -1213,11 +1213,6 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-base62@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/base62/-/base62-0.1.1.tgz#7b4174c2f94449753b11c2651c083da841a7b084"
-  integrity sha1-e0F0wvlESXU7EcJlHAg9qEGnsIQ=
-
 base62@^1.1.0:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/base62/-/base62-1.2.8.tgz#1264cb0fb848d875792877479dbe8bae6bae3428"
@@ -2841,15 +2836,6 @@ es-to-primitive@^1.2.0:
     is-date-object "^1.0.1"
     is-symbol "^1.0.2"
 
-es3ify@^0.1.3:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/es3ify/-/es3ify-0.1.4.tgz#ad9fa5df1ae34f3f31e1211b5818b2d51078dfd1"
-  integrity sha1-rZ+l3xrjTz8x4SEbWBiy1RB439E=
-  dependencies:
-    esprima-fb "~3001.0001.0000-dev-harmony-fb"
-    jstransform "~3.0.0"
-    through "~2.3.4"
-
 es3ify@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/es3ify/-/es3ify-0.2.2.tgz#5dae3e650e5be3684b88066513d528d092629862"
@@ -2903,11 +2889,6 @@ esprima-fb@~15001.1001.0-dev-harmony-fb:
   version "15001.1001.0-dev-harmony-fb"
   resolved "https://registry.yarnpkg.com/esprima-fb/-/esprima-fb-15001.1001.0-dev-harmony-fb.tgz#43beb57ec26e8cf237d3dd8b33e42533577f2659"
   integrity sha1-Q761fsJujPI3092LM+QlM1d/Jlk=
-
-esprima-fb@~3001.0001.0000-dev-harmony-fb, esprima-fb@~3001.1.0-dev-harmony-fb:
-  version "3001.1.0-dev-harmony-fb"
-  resolved "https://registry.yarnpkg.com/esprima-fb/-/esprima-fb-3001.0001.0000-dev-harmony-fb.tgz#b77d37abcd38ea0b77426bb8bc2922ce6b426411"
-  integrity sha1-t303q8046gt3Qmu4vCkizmtCZBE=
 
 esprima@^2.6.0, esprima@^2.7.1:
   version "2.7.3"
@@ -3876,7 +3857,7 @@ ignore-walk@^3.0.1:
   dependencies:
     minimatch "^3.0.4"
 
-immediate@3.0.6, immediate@~3.0.0, immediate@~3.0.5:
+immediate@3.0.6, immediate@~3.0.5:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
   integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
@@ -4410,13 +4391,6 @@ json-schema@0.2.3:
   resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.2.3.tgz#b480c892e59a2f05954ce727bd3f2a4e882f9e13"
   integrity sha1-tIDIkuWaLwWVTOcnvT8qTogvnhM=
 
-json-stable-stringify@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz#9a759d39c5f2ff503fd5300646ed445f88c4f9af"
-  integrity sha1-mnWdOcXy/1A/1TAGRu1EX4jE+a8=
-  dependencies:
-    jsonify "~0.0.0"
-
 json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
@@ -4442,11 +4416,6 @@ jsonfile@^4.0.0:
   integrity sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=
   optionalDependencies:
     graceful-fs "^4.1.6"
-
-jsonify@~0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
-  integrity sha1-LHS27kHZPKUbe1qu6PUDYx0lKnM=
 
 jsonparse@^1.2.0:
   version "1.3.1"
@@ -4478,15 +4447,6 @@ jstransform@~11.0.0:
     esprima-fb "^15001.1.0-dev-harmony-fb"
     object-assign "^2.0.0"
     source-map "^0.4.2"
-
-jstransform@~3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/jstransform/-/jstransform-3.0.0.tgz#a2591ab6cee8d97bf3be830dbfa2313b87cd640b"
-  integrity sha1-olkats7o2XvzvoMNv6IxO4fNZAs=
-  dependencies:
-    base62 "0.1.1"
-    esprima-fb "~3001.1.0-dev-harmony-fb"
-    source-map "0.1.31"
 
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
@@ -4783,16 +4743,6 @@ libnpx@^10.2.0:
     y18n "^4.0.0"
     yargs "^11.0.0"
 
-lie@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/lie/-/lie-3.0.0.tgz#bb10f0a04319c4cfa5cc76ee4dbec018419a785e"
-  integrity sha1-uxDwoEMZxM+lzHbuTb7AGEGaeF4=
-  dependencies:
-    es3ify "^0.1.3"
-    immediate "~3.0.0"
-    inline-process-browser "^1.0.0"
-    unreachable-branch-transform "^0.2.3"
-
 lie@3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.0.4.tgz#bc7ae1ebe7f1c8de39afdcd4f789076b47b0f634"
@@ -4802,15 +4752,6 @@ lie@3.0.4:
     immediate "~3.0.5"
     inline-process-browser "^1.0.0"
     unreachable-branch-transform "^0.3.0"
-
-lie@^2.6.0:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/lie/-/lie-2.9.1.tgz#397ef149accd496f6c7f21095326cf40e9b93bdb"
-  integrity sha1-OX7xSazNSW9sfyEJUybPQOm5O9s=
-  dependencies:
-    immediate "~3.0.0"
-    inline-process-browser "^1.0.0"
-    unreachable-branch-transform "^0.2.3"
 
 load-json-file@^1.0.0:
   version "1.1.0"
@@ -4961,11 +4902,6 @@ ltgt@2.2.1:
   resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.2.1.tgz#f35ca91c493f7b73da0e07495304f17b31f87ee5"
   integrity sha1-81ypHEk/e3PaDgdJUwTxezH4fuU=
 
-lunr@0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/lunr/-/lunr-0.7.1.tgz#b5a2cff99555b7893f5f1a4a17af3f638373c4bb"
-  integrity sha1-taLP+ZVVt4k/XxpKF68/Y4NzxLs=
-
 make-dir@^1.0.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-1.3.0.tgz#79c1033b80515bd6d24ec9933e860ca75ee27f0c"
@@ -5031,11 +4967,6 @@ math-expression-evaluator@^1.2.14:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
   integrity sha1-3oGf282E3M2PrlnGrreWFbnSZqw=
-
-md5-jkmyers@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/md5-jkmyers/-/md5-jkmyers-0.0.1.tgz#b7d3df2807b91d5ec7f3373b57f24d60b0fa92bb"
-  integrity sha1-t9PfKAe5HV7H8zc7V/JNYLD6krs=
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -5829,7 +5760,7 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-once@^1.3.0, once@^1.3.1, once@^1.3.2, once@^1.4.0, once@~1.4.0:
+once@^1.3.0, once@^1.3.1, once@^1.4.0, once@~1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
   integrity sha1-WDsap3WWHUsROsF9nFC6753Xa9E=
@@ -6452,18 +6383,6 @@ postcss@^6.0.1:
     source-map "^0.6.1"
     supports-color "^5.4.0"
 
-pouch-remote-stream@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/pouch-remote-stream/-/pouch-remote-stream-0.3.0.tgz#f6446a9d72a5f53452ef0c8d4bc3e6a6e8f694b5"
-  integrity sha1-9kRqnXKl9TRS7wyNS8Pmpuj2lLU=
-  dependencies:
-    argsarray "0.0.1"
-    debug "^2.2.0"
-    duplexify "^3.4.2"
-    lie "3.0.0"
-    once "^1.3.2"
-    xtend "^4.0.0"
-
 pouchdb-ajax@5.4.5:
   version "5.4.5"
   resolved "https://registry.yarnpkg.com/pouchdb-ajax/-/pouchdb-ajax-5.4.5.tgz#4091bc83a44706ef6537ba62ce3b39ca58c76d8e"
@@ -6476,22 +6395,10 @@ pouchdb-ajax@5.4.5:
     pouchdb-utils "5.4.5"
     request "2.72.0"
 
-pouchdb-binary-utils@5.4.4:
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/pouchdb-binary-utils/-/pouchdb-binary-utils-5.4.4.tgz#142b6b166e18915d65dbb99f4e6f3a25538631e8"
-  integrity sha1-FCtrFm4YkV1l27mfTm86JVOGMeg=
-
 pouchdb-binary-utils@5.4.5:
   version "5.4.5"
   resolved "https://registry.yarnpkg.com/pouchdb-binary-utils/-/pouchdb-binary-utils-5.4.5.tgz#5e88cfd6d701230d40bb60eca48d9b51a0f0c4f1"
   integrity sha1-XojP1tcBIw1Au2DspI2bUaDwxPE=
-
-pouchdb-binary-utils@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/pouchdb-binary-utils/-/pouchdb-binary-utils-7.0.0.tgz#cb71a288b09572a231f6bab1b4aed201c4d219a7"
-  integrity sha512-yUktdOPIPvOVouCjJN3uop+bCcpdPwePrLm9eUAZNgEYnUFu0njdx7Q0WRsZ7UJ6l75HinL5ZHk4bnvEt86FLw==
-  dependencies:
-    buffer-from "1.1.0"
 
 pouchdb-checkpointer@5.4.5:
   version "5.4.5"
@@ -6512,19 +6419,6 @@ pouchdb-collections@1.0.1:
   resolved "https://registry.yarnpkg.com/pouchdb-collections/-/pouchdb-collections-1.0.1.tgz#fe63a17da977611abef7cb8026cb1a9553fd8359"
   integrity sha1-/mOhfal3YRq+98uAJssalVP9g1k=
 
-pouchdb-collections@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/pouchdb-collections/-/pouchdb-collections-7.0.0.tgz#fd1f632337dc6301b0ff8649732ca79204e41780"
-  integrity sha512-DaoUr/vU24Q3gM6ghj0va9j/oBanPwkbhkvnqSyC3Dm5dgf5pculNxueLF9PKMo3ycApoWzHMh6N2N8KJbDU2Q==
-
-pouchdb-errors@5.4.4:
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/pouchdb-errors/-/pouchdb-errors-5.4.4.tgz#3cead24b1b5fb02a33a6d83a30967cf6f43c3a4f"
-  integrity sha1-POrSSxtfsCozptg6MJZ89vQ8Ok8=
-  dependencies:
-    inherits "2.0.1"
-    lie "3.0.4"
-
 pouchdb-errors@5.4.5:
   version "5.4.5"
   resolved "https://registry.yarnpkg.com/pouchdb-errors/-/pouchdb-errors-5.4.5.tgz#a8ab530be32f26e865d755cb61df2efc99c72b34"
@@ -6533,14 +6427,7 @@ pouchdb-errors@5.4.5:
     inherits "2.0.1"
     lie "3.0.4"
 
-pouchdb-errors@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/pouchdb-errors/-/pouchdb-errors-7.0.0.tgz#4e2a5a8b82af20cbe5f9970ca90b7ec74563caa0"
-  integrity sha512-dTusY8nnTw4HIztCrNl7AoGgwvS1bVf/3/97hDaGc4ytn72V9/4dK8kTqlimi3UpaurohYRnqac0SGXYP8vgXA==
-  dependencies:
-    inherits "2.0.3"
-
-pouchdb-extend@^0.1.0, pouchdb-extend@^0.1.2:
+pouchdb-extend@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/pouchdb-extend/-/pouchdb-extend-0.1.2.tgz#d1ce511bf704ed2e29f7bf428a416acfffa124b8"
   integrity sha1-0c5RG/cE7S4p979CikFqz/+hJLg=
@@ -6567,41 +6454,6 @@ pouchdb-load@^1.4.6:
     pouchdb-generate-replication-id "5.4.5"
     pouchdb-promise "5.4.5"
 
-pouchdb-mapreduce-no-ddocs@^2.3.2:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/pouchdb-mapreduce-no-ddocs/-/pouchdb-mapreduce-no-ddocs-2.3.2.tgz#7265a3fd06e7ece6af1b77b14a108e833d7a9cf7"
-  integrity sha1-cmWj/Qbn7OavG3exShCOgz16nPc=
-  dependencies:
-    inherits "2.0.1"
-    pouchdb-binary-utils "5.4.4"
-    pouchdb-collate "1.2.0"
-    pouchdb-errors "5.4.4"
-    pouchdb-mapreduce-utils "5.4.4"
-    pouchdb-md5 "5.4.4"
-    pouchdb-promise "5.4.4"
-    pouchdb-utils "5.4.4"
-    scope-eval "0.0.3"
-    spark-md5 "2.0.2"
-
-pouchdb-mapreduce-utils@5.4.4:
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/pouchdb-mapreduce-utils/-/pouchdb-mapreduce-utils-5.4.4.tgz#9dc5926ea1ed0682a5c60a73928de984268fca8f"
-  integrity sha1-ncWSbqHtBoKlxgpzko3phCaPyo8=
-  dependencies:
-    argsarray "0.0.1"
-
-pouchdb-md5@5.4.4:
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/pouchdb-md5/-/pouchdb-md5-5.4.4.tgz#55e72ad3dde62506878f0258520ec6d94f393ed7"
-  integrity sha1-Vecq093mJQaHjwJYUg7G2U85Ptc=
-  dependencies:
-    pouchdb-binary-utils "5.4.4"
-    pouchdb-collections "1.0.1"
-    pouchdb-errors "5.4.4"
-    pouchdb-promise "5.4.4"
-    pouchdb-utils "5.4.4"
-    spark-md5 "2.0.2"
-
 pouchdb-md5@5.4.5:
   version "5.4.5"
   resolved "https://registry.yarnpkg.com/pouchdb-md5/-/pouchdb-md5-5.4.5.tgz#04f7a1dede9607ceb60313db7b654bff523878ef"
@@ -6614,58 +6466,12 @@ pouchdb-md5@5.4.5:
     pouchdb-utils "5.4.5"
     spark-md5 "2.0.2"
 
-pouchdb-md5@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/pouchdb-md5/-/pouchdb-md5-7.0.0.tgz#935dc6bb507a5f3978fb653ca5790331bae67c96"
-  integrity sha512-yaSJKhLA3QlgloKUQeb2hLdT3KmUmPfoYdryfwHZuPTpXIRKTnMQTR9qCIRUszc0ruBpDe53DRslCgNUhAyTNQ==
-  dependencies:
-    pouchdb-binary-utils "7.0.0"
-    spark-md5 "3.0.0"
-
-pouchdb-promise@5.4.4:
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/pouchdb-promise/-/pouchdb-promise-5.4.4.tgz#dd28a047197e127b7edf79b9ca37bbc42f046665"
-  integrity sha1-3SigRxl+Ent+33m5yje7xC8EZmU=
-  dependencies:
-    lie "3.0.4"
-
 pouchdb-promise@5.4.5:
   version "5.4.5"
   resolved "https://registry.yarnpkg.com/pouchdb-promise/-/pouchdb-promise-5.4.5.tgz#5c2a69759141eb73be1e172e522fd84da2e0752e"
   integrity sha1-XCppdZFB63O+HhcuUi/YTaLgdS4=
   dependencies:
     lie "3.0.4"
-
-pouchdb-quick-search@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/pouchdb-quick-search/-/pouchdb-quick-search-1.3.0.tgz#4b1ab3b830ed188d960362afd26b490f2dd78cec"
-  integrity sha1-SxqzuDDtGI2WA2Kv0mtJDy3XjOw=
-  dependencies:
-    argsarray "0.0.1"
-    es3ify "^0.1.3"
-    inherits "~2.0.1"
-    json-stable-stringify "^1.0.1"
-    lie "^2.6.0"
-    lunr "0.7.1"
-    md5-jkmyers "0.0.1"
-    pouchdb-extend "^0.1.0"
-    pouchdb-mapreduce-no-ddocs "^2.3.2"
-    pouchdb-promise "5.4.4"
-    uniq "^1.0.1"
-
-pouchdb-utils@5.4.4:
-  version "5.4.4"
-  resolved "https://registry.yarnpkg.com/pouchdb-utils/-/pouchdb-utils-5.4.4.tgz#99185b6518e350e58ed8ab28b121b5070c73bf06"
-  integrity sha1-mRhbZRjjUOWO2KsosSG1BwxzvwY=
-  dependencies:
-    argsarray "0.0.1"
-    debug "2.2.0"
-    inherits "2.0.1"
-    pouchdb-binary-utils "5.4.4"
-    pouchdb-collections "1.0.1"
-    pouchdb-errors "5.4.4"
-    pouchdb-md5 "5.4.4"
-    pouchdb-promise "5.4.4"
 
 pouchdb-utils@5.4.5:
   version "5.4.5"
@@ -6680,20 +6486,6 @@ pouchdb-utils@5.4.5:
     pouchdb-errors "5.4.5"
     pouchdb-md5 "5.4.5"
     pouchdb-promise "5.4.5"
-
-pouchdb-utils@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/pouchdb-utils/-/pouchdb-utils-7.0.0.tgz#48bfced6665b8f5a2b2d2317e2aa57635ed1e88e"
-  integrity sha512-1bnoX1KdZYHv9wicDIFdO0PLiVIMzNDUBUZ/yOJZ+6LW6niQCB8aCv09ZztmKfSQcU5nnN3fe656tScBgP6dOQ==
-  dependencies:
-    argsarray "0.0.1"
-    clone-buffer "1.0.0"
-    immediate "3.0.6"
-    inherits "2.0.3"
-    pouchdb-collections "7.0.0"
-    pouchdb-errors "7.0.0"
-    pouchdb-md5 "7.0.0"
-    uuid "3.2.1"
 
 pouchdb@^7.0.0:
   version "7.0.0"
@@ -7532,11 +7324,6 @@ schema-utils@^1.0.0:
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
 
-scope-eval@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/scope-eval/-/scope-eval-0.0.3.tgz#166f2ccd1f3754429dec511805501f9d6923b5ec"
-  integrity sha1-Fm8szR83VEKd7FEYBVAfnWkjtew=
-
 semver-diff@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/semver-diff/-/semver-diff-2.1.0.tgz#4bbb8437c8d37e4b0cf1a68fd726ec6d645d6d36"
@@ -7764,13 +7551,6 @@ source-map-url@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.0.tgz#3e935d7ddd73631b97659956d55128e87b5084a3"
   integrity sha1-PpNdfd1zYxuXZZlW1VEo6HtQhKM=
-
-source-map@0.1.31:
-  version "0.1.31"
-  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.1.31.tgz#9f704d0d69d9e138a81badf6ebb4fde33d151c61"
-  integrity sha1-n3BNDWnZ4TioG63267T94z0VHGE=
-  dependencies:
-    amdefine ">=0.0.4"
 
 source-map@^0.4.2:
   version "0.4.4"
@@ -8492,15 +8272,6 @@ unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
   integrity sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=
-
-unreachable-branch-transform@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/unreachable-branch-transform/-/unreachable-branch-transform-0.2.3.tgz#ec1ebd24c4e13bc40bf9d70d8309e2b4cde58eb6"
-  integrity sha1-7B69JMThO8QL+dcNgwnitM3ljrY=
-  dependencies:
-    esmangle-evaluator "^1.0.0"
-    recast "^0.10.1"
-    through2 "^0.6.2"
 
 unreachable-branch-transform@^0.3.0:
   version "0.3.0"
