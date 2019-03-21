@@ -378,25 +378,6 @@ function saveChunk(seg) {
 export function importCSV(jsonpath, cb) {
   let dname, dpath
   fse.readJson(jsonpath)
-    // .then((manifest) => {
-    //   let upath = settings.get('upath')
-    //   dname = manifest.name
-    //   dpath = path.resolve(upath, 'pouch', dname)
-    //   let csvDB
-    //   if (csvDB) {
-    //     let cfg = settings.get('cfg')
-    //     log('HERE CFG', cfg)
-    //     log('HERE CSV_DB', dname)
-    //     dbs = _.filter(dbs, db=> { return db.dname != dname })
-    //     let dnames = dbs.map(db=> { return db.dname })
-    //     log('HERE DNAMES', dnames)
-    //     delCfg(dname)
-    //     return csvDB.destroy()
-    //   } else {
-    //     log('NO CSVDB')
-    //     return Promise.resolve()
-    //   }
-    // })
     .then(function(manifest) {
       let upath = settings.get('upath')
       dname = manifest.name
@@ -405,22 +386,22 @@ export function importCSV(jsonpath, cb) {
         .on('finish', function (err) {
           let csvDB = new PouchDB(dpath)
           csvDB.dname = dname
-          log('CSV DB NAME =>', csvDB.dname)
           dbs.push(csvDB)
           setCfg(dname)
-          let cfg = settings.get('cfg')
-          log('IM CFG', cfg)
+          // let cfg = settings.get('cfg')
           cb(true)
         })
         .on('error', function (err) {
-          console.log('IMPORT .ON ERR', err)
-          dbs = _.filter(dbs, db=> { return db.dname != dname })
-          delCfg(dname)
-          cb(false)
+          throw new Error()
         })
     })
     .catch(function(err) {
-      log('csvDB ERR', err)
+      let cfg = settings.get('cfg')
+      log('IMP ERR CFG', cfg)
+      // console.log('IMPORT .ON ERR', err)
+      dbs = _.filter(dbs, db=> { return db.dname != dname })
+      delCfg(dname)
+      cb(false)
     })
 }
 

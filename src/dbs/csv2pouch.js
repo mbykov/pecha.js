@@ -15,9 +15,10 @@ export function csv2pouch(jsonpath, dbpath) {
   let descr = fse.readJsonSync(jsonpath)
   descr._id = 'description'
   let dirpath = path.parse(jsonpath).dir
-  // let name = path.parse(jsonpath).name
-  // let csvname = [path.parse(jsonpath).name, 'csv'].join('.')
   let csvpath = path.resolve(dirpath, descr.path)
+  log('csvpath', csvpath)
+  log('csvpath', fse.pathExistsSync(csvpath))
+  if (!fse.pathExistsSync(csvpath)) return ''
   let rs = fse.createReadStream(csvpath);
 
   let csvopts = {
@@ -27,9 +28,12 @@ export function csv2pouch(jsonpath, dbpath) {
   }
 
   let csvStream = csv(csvopts)
-      .on("end", function(){
-        // log("CSV end");
-      });
+      .on("end", function() {
+        // log("CSV end")
+      })
+      .on("error", function(err) {
+        log("CSV STEREAM ERR", err)
+      })
 
   const row2doc = miss.through.obj(
     function (row, enc, cb) {

@@ -75,19 +75,19 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
 //   ipcRenderer.send('scanLocalDict', datapath)
 // })
 
-Mousetrap.bind(['ctrl+j'], function(ev) {
-  let jsonpath = '/home/michael/tibetan/utils/csv/csvdict.json'
-  ipcRenderer.send('importCSV', jsonpath)
-})
+// Mousetrap.bind(['ctrl+j'], function(ev) {
+//   let jsonpath = '/home/michael/tibetan/utils/csv/csvdict.json'
+//   ipcRenderer.send('importCSV', jsonpath)
+// })
 
 // Mousetrap.bind(['ctrl+i'], function(ev) {
 //   ipcRenderer.send('infoDB', 'csvdict')
 // })
 
-Mousetrap.bind(['ctrl+v'], function(ev) {
-  log('vasilyev')
-  ipcRenderer.send('infoDB', 'vasilyev')
-})
+// Mousetrap.bind(['ctrl+v'], function(ev) {
+//   log('vasilyev')
+//   ipcRenderer.send('infoDB', 'vasilyev')
+// })
 
 Mousetrap.bind(['ctrl+='], function(ev) {
   let osource = q('#source')
@@ -179,4 +179,8 @@ function hideAll () {
   otrans.classList.add('is-hidden')
   let oambi = q('#ambi')
   oambi.classList.add('is-hidden')
+  let ouppers = q('#ambi')
+  Array.prototype.forEach.call(ouppers, (oupper) => {
+    oupper.classList.add('is-hidden')
+  })
 }

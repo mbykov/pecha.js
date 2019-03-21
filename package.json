@@ -1,6 +1,6 @@
 {
   "name": "pecha.js",
-  "version": "0.8.22",
+  "version": "0.8.24",
   "productName": "Pecha.js",
   "description": "Simple practical Tibetan text analyzer",
   "author": "Michael Bykov <m.bykov@gmail.com>",
