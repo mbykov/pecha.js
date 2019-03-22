@@ -21,14 +21,13 @@ let retsek = new RegExp(tsek+'$')
 
 export function glob2csv(globpath) {
   let rs = gs(['**/*', '!**/*localDict.csv'], { cwd: globpath, nodir: true })
-  // let wspath = path.resolve(globpath, 'db-stream')
-  // let ws = fse.createWriteStream(wspath)
 
   const toTibetan = miss.through.obj((data, enc, cb) => {
     selectTib(data.path)
       .then(function(wfs) {
         // log('d', data.path)
         // log('_wfs_', wfs.length)
+        if (!wfs) return
         wfs = wfs.slice(0,3)
         if (wfs.length) cb(null, wfs);
         else cb()
@@ -37,16 +36,26 @@ export function glob2csv(globpath) {
       })
   })
 
-  let rs2 = stream.Readable({objectMode: true})
+  let rs2 = new stream.Readable({objectMode: true})
   rs2._read = () => {}
+  rs2.push('fill in second column with your translation:')
+  let rs2err = new stream.Readable({objectMode: true})
+  rs2err._read = () => {}
+  rs2err.push('unprocessed wordforms:')
+
 
   function recQuery(query) {
     function decide(res) {
-      if (!res.chain) return
+      if (!res.chain) {
+        log('ERR', query.str)
+        rs2err.push(query.str)
+        return
+      }
       res.chain.forEach(sec=> {
-        if (sec.docs.length) rs2.push(sec.seg) // log('______sec.seg', sec.seg)// saveChunk(sec.seg) //dicts.push(sec.seg)
+        if (sec.docs.length) rs2.push(sec.seg)
         else {
           if (query.str != sec.seg) return recQuery({ str: sec.seg })
+          else log('ERR', sec.seg), rs2err.push(sec.seg)
         }
       })
     }
@@ -65,54 +74,28 @@ export function glob2csv(globpath) {
     next()
   })
 
-  const toDict_ = miss.through.obj((wfs, enc, next) => {
-    let idx = 0
-    function factory (cb) {
-      wfs.forEach(wf=> {
-        log('____wf', wf)
-        let query = {str: wf}
-
-        queryDBs(query)
-          .then(function(res) {
-            // log('____res', res)
-            if (!res.chain) return cb()
-            let rs = stream.Readable({objectMode: true})
-            rs._read = () => {}
-            res.chain.forEach(sec=> {
-              if (sec.docs.length) rs.push(sec.seg), cb(null, rs)
-              else {
-                // if (query.str != sec.seg) return factory(cb)
-              }
-            })
-          })
-
-        // setTimeout(function () {
-        //   let rs = stream.Readable({objectMode: true})
-        //   rs._read = () => {}
-        //   rs.push(wf)
-        //   if (idx == 0)
-        //     idx++, factory (cb)
-        //   else
-        //     cb(null, rs)
-        // }, 100)
-      })
-    }
-    // MultiStream(factory).pipe(process.stdout)
-    MultiStream(factory).pipe(toStr).pipe(process.stdout)
-    next()
-  })
 
   const toStr = miss.through.obj((data, enc, cb) => {
-    // let json = JSON.stringify(data) + '\n'
-    let str = data.toString() + '\n'
-    // log('json:', json)
-    cb(null, str);
+    let row = JSON.stringify(data) + ', -\n'
+    cb(null, row);
   })
+
+  const toErr = miss.through.obj((data, enc, cb) => {
+    let row = JSON.stringify(data) + ', -\n'
+    cb(null, row);
+  })
+
+  let wspath = path.resolve(globpath, 'localDict.csv')
+  let ws = fse.createWriteStream(wspath)
+  let errpath = path.resolve(globpath, 'localDict.unproc')
+  let errws = fse.createWriteStream(errpath)
 
   // rs.pipe(toStr).pipe(process.stdout);
   // rs.pipe(toTibetan).pipe(toStr).pipe(process.stdout);
   rs.pipe(toTibetan).pipe(toDict)
-  rs2.pipe(toStr).pipe(process.stdout);
+  // rs2.pipe(toStr).pipe(process.stdout);
+  rs2.pipe(toStr).pipe(ws);
+  rs2err.pipe(toErr).pipe(errws);
 }
 
 function selectTib(fpath) {
@@ -154,3 +137,40 @@ function cleanStr(row) {
   clean = clean.trim().replace(/\.$/, '')
   return clean
 }
+
+  // const toDict_ = miss.through.obj((wfs, enc, next) => {
+  //   let idx = 0
+  //   function factory (cb) {
+  //     wfs.forEach(wf=> {
+  //       log('____wf', wf)
+  //       let query = {str: wf}
+
+  //       queryDBs(query)
+  //         .then(function(res) {
+  //           // log('____res', res)
+  //           if (!res.chain) return cb()
+  //           let rs = stream.Readable({objectMode: true})
+  //           rs._read = () => {}
+  //           res.chain.forEach(sec=> {
+  //             if (sec.docs.length) rs.push(sec.seg), cb(null, rs)
+  //             else {
+  //               // if (query.str != sec.seg) return factory(cb)
+  //             }
+  //           })
+  //         })
+
+  //       // setTimeout(function () {
+  //       //   let rs = stream.Readable({objectMode: true})
+  //       //   rs._read = () => {}
+  //       //   rs.push(wf)
+  //       //   if (idx == 0)
+  //       //     idx++, factory (cb)
+  //       //   else
+  //       //     cb(null, rs)
+  //       // }, 100)
+  //     })
+  //   }
+  //   // MultiStream(factory).pipe(process.stdout)
+  //   MultiStream(factory).pipe(toStr).pipe(process.stdout)
+  //   next()
+  // })
