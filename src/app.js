@@ -202,7 +202,7 @@ function scanDir(fns) {
   let datapath = fns[0]
   if (!datapath) return
   progress.classList.remove('is-hidden')
-  ipcRenderer.send('scanLocalDict', datapath)
+  ipcRenderer.send('scanDirectory', datapath)
 }
 
 function importCSV(fns) {
@@ -213,7 +213,7 @@ function importCSV(fns) {
   ipcRenderer.send('importCSV', csvpath)
 }
 
-ipcRenderer.on('scanLocalReply', function (event, datapath) {
+ipcRenderer.on('scanReply', function (event, datapath) {
   progress.classList.add('is-hidden')
   let state = {section: 'publish', datapath: datapath}
   navigate(state)

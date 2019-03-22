@@ -1,11 +1,11 @@
 //
 
 import _ from 'lodash'
-// import sband from '../../../../sband'
 import sband from "speckled-band"
 import { segmenter, totalKeys } from "./segmenter";
 import { tibsyms, tibsuff } from "../lib/tibetan_data";
 import { csv2pouch } from './csv2pouch'
+import { glob2csv } from './glob2csv'
 
 const tsek = tibsyms.tsek
 let retsek = new RegExp(tsek+'$')
@@ -16,7 +16,7 @@ let retsek = new RegExp(tsek+'$')
 // const request = require('request')
 const path = require('path')
 const fse = require('fs-extra')
-let glob = require("glob")
+// let glob = require("glob")
 
 const isDev = require('electron-is-dev')
 const settings = require('electron-settings')
@@ -191,42 +191,42 @@ export function queryDBs (query) {
     })
 }
 
-function selectTib(datapath, files) {
-  let tibs = []
-  let tibkey = {}
-  files.forEach(fname => {
-    let fpath = path.resolve(datapath, fname)
-    if (fname == 'localDict.csv' || fname == 'unprocessed.csv') return
-    let text = fse.readFileSync(fpath,'utf8').trim()
-    let rows = text.split('\n')
-    rows = _.compact(rows)
-    rows.forEach((row, idx)=> {
-      let clean = cleanStr(row)
-      // if (idx > 0) return
-      let gpars = sband(clean, code)
-      if (!gpars) return
-      gpars.forEach(gpar=> {
-        gpar.forEach(span=> {
-          if (span.lang != code) return
-          let wfs = span.text.split(' ')
-          wfs.forEach(wf=> {
-            wf = wf.replace(retsek, '')
-            if (tibkey[wf]) return
-            tibs.push(wf)
-            tibkey[wf] = true
-          })
-        })
-      })
-    })
-  })
-  return tibs
-}
+// function selectTib(datapath, files) {
+//   let tibs = []
+//   let tibkey = {}
+//   files.forEach(fname => {
+//     let fpath = path.resolve(datapath, fname)
+//     if (fname == 'localDict.csv' || fname == 'unprocessed.csv') return
+//     let text = fse.readFileSync(fpath,'utf8').trim()
+//     let rows = text.split('\n')
+//     rows = _.compact(rows)
+//     rows.forEach((row, idx)=> {
+//       let clean = cleanStr(row)
+//       // if (idx > 0) return
+//       let gpars = sband(clean, code)
+//       if (!gpars) return
+//       gpars.forEach(gpar=> {
+//         gpar.forEach(span=> {
+//           if (span.lang != code) return
+//           let wfs = span.text.split(' ')
+//           wfs.forEach(wf=> {
+//             wf = wf.replace(retsek, '')
+//             if (tibkey[wf]) return
+//             tibs.push(wf)
+//             tibkey[wf] = true
+//           })
+//         })
+//       })
+//     })
+//   })
+//   return tibs
+// }
 
-function cleanStr(row) {
-  let clean = row.trim()
-  clean = clean.trim().replace(/\.$/, '')
-  return clean
-}
+// function cleanStr(row) {
+//   let clean = row.trim()
+//   clean = clean.trim().replace(/\.$/, '')
+//   return clean
+// }
 
 // let query = {keys: keys, pdchs: pdchs, compound: compound, lastsek: lastsek}
 export function compactDocs(docs, pdchs) {
@@ -324,55 +324,6 @@ function fullChains(chains) {
   return fulls
 }
 
-// ===================== generate Local Dict
-
-let localDictPath
-let dicts = []
-export function scanLocalDict(datapath) {
-  let dictpath = path.resolve(__dirname, datapath)
-  let files = []
-  // let pattern = '**/*\.tib*'
-  let pattern = '**/*'
-  let options = {cwd: dictpath, nodir: true}
-  glob(pattern, options, function(err, files) {
-    let wfs = selectTib(dictpath, files)
-    let queries = wfs.map(wf=> { return {str: wf}})
-    // queries = queries.slice(0, 10)
-
-    let csvname = 'localDict.csv'
-    localDictPath = path.resolve(dictpath, csvname)
-    fse.removeSync(localDictPath)
-
-    return queries.forEach(query=> {
-      recQuery(query)
-        .catch(function(err) {
-          console.log('Q-ERR', err)
-        })
-    })
-  })
-}
-
-function recQuery(query) {
-  function decide(aquery) {
-    if (!aquery.chain) return dicts
-    aquery.chain.forEach(sec=> {
-      if (sec.docs.length) saveChunk(sec.seg) //dicts.push(sec.seg)
-      else {
-        if (query.str != sec.seg) return recQuery({ str: sec.seg })
-      }
-    })
-  }
-  return queryDBs(query).then(decide);
-}
-
-function saveChunk(seg) {
-  let csv = [seg, ', -\n'].join('')
-  fse.appendFile(localDictPath, csv, function(err) {
-    if (err) console.log('CSVERR', err)
-  })
-}
-
-
 // =============== CSV
 
 export function importCSV(jsonpath, cb) {
@@ -447,4 +398,58 @@ export function exportCSV(csvname, cb) {
         })
     })
   })
+}
+
+// =====================  glob CSV
+
+// let localDictPath
+// let dicts = []
+// export function scanLocalDict___(datapath) {
+//   let dictpath = path.resolve(__dirname, datapath)
+//   let files = []
+//   // let pattern = '**/*\.tib*'
+//   let pattern = '**/*'
+//   let options = {cwd: dictpath, nodir: true}
+//   glob(pattern, options, function(err, files) {
+//     let wfs = selectTib(dictpath, files)
+//     let queries = wfs.map(wf=> { return {str: wf}})
+//     // queries = queries.slice(0, 10)
+
+//     let csvname = 'localDict.csv'
+//     localDictPath = path.resolve(dictpath, csvname)
+//     fse.removeSync(localDictPath)
+
+//     return queries.forEach(query=> {
+//       recQuery(query)
+//         .catch(function(err) {
+//           console.log('Q-ERR', err)
+//         })
+//     })
+//   })
+// }
+
+// function recQuery(query) {
+//   function decide(aquery) {
+//     if (!aquery.chain) return dicts
+//     aquery.chain.forEach(sec=> {
+//       if (sec.docs.length) saveChunk(sec.seg) //dicts.push(sec.seg)
+//       else {
+//         if (query.str != sec.seg) return recQuery({ str: sec.seg })
+//       }
+//     })
+//   }
+//   return queryDBs(query).then(decide);
+// }
+
+// function saveChunk(seg) {
+//   let csv = [seg, ', -\n'].join('')
+//   fse.appendFile(localDictPath, csv, function(err) {
+//     if (err) console.log('CSVERR', err)
+//   })
+// }
+
+export function scanDirectory(globpath) {
+  log('SCAN', globpath)
+  glob2csv(globpath)
+
 }

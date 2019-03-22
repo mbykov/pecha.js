@@ -70,10 +70,10 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
 //   // похоже, общий метод не получится
 // })
 
-// Mousetrap.bind(['ctrl+d'], function(ev) {
-//   let datapath = '/home/michael/diglossa.texts/Tibetan'
-//   ipcRenderer.send('scanLocalDict', datapath)
-// })
+Mousetrap.bind(['ctrl+d'], function(ev) {
+  let datapath = '/home/michael/diglossa.texts/Tibetan'
+  ipcRenderer.send('scanDirectory', datapath)
+})
 
 // Mousetrap.bind(['ctrl+j'], function(ev) {
 //   let jsonpath = '/home/michael/tibetan/utils/csv/csvdict.json'

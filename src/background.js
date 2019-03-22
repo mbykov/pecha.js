@@ -12,7 +12,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { ensureCfg, replicate, infoDB, remoteDicts, queryDBs, scanLocalDict, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
+import { ensureCfg, replicate, infoDB, remoteDicts, queryDBs, scanDirectory, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -130,11 +130,11 @@ app.on("ready", () => {
     })
   })
 
-  ipcMain.on('scanLocalDict', (event, datapath) => {
-    scanLocalDict(datapath)
-    event.sender.send('scanLocalReply', datapath)
-      // .then(function(res) {
-      // })
+  ipcMain.on('scanDirectory', (event, globpath) => {
+    scanDirectory(globpath)
+    // event.sender.send('scanReply', datapath)
+    // .then(function(res) {
+    // })
   })
 
   ipcMain.on('remoteDicts', (event, query) => {
