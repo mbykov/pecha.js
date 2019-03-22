@@ -4,7 +4,7 @@ import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { showText } from "./parsedata";
-import { serverDicts, showActiveDicts, parseCSV } from "./dict";
+import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
 
 import { remote } from "electron";
@@ -85,7 +85,6 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
 // })
 
 // Mousetrap.bind(['ctrl+v'], function(ev) {
-//   log('vasilyev')
 //   ipcRenderer.send('infoDB', 'vasilyev')
 // })
 
@@ -133,15 +132,6 @@ export function navigate(state) {
   let section = state.section || 'home'
   if (!section) state.section = 'home'
   showSection(state.section)
-
-  let osource = q('#source')
-  if (!osource) {
-    log('NO SOURCE')
-    // let over = q("#new-version")
-    // over.textContent = 'something goes wrong.Please remove DBs and reinstall dicts again'
-    // over.textContent = ''
-  }
-
 
   if (!state.old) {
     state.old = false

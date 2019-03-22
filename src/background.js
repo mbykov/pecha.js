@@ -13,6 +13,8 @@ import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
 import { ensureCfg, replicate, infoDB, remoteDicts, queryDBs, scanDirectory, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
+import {glob2csv} from "./dbs/glob2csv"
+
 
 import { devMenuTemplate } from "./menu/dev_menu_template"
 import { editMenuTemplate } from "./menu/edit_menu_template"
@@ -131,10 +133,10 @@ app.on("ready", () => {
   })
 
   ipcMain.on('scanDirectory', (event, globpath) => {
-    scanDirectory(globpath)
-    // event.sender.send('scanReply', datapath)
-    // .then(function(res) {
-    // })
+    glob2csv(globpath)
+    .then(function(res) {
+      event.sender.send('scanReply', globpath)
+    })
   })
 
   ipcMain.on('remoteDicts', (event, query) => {

@@ -33,7 +33,6 @@ const isDev = require('electron-is-dev')
 // const app = remote.app;
 const code = 'tib'
 
-let over = q("#new-version")
 let progress = q('#progress')
 let errmess = q('#err-message')
 
@@ -51,7 +50,7 @@ ipcRenderer.on('version', function (event, oldver) {
       if (!response || !response.data) return
       let newver = response.data.name
       if (oldver && newver && newver > oldver) {
-        // let over = q("#new-version")
+        let over = q("#new-version")
         let verTxt = ['new version available:', newver].join(' ')
         over.textContent = verTxt
         over.classList.remove('is-hidden')

@@ -80,7 +80,6 @@ function showRemoteDicts(rdbs) {
 
 export function showActiveDicts() {
   let cfg = settings.get('cfg')
-  log('SHOW ACTIVE', cfg)
   if (!cfg) return
   let dnames = cfg.map(cf=> { return cf.name })
   let mess = q('#adictmessage')
@@ -142,8 +141,4 @@ function checkmark() {
   let check = create('img', 'dict-check')
   check.setAttribute('src', '../resources/check.png')
   return check
-}
-
-export function parseCSV() {
-  log('PARSE START CSV')
 }

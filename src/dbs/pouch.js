@@ -448,8 +448,7 @@ export function exportCSV(csvname, cb) {
 //   })
 // }
 
-export function scanDirectory(globpath) {
-  log('SCAN', globpath)
-  glob2csv(globpath)
+// export function scanDirectory(globpath) {
+//   glob2csv(globpath)
 
-}
+// }
