@@ -58,7 +58,7 @@ export function segmenter(str) {
   return cleans
 }
 
-export function scrape(segs) {
+function scrape(segs) {
   // log('SEGS', segs)
   let head, tail
   let flakes = []
@@ -70,52 +70,3 @@ export function scrape(segs) {
   }
   return flakes.reverse()
 }
-
-// export function segmenter_(str) {
-//   let old = str
-//   let pdchs = [[str]]
-//   function rec(str, pdch) {
-//     // log('PDCH', pdch)
-//     let flakes = scrape(str)
-//     flakes.forEach(flake => {
-//       pdch.push(flake.head)
-//       pdch.push(flake.tail)
-//       if (pdch.join(tsek) == old) {
-//         pdchs.push(_.clone(pdch))
-//         pdch.pop()
-//       }
-//       if (pdch.length < 5) rec(flake.tail, pdch) // three parts for now !
-//       // rec(flake.tail, pdch)
-//       pdch.pop()
-//     })
-//   }
-//   rec(str, [])
-//   return pdchs
-// }
-
-// export function scrape_(str) {
-//   let segs = str.split(tsek)
-//   let head, tail
-//   let flakes = []
-//   for (let idx = 1; idx < segs.length + 1; idx++) {
-//     head = segs.slice(0, idx).join(tsek)
-//     tail = segs.slice(idx).join(tsek)
-//     let flake = {head: head, tail: tail}
-//     if (tail) flakes.push(flake)
-//   }
-//   return flakes.reverse()
-// }
-
-// export function totalKeys_(pdchs) {
-//   let segs = _.uniq(_.flatten(pdchs))
-//   let added = []
-//   segs.forEach(seg=>{
-//     tibsyls.forEach(syl=>{
-//       let resyl = new RegExp(syl+'$')
-//       let poss = seg.replace(resyl, '')
-//       if (seg != poss) added.push(poss)
-//     })
-//   })
-//   let keys = segs.concat(added)
-//   return _.uniq(keys)
-// }
