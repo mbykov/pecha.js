@@ -20,7 +20,6 @@ const path = require('path')
 const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
 
-// let init = {section: 'home'}
 let history = []
 let hstate = 0
 let split
@@ -46,13 +45,13 @@ function twoPanes(state) {
   })
   if (state.mono) split.collapse(1)
 
-  document.addEventListener("keydown", function(ev) {
-    // keyPanes(ev, state)
-  }, false)
+  // document.addEventListener("keydown", function(ev) {
+  //   // keyPanes(ev, state)
+  // }, false)
 
-  document.addEventListener("wheel", function(ev) {
-    // scrollPanes(ev, state)
-  }, false)
+  // document.addEventListener("wheel", function(ev) {
+  //   // scrollPanes(ev, state)
+  // }, false)
 }
 
 // arrows
