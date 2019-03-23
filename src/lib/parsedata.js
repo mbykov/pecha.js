@@ -6,9 +6,20 @@ import cholok from 'cholok'
 import { tibsyms, tibsyls } from "./tibetan_data";
 import { ipcRenderer } from "electron";
 const settings = require('electron').remote.require('electron-settings')
+const log = console.log
 
 let tsek = tibsyms.tsek
-const log = console.log
+let retsek = new RegExp(tsek+'$')
+
+export function showCholok(el, cumulative) {
+  let coords = getCoords(el)
+  let trnanscript = (cumulative) ? cholok(el.textContent, true) : cholok(el.textContent)
+  let ncoords = {top: coords.top - 40, left: coords.left + 15}
+  let otrans = q('#transcript')
+  otrans.textContent = trnanscript
+  otrans.classList.remove('is-hidden')
+  placePopup(ncoords, otrans)
+}
 
 export function showText(state) {
   let pars = state.pars
@@ -30,23 +41,15 @@ export function showText(state) {
     osource.appendChild(opar)
   })
 
-  let grs = qs('span.tibetan')
+  // let grs = qs('span.tibetan')
   // if (grs.length == 1) showResults(grs[0].textContent)
 }
 
-export function showCholok(el, cumulative) {
-  let coords = getCoords(el)
-  let trnanscript = (cumulative) ? cholok(el.textContent, true) : cholok(el.textContent)
-  let ncoords = {top: coords.top - 40, left: coords.left + 15}
-  let otrans = q('#transcript')
-  otrans.textContent = trnanscript
-  otrans.classList.remove('is-hidden')
-  placePopup(ncoords, otrans)
-}
-
-export function parsePhrase(el, chain, lastsek) {
-  if (!el) return
+// https://stackoverflow.com/questions/39876024/replacing-a-substring-of-a-textnode-with-an-html-node-element
+function parsePhrase(el, chain, lastsek) {
+  el.classList.remove('tibphrase')
   el.textContent = ''
+
   chain.forEach((seg, idx)=> {
     let ospan
     if (seg.ambi) {
@@ -75,7 +78,7 @@ function createPopup(el, upper) {
   let coords = getCoords(el)
   empty(oambi)
   oambi.classList.remove('is-hidden')
-  let ncoords = {top: coords.bottom-3, left: coords.left}
+  let ncoords = {top: coords.bottom-15, left: coords.left}
   placePopup(ncoords, oambi)
   let oul = create('ul', 'ambilist')
   oambi.appendChild(oul)
@@ -92,8 +95,6 @@ export function showPopup(el, compound) {
   }
   let upper = (el.closest('.tibpar')) ? false : true
   let oul = createPopup(el, upper)
-  // if (el.classList.contains('tibambi')) showAmbi(oul, chains)
-  // else if (el.classList.contains('tibwf')) showCompound(oul, chains)
   if (compound) showCompound(oul, chains)
   else showAmbi(oul, chains)
 }
@@ -112,7 +113,6 @@ function showAmbi(oul, chains) {
 }
 
 function showCompound(oul, chains) {
-  // log('COMPOUND', chains)
   chains.forEach(seg=> {
     let oline = create('li', 'ambiline')
     oul.appendChild(oline)
@@ -133,6 +133,7 @@ function showCompound(oul, chains) {
 export function showResults(el) {
   let osource = q('#source')
   let oresult = q('#result')
+  if (!osource || !oresult) return
   empty(oresult)
   let wf = el.textContent
 
@@ -177,18 +178,11 @@ export function showResults(el) {
 }
 
 
-export function noResult(el) {
-  // log('NO RESULT')
+export function noResult() {
   let oresult = q('#result')
   empty(oresult)
   oresult.textContent = 'no result'
 }
-
-let xxx = function(n,o,u) {
-  if (n._id && !n._id.indexOf("_local/")) return;
-  if (!u || !u.roles || u.roles.indexOf("_admin") == -1) { throw({forbidden:'Denied.' })}
-}
-
 
 // ======================= DBS ==============================
 
@@ -196,7 +190,6 @@ export function queryDBs(el, compound) {
   let progress = q('#progress')
   progress.classList.remove('is-hidden')
   let text = el.textContent.trim()
-  let retsek = new RegExp(tsek+'$')
   let str = text.replace(retsek, '')
   let last = _.last(text)
   let lastsek = (last == tsek) ? true : false
@@ -208,11 +201,9 @@ ipcRenderer.on('replyDBs', function (event, query) {
   let progress = q('#progress')
   progress.classList.add('is-hidden')
   let chain = query.chain
+  if (!chain) return noResult()
   let el = getInnermostHovered()
-  if (!chain) {
-    noResult(el)
-    return
-  }
+  if (!el) return
   if (query.compound) {
     el.dataset.chains = JSON.stringify(chain)
     showPopup(el, true)

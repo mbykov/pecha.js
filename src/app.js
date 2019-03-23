@@ -125,9 +125,7 @@ document.addEventListener("mouseover", function(ev) {
   if (tpar) hidePopups()
 
   if (ev.target.classList.contains('tibphrase')) {
-    if (ev.shiftKey == true) {
-      // showCholok(ev.target)
-    } else {
+    if (ev.shiftKey != true) {
       queryDBs(ev.target)
     }
   } else if (ev.target.classList.contains('tibwf')) {

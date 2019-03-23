@@ -191,48 +191,10 @@ export function queryDBs (query) {
     })
 }
 
-// function selectTib(datapath, files) {
-//   let tibs = []
-//   let tibkey = {}
-//   files.forEach(fname => {
-//     let fpath = path.resolve(datapath, fname)
-//     if (fname == 'localDict.csv' || fname == 'unprocessed.csv') return
-//     let text = fse.readFileSync(fpath,'utf8').trim()
-//     let rows = text.split('\n')
-//     rows = _.compact(rows)
-//     rows.forEach((row, idx)=> {
-//       let clean = cleanStr(row)
-//       // if (idx > 0) return
-//       let gpars = sband(clean, code)
-//       if (!gpars) return
-//       gpars.forEach(gpar=> {
-//         gpar.forEach(span=> {
-//           if (span.lang != code) return
-//           let wfs = span.text.split(' ')
-//           wfs.forEach(wf=> {
-//             wf = wf.replace(retsek, '')
-//             if (tibkey[wf]) return
-//             tibs.push(wf)
-//             tibkey[wf] = true
-//           })
-//         })
-//       })
-//     })
-//   })
-//   return tibs
-// }
-
-// function cleanStr(row) {
-//   let clean = row.trim()
-//   clean = clean.trim().replace(/\.$/, '')
-//   return clean
-// }
-
 // let query = {keys: keys, pdchs: pdchs, compound: compound, lastsek: lastsek}
-export function compactDocs(docs, pdchs) {
-  let res = makeChains(pdchs, docs)
-  let chains = res.chains
-  // log('FULL, CHAINS', res.full, chains.length, chains)
+function compactDocs(docs, pdchs) {
+  let chains = makeChains(pdchs, docs)
+  // log('CHAINS', chains.length, chains)
   let chain
   if (chains.length > 1) chain = commonParts(chains)
   else if (chains.length == 1) chain = chains[0]
@@ -288,10 +250,13 @@ function makeChains(pdchs, docs) {
     if (full) fulls.push(chain)
   })
   // здесь full только для справки, убрать!!!
-  let bests, full
-  if (fulls.length) bests = selectBests(fulls), full = true
-  else bests = selectBests(chains)
-  return {chains: bests, full: full}
+  // let bests, full
+  // if (fulls.length) bests = selectBests(fulls), full = true
+  // else bests = selectBests(chains)
+  // return {chains: bests, full: full}
+  if (fulls.length) chains = fulls
+  let bests = selectBests(chains)
+  return bests
 }
 
 function selectBests(chains) {
@@ -312,17 +277,17 @@ function startWith(str, head) {
   return (str != tail && tibsuff.includes(tail)) ?  true : false
 }
 
-function fullChains(chains) {
-  let fulls = []
-  chains.forEach(segs => {
-    let full = true
-    segs.forEach(seg => {
-      if (!seg.docs.length) full = false
-    })
-    if (full) fulls.push(segs)
-  })
-  return fulls
-}
+// function fullChains(chains) {
+//   let fulls = []
+//   chains.forEach(segs => {
+//     let full = true
+//     segs.forEach(seg => {
+//       if (!seg.docs.length) full = false
+//     })
+//     if (full) fulls.push(segs)
+//   })
+//   return fulls
+// }
 
 // =============== CSV
 
@@ -399,56 +364,3 @@ export function exportCSV(csvname, cb) {
     })
   })
 }
-
-// =====================  glob CSV
-
-// let localDictPath
-// let dicts = []
-// export function scanLocalDict___(datapath) {
-//   let dictpath = path.resolve(__dirname, datapath)
-//   let files = []
-//   // let pattern = '**/*\.tib*'
-//   let pattern = '**/*'
-//   let options = {cwd: dictpath, nodir: true}
-//   glob(pattern, options, function(err, files) {
-//     let wfs = selectTib(dictpath, files)
-//     let queries = wfs.map(wf=> { return {str: wf}})
-//     // queries = queries.slice(0, 10)
-
-//     let csvname = 'localDict.csv'
-//     localDictPath = path.resolve(dictpath, csvname)
-//     fse.removeSync(localDictPath)
-
-//     return queries.forEach(query=> {
-//       recQuery(query)
-//         .catch(function(err) {
-//           console.log('Q-ERR', err)
-//         })
-//     })
-//   })
-// }
-
-// function recQuery(query) {
-//   function decide(aquery) {
-//     if (!aquery.chain) return dicts
-//     aquery.chain.forEach(sec=> {
-//       if (sec.docs.length) saveChunk(sec.seg) //dicts.push(sec.seg)
-//       else {
-//         if (query.str != sec.seg) return recQuery({ str: sec.seg })
-//       }
-//     })
-//   }
-//   return queryDBs(query).then(decide);
-// }
-
-// function saveChunk(seg) {
-//   let csv = [seg, ', -\n'].join('')
-//   fse.appendFile(localDictPath, csv, function(err) {
-//     if (err) console.log('CSVERR', err)
-//   })
-// }
-
-// export function scanDirectory(globpath) {
-//   glob2csv(globpath)
-
-// }

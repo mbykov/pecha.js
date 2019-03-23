@@ -15,34 +15,24 @@ export function totalKeys(pdchs) {
     })
   })
   return {main: mainKeys, added: added}
-  // let keys = segs.concat(added)
-  // return _.uniq(keys)
-  // return _.uniq(_.flatten(pdchs))
 }
 
 export function segmenter(str) {
   let segs = str.split(tsek)
-  // let depth = (segs.length < 10) ? 10 : 2
-  // let depth = (segs.length > 10) ? 7 : 100
-  let depth = 4
-  // log('SEGS', segs)
+  let depth = (segs.length > 25) ? 3 : 5
   let old = str
   let size = segs.length
   let pdchs = [[segs]]
   function rec(segs, pdch) {
-    // log('PDCH', pdch)
     let flakes = scrape(segs)
     flakes.forEach(flake => {
       pdch.push(flake.head)
       pdch.push(flake.tail)
-      // pdch = pdch.concat(flake.head)
-      // pdch = pdch.concat(flake.tail)
       if (_.flatten(pdch).join(tsek) == old) {
         pdchs.push(_.clone(pdch))
         pdch.pop()
       }
       if (pdch.length < depth) rec(flake.tail, pdch) // three parts for now !
-      // rec(flake.tail, pdch)
       pdch.pop()
     })
   }
@@ -59,7 +49,6 @@ export function segmenter(str) {
 }
 
 function scrape(segs) {
-  // log('SEGS', segs)
   let head, tail
   let flakes = []
   for (let idx = 1; idx < segs.length + 1; idx++) {

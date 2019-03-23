@@ -65,9 +65,9 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
 //   // else if (ev.which == 50) log('----2')
 // })
 
-// Mousetrap.bind(['esc'], function(ev) {
-//   // похоже, общий метод не получится
-// })
+Mousetrap.bind(['esc'], function(ev) {
+  hidePopups()
+})
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
   let datapath = '/home/michael/diglossa.texts/Tibetan'
@@ -164,6 +164,10 @@ function hideAll () {
     section.classList.add('is-hidden')
     section.classList.remove('is-shown')
   })
+  hidePopups ()
+}
+
+function hidePopups () {
   let otrans = q('#transcript')
   otrans.classList.add('is-hidden')
   let oambi = q('#ambi')
