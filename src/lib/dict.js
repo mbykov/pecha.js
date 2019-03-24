@@ -49,8 +49,8 @@ function hideProgress(res) {
 
 
 function showRemoteDicts(rdbs) {
-  log('RDBS', rdbs)
   let cfg = settings.get('cfg')
+  log('remote cfg', cfg)
   let locals = cfg.map(dict=> { return dict.dname })
   let installed = _.uniq(locals)
 
@@ -114,18 +114,18 @@ function createTable(distance) {
 export function showActiveDicts() {
   let cfg = settings.get('cfg')
   if (!cfg) return
-  let dnames = cfg.map(cf=> { return cf.name })
+  let dnames = cfg.map(cf=> { return cf.dname })
   let mess = q('#adictmessage')
   if (dnames.length) mess.textContent = 'click dict\'s name to move it first'
   let otable = q('#local-dicts-table tbody')
   empty(otable)
   cfg.forEach(dict=> {
-    let name = dict.dname
+    let name = dict.descr.name
     let otr = create('tr')
     otable.appendChild(otr)
     let odt = create('td', 'dictname')
     otr.appendChild(odt)
-    odt.textContent = _.capitalize(name)
+    odt.textContent = name
     odt.dataset.firstdict = name
     let oactive = create('td', 'active-dict')
     if (dict.active) {

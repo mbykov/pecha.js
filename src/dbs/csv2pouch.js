@@ -16,8 +16,6 @@ export function csv2pouch(jsonpath, dbpath) {
   descr._id = 'description'
   let dirpath = path.parse(jsonpath).dir
   let csvpath = path.resolve(dirpath, descr.path)
-  log('csvpath', csvpath)
-  log('csvpath', fse.pathExistsSync(csvpath))
   if (!fse.pathExistsSync(csvpath)) return ''
 
   let rs = fse.createReadStream(csvpath);

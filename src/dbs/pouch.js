@@ -72,8 +72,9 @@ export function remoteDicts() {
             })
           })
       }))
-        .then(function(infos) {
-          return infos
+        .then(function(dbinfos) {
+          settings.set('dbinfos', dbinfos)
+          return dbinfos
       })
     })
 }
@@ -83,6 +84,7 @@ export function replicate(upath, dname) {
   let localDB = new PouchDB(localpath)
   let dumppath = ['http://diglossa.org/dump-', dname].join('')
   let remotepath = ['http://diglossa.org:5984/', dname].join('')
+  let dbinfos = settings.get('dbinfos')
 
   return localDB.load(dumppath)
     .then(function() {
@@ -92,8 +94,8 @@ export function replicate(upath, dname) {
         .on('error', onSyncError)
       localDB.dname = dname
       dbs.push(localDB)
-      // let dnames = dbs.map(db=>{ return db.dname })
-      setCfg(dname)
+      let dbinfo = _.find(dbinfos, dbinfo=> { return dbinfo.dname == dname })
+      setCfg(dbinfo)
     })
 }
 
@@ -126,13 +128,14 @@ export function ensureCfg(upath) {
   }
 }
 
-function setCfg(dname) {
+function setCfg(dbinfo) {
   let upath = settings.get('upath')
   let cfg = settings.get('cfg')
-  let check = _.find(cfg, dict=> { return dict.dname == dname })
+  let check = _.find(cfg, dict=> { return dict.dname == dbinfo.dname })
   if (check) return cfg
-  let newdict = {dname: dname, active: true, idx: cfg.length} // sync: remotepath,
-  cfg.push(newdict)
+  dbinfo.active = true
+  dbinfo.idx = cfg.length
+  cfg.push(dbinfo)
   settings.set('cfg', cfg)
   return cfg
 }
@@ -315,8 +318,8 @@ export function importCSV(jsonpath, cb) {
           let csvDB = new PouchDB(dpath)
           csvDB.dname = dname
           dbs.push(csvDB)
-          setCfg(dname)
-          // let cfg = settings.get('cfg')
+          let newcfg = { dname: dname, descr: manifest }
+          setCfg(newcfg)
           cb(true)
         })
         .on('error', function (err) {
