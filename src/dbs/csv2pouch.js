@@ -19,6 +19,7 @@ export function csv2pouch(jsonpath, dbpath) {
   log('csvpath', csvpath)
   log('csvpath', fse.pathExistsSync(csvpath))
   if (!fse.pathExistsSync(csvpath)) return ''
+
   let rs = fse.createReadStream(csvpath);
 
   let csvopts = {
@@ -64,7 +65,7 @@ export function csv2pouch(jsonpath, dbpath) {
     }
 
     _write(chunk, encoding, next){
-      if (buff.length < 2) {
+      if (buff.length < 1000) {
         buff.push(chunk)
         next()
       } else {

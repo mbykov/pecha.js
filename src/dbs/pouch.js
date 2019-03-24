@@ -54,14 +54,26 @@ const diglossa = new NodeCouchDb({
 
 export function remoteDicts() {
   return diglossa.listDatabases()
-    .then(function(dnames) {
+    .then(function(dnlist) {
+      let defaults = ['_users']
+      let dnames = _.difference(dnlist, defaults)
       return Promise.all(dnames.map(function(dname) {
         let remotepath = ['http://diglossa.org:5984/', dname].join('')
         let remoteDB = new PouchDB(remotepath)
-        return remoteDB.info()
-      })).then(function(res) {
-        let dbinfo = res.map(info=> { return {dname: info.db_name, size: info.doc_count} })
-        return dbinfo
+        // return remoteDB.info()
+        return remoteDB.info().then(info=> {
+          return remoteDB.get('description')
+            .then(descr=> {
+              let dbinfo = { dname: info.db_name, size: info.doc_count, descr: descr }
+              return dbinfo
+            })
+            .catch(err=> {
+              log('REMOTE-ERR:', err)
+            })
+          })
+      }))
+        .then(function(infos) {
+          return infos
       })
     })
 }

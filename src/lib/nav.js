@@ -122,6 +122,7 @@ function goRight() {
 }
 
 export function navigate(state) {
+  // state = {section: 'home'}
   try {
     state = JSON.parse(JSON.stringify(state))
   } catch (err) {
@@ -140,13 +141,12 @@ export function navigate(state) {
   }
 
   if (section == 'main') twoPanes(state), showText(state)
-  else if (section == 'clonedicts') ipcRenderer.send('remoteDicts', '') // serverDicts()
+  else if (section == 'remotedicts') ipcRenderer.send('remoteDicts', '') // serverDicts()
   else if (section == 'activedicts') showActiveDicts()
 
   let progress = q('#progress')
   progress.classList.add('is-hidden')
 
-  // state = {section: 'home'}
   settings.set('state', state)
 }
 

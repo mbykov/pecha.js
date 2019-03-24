@@ -1,7 +1,7 @@
 //
 import _ from 'lodash'
 import { ipcRenderer } from "electron";
-import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup } from './utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from './utils'
 import { navigate } from './nav'
 
 const log = console.log
@@ -15,7 +15,7 @@ ipcRenderer.on('remoteDictsReply', function (event, rdbs) {
 ipcRenderer.on('replicateReply', function (event, res) {
   hideProgress(res)
   // let state = {section: 'activedicts'}
-  let state = {section: 'clonedicts'}
+  let state = {section: 'remotedicts'}
   navigate(state)
 })
 
@@ -33,7 +33,7 @@ ipcRenderer.on('csvExportReply', function (event, res) {
 
 ipcRenderer.on('cleanupReply', function (event, res) {
   hideProgress(res)
-  let state = {section: 'clonedicts'}
+  let state = {section: 'home'}
   navigate(state)
 })
 
@@ -49,23 +49,35 @@ function hideProgress(res) {
 
 
 function showRemoteDicts(rdbs) {
+  log('RDBS', rdbs)
   let cfg = settings.get('cfg')
-  let defaults = ['_users']
   let locals = cfg.map(dict=> { return dict.dname })
-  let installed = _.uniq(defaults.concat(locals))
+  let installed = _.uniq(locals)
 
-  let otable = q('#server-dicts-table tbody')
-  empty(otable)
+  let obefore = q('#before-remote-table')
+  obefore.textContent = ''
+  let otable = q('#table-remote')
+  if (otable) empty(otable)
+  else {
+    let osection = q('#remotedicts')
+    otable = createTable('remote')
+    osection.appendChild(otable)
+  }
+  let oheader = q('#remote-table-header')
+
   rdbs.forEach(rdb=> {
-    if (defaults.includes(rdb.dname)) return
     let otr = create('tr')
     otable.appendChild(otr)
+    // insertAfter(otr, oheader)
     let odt = create('td')
     otr.appendChild(odt)
     odt.textContent = _.capitalize(rdb.dname)
     let osize = create('td', 'dsize')
-    osize.textContent = _.capitalize(rdb.size)
+    osize.textContent = rdb.size
     otr.appendChild(osize)
+    let olang = create('td', 'dlang')
+    olang.textContent = rdb.descr.langs
+    otr.appendChild(olang)
     let oink = create('td', 'link')
     if (installed.includes(rdb.dname)) {
       let check = checkmark()
@@ -76,6 +88,27 @@ function showRemoteDicts(rdbs) {
     oink.dataset.clone = rdb.dname
     otr.appendChild(oink)
   })
+}
+
+function createTable(distance) {
+  let otable = create('table', 'dicts-table')
+  otable.id = ['table', distance].join('-')
+  let oheader = create('tr', 'table-header')
+  oheader.id = ['table-header', distance].join('-')
+  otable.appendChild(oheader)
+  let oname = create('td')
+  oname.textContent = 'dict\'s name'
+  oheader.appendChild(oname)
+  let osize = create('td')
+  osize.textContent = 'docs'
+  oheader.appendChild(osize)
+  let olang = create('td')
+  olang.textContent = 'langs'
+  oheader.appendChild(olang)
+  let osync = create('td')
+  osync.textContent = 'synchronize'
+  oheader.appendChild(osync)
+  return otable
 }
 
 export function showActiveDicts() {

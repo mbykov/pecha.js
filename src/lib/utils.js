@@ -111,3 +111,14 @@ export function placePopup (coords, el) {
 
 // https://stackoverflow.com/questions/24538450/get-element-currently-under-mouse-without-using-mouse-events
 export function getInnermostHovered() { return [].slice.call(document.querySelectorAll(':hover')).pop(); }
+
+
+export function insertAfter(elem, refElem) {
+  var parent = refElem.parentNode;
+  var next = refElem.nextSibling;
+  if (next) {
+    return parent.insertBefore(elem, next);
+  } else {
+    return parent.appendChild(elem);
+  }
+}
