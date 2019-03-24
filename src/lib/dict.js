@@ -47,10 +47,8 @@ function hideProgress(res) {
   }
 }
 
-
 function showRemoteDicts(rdbs) {
   let cfg = settings.get('cfg')
-  log('remote cfg', cfg)
   let locals = cfg.map(dict=> { return dict.dname })
   let installed = _.uniq(locals)
 
@@ -71,7 +69,7 @@ function showRemoteDicts(rdbs) {
     // insertAfter(otr, oheader)
     let odt = create('td')
     otr.appendChild(odt)
-    odt.textContent = _.capitalize(rdb.dname)
+    odt.textContent = rdb.descr.name
     let osize = create('td', 'dsize')
     osize.textContent = rdb.size
     otr.appendChild(osize)
