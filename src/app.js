@@ -94,14 +94,16 @@ document.addEventListener('click', (ev) => {
     ipcRenderer.send('replicate', data.clone)
   } else if (data.firstdict) {
     moveDictFirst(data.firstdict) // ev.target,
+    ipcRenderer.send('reReadCfg')
   } else if (data.activedict) {
     activateDict(ev.target)
+    ipcRenderer.send('reReadCfg')
   } else if (data.csv) {
     progress.classList.remove('is-hidden')
     ipcRenderer.send('exportCSV', data.csv)
   } else if (parent && parent.dataset && parent.dataset.activedict) {
-    // activateDict(parent)
-    // log('activateDict(parent)_______')
+    activateDict(parent)
+    ipcRenderer.send('reReadCfg')
   } else if (ev.target.id == 'cleanupdb') {
     ipcRenderer.send('cleanupDB')
   } else if (ev.target.id == 'scandir') {

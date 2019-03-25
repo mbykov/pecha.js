@@ -128,6 +128,12 @@ export function ensureCfg(upath) {
   }
 }
 
+export function reReadCfg() {
+  let cfg = settings.get('cfg')
+  dbs = []
+  setDBs(cfg)
+}
+
 function setCfg(dbinfo) {
   let upath = settings.get('upath')
   let cfg = settings.get('cfg')

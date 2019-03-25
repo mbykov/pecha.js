@@ -124,7 +124,7 @@ export function showActiveDicts() {
     let odt = create('td', 'dictname')
     otr.appendChild(odt)
     odt.textContent = name
-    odt.dataset.firstdict = name
+    odt.dataset.firstdict = dict.dname
     let oactive = create('td', 'active-dict')
     if (dict.active) {
       let check = checkmark()
@@ -132,7 +132,7 @@ export function showActiveDicts() {
     } else {
       oactive.textContent = 'activate'
     }
-    oactive.dataset.activedict = name
+    oactive.dataset.activedict = dict.dname
     otr.appendChild(oactive)
     let ocsv = create('td', 'dictcsv')
     ocsv.textContent = 'toCSV'

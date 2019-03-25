@@ -12,7 +12,7 @@ import { aboutMenuTemplate } from "./menu/about_menu_template"
 import { dictMenuTemplate } from "./menu/dict_menu_template"
 import { helpMenuTemplate } from "./menu/help_menu_template"
 
-import { ensureCfg, replicate, infoDB, remoteDicts, queryDBs, scanDirectory, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
+import { ensureCfg, reReadCfg, replicate, infoDB, remoteDicts, queryDBs, scanDirectory, importCSV, exportCSV, cleanupDB } from "./dbs/pouch"
 import {glob2csv} from "./dbs/glob2csv"
 
 
@@ -163,6 +163,10 @@ app.on("ready", () => {
     cleanupDB(upath, function(res) {
       event.sender.send('cleanupReply', res)
     })
+  })
+
+  ipcMain.on('reReadCfg', (event) => {
+    reReadCfg()
   })
 
 })

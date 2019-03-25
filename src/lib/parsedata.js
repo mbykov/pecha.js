@@ -25,6 +25,7 @@ export function showText(state) {
   let pars = state.pars
   let osource = q('#source')
   let oresult = q('#result')
+  if (!osource || !oresult) return
   empty(osource)
   empty(oresult)
 
