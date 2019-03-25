@@ -323,10 +323,12 @@ export function importCSV(jsonpath, cb) {
           cb(true)
         })
         .on('error', function (err) {
+          log('IMPORT CSV ERR:', err)
           throw new Error()
         })
     })
     .catch(function(err) {
+      log('IMPORT CSV CATCH ERR:', err)
       let cfg = settings.get('cfg')
       log('IMP ERR CFG', cfg)
       // console.log('IMPORT .ON ERR', err)
